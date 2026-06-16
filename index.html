@@ -1724,6 +1724,180 @@
       .cat-cards-grid { grid-template-columns: 1fr; }
       .int-cards-grid { grid-template-columns: 1fr; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SHARED SUBPAGE COMPONENTS
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* Split layout */
+    .sub-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    .sub-split--reverse { direction: rtl; }
+    .sub-split--reverse > * { direction: ltr; }
+
+    .sub-split h2 { margin-bottom: 18px; }
+    .sub-split p { color: var(--muted); font-size: 15px; }
+
+    .sub-three-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 32px;
+    }
+
+    .sub-three-col p { color: var(--muted); font-size: 14.5px; }
+
+    /* Checklist box */
+    .sub-checklist-box {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 28px 26px;
+      border-top: 3px solid var(--orange);
+    }
+
+    .sub-checklist-box h4 {
+      color: var(--navy);
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      letter-spacing: 0.08em;
+    }
+
+    .sub-checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .sub-checklist li {
+      font-size: 14px;
+      color: var(--text);
+      padding-left: 22px;
+      position: relative;
+    }
+
+    .sub-checklist li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 12px;
+      height: 7px;
+      border-left: 2px solid var(--red);
+      border-bottom: 2px solid var(--red);
+      transform: rotate(-45deg);
+    }
+
+    .sub-checklist--light li { color: rgba(255,255,255,0.80); }
+    .sub-checklist--light li::before { border-color: var(--orange); }
+
+    /* Process — numbered (dark bg) */
+    .process-numbered {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .proc-num-item { text-align: center; padding: 0 8px; }
+
+    .proc-num {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 3rem;
+      color: var(--orange);
+      line-height: 1;
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+
+    .proc-num-item h4 {
+      color: var(--white);
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    .proc-num-item p { font-size: 13.5px; color: rgba(255,255,255,0.58); }
+
+    /* Process — horizontal (light bg) */
+    .process-horizontal {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .proc-h-item {
+      text-align: center;
+      padding: 0 8px;
+    }
+
+    .proc-h-num {
+      width: 44px;
+      height: 44px;
+      background: var(--gradient-ro);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--white);
+      margin: 0 auto 14px;
+    }
+
+    .proc-h-item h4 {
+      color: var(--navy);
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+    }
+
+    .proc-h-item p { font-size: 13.5px; color: var(--muted); }
+
+    /* Related cards */
+    .related-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .related-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 22px 20px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: border-color 0.18s, box-shadow 0.18s, transform 0.18s;
+    }
+
+    .related-card:hover {
+      border-color: var(--red);
+      box-shadow: var(--shadow);
+      transform: translateY(-2px);
+    }
+
+    .related-card h4 {
+      color: var(--navy);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .related-card p { font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .sub-split { grid-template-columns: 1fr; }
+      .sub-three-col { grid-template-columns: 1fr; }
+      .process-numbered { grid-template-columns: 1fr 1fr; }
+      .process-horizontal { grid-template-columns: 1fr 1fr; }
+      .related-cards { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .process-numbered { grid-template-columns: 1fr; }
+      .process-horizontal { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -2654,7 +2828,715 @@
     </section>
   </div><!-- /page-design -->
 
-  <!-- ─── Remaining pages (Steps 8–15) placeholder ─────────────────── -->
+  <!-- ══════════════════ EXTERIOR SUBPAGES ══════════════════ -->
+
+  <!-- sub-new-construction: Dark navy + orange accents, numbered process -->
+  <div class="page hidden" id="sub-new-construction">
+    <section class="page-hero" style="min-height:360px">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>New Construction</div>
+        <h1><span class="text-white">We've Built Homes</span><br><span class="text-orange">from the Ground Up.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">This is someone's biggest investment. We know what that means — and we show up accordingly.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Start Your Build &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Ground Zero to<br><span class="text-red">Move-In Ready.</span></h2>
+            <p>New construction means starting with nothing but a lot line and a vision. It takes coordination, experience, and a team that knows how every trade connects. VWG manages the full build — site prep through final inspection.</p>
+            <p style="margin-top:14px">We've built custom homes, multi-family units, and commercial structures across NY, NJ, and CT. Every one of them started with a conversation and a plan.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Site clearing &amp; excavation</li>
+              <li>Foundation design &amp; pour</li>
+              <li>Framing — walls, floors, roof</li>
+              <li>Rough plumbing &amp; electrical</li>
+              <li>Insulation &amp; drywall</li>
+              <li>Exterior finish — siding, roofing, windows</li>
+              <li>Interior finishes — flooring, paint, trim</li>
+              <li>Final inspection &amp; walkthrough</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div style="text-align:center;margin-bottom:48px">
+          <span class="section-label section-label--light">Our Process</span>
+          <h2 class="text-white">How a Build<br><span class="text-orange">Actually Happens.</span></h2>
+        </div>
+        <div class="process-numbered">
+          <div class="proc-num-item"><div class="proc-num">01</div><h4>Plan &amp; Permit</h4><p>We sit down with you, finalize drawings, submit permits, and line up the schedule before a shovel touches dirt.</p></div>
+          <div class="proc-num-item"><div class="proc-num">02</div><h4>Site &amp; Foundation</h4><p>Site prep, excavation, grading, and foundation pour. We build level — because everything above it depends on it.</p></div>
+          <div class="proc-num-item"><div class="proc-num">03</div><h4>Framing &amp; Systems</h4><p>Walls go up. Roof gets framed. Plumbing, electrical, and HVAC rough-ins happen in sequence, not in a hurry.</p></div>
+          <div class="proc-num-item"><div class="proc-num">04</div><h4>Finish &amp; Inspect</h4><p>Interior and exterior finishes, final inspections, punch list walkthrough with you. Not done until you're satisfied.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px">
+          <span class="section-label">Related Work</span>
+          <h3>Other Exterior Services</h3>
+        </div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-additions')"><h4>Additions &amp; Extensions</h4><p>Add square footage the right way.</p></div>
+          <div class="related-card" onclick="goTo('sub-roofing')"><h4>Roofing &amp; Siding</h4><p>The first line of defense for any structure.</p></div>
+          <div class="related-card" onclick="goTo('sub-excavation')"><h4>Excavation &amp; Site Work</h4><p>Every great build starts with great prep.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px">
+          <button class="btn btn-red" onclick="goTo('page-contact')">Call Henry: (914) 906-8215</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-additions: Warm bg, horizontal photo strip, split layout -->
+  <div class="page hidden" id="sub-additions">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.88) 45%,rgba(30,46,92,0.40) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Additions &amp; Extensions</div>
+        <h1><span class="text-white">More Space.</span><br><span class="text-orange">Same Home. Better Life.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Plan My Addition &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split sub-split--reverse">
+          <div class="sub-checklist-box" style="background:var(--navy)">
+            <h4 style="color:var(--white)">What's Included</h4>
+            <ul class="sub-checklist sub-checklist--light">
+              <li>Design &amp; permit drawings</li>
+              <li>Foundation extension or pier system</li>
+              <li>Structural framing &amp; connection to existing home</li>
+              <li>Roofline integration</li>
+              <li>Exterior cladding match</li>
+              <li>Interior finishing to match existing space</li>
+              <li>Electrical &amp; HVAC extension</li>
+            </ul>
+          </div>
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Add Space Without<br><span class="text-red">Moving Out.</span></h2>
+            <p>A room addition is one of the best investments a homeowner can make — more usable space without the chaos of buying and moving. Done right, it looks like it was always part of the house. Done wrong, it shows.</p>
+            <p style="margin-top:14px">VWG has been building additions in Westchester, NJ, and CT for two decades. We match your roofline, your cladding, and your interior style so the addition disappears into the home.</p>
+            <h4 style="margin-top:28px;color:var(--red);font-size:0.95rem">Why It Matters</h4>
+            <p style="margin-top:8px">Adding a bedroom, a sunroom, or a garage is cheaper than moving. It increases your home's resale value and gives your family the space it actually needs — without disrupting your life.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>4 Steps to More Home.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Design &amp; Planning</h4><p>We draw the plans, file the permits, and map out the full scope before anything starts.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Foundation &amp; Frame</h4><p>Structural connection to your existing home, framed to match the roofline perfectly.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Systems &amp; Envelope</h4><p>Exterior cladding, windows, electrical, HVAC, and insulation — all tied into your existing home.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Interior &amp; Finish</h4><p>Flooring, paint, trim — matched to your existing space so the addition looks like it was always there.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-new-construction')"><h4>New Construction</h4><p>Starting from scratch? We build from the ground up.</p></div>
+          <div class="related-card" onclick="goTo('sub-roofing')"><h4>Roofing &amp; Siding</h4><p>Match the exterior of your addition to the rest of the home.</p></div>
+          <div class="related-card" onclick="goTo('sub-windows')"><h4>Windows &amp; Doors</h4><p>The right windows make the room.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px">
+          <button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-roofing: Red accent urgency tone, vertical process -->
+  <div class="page hidden" id="sub-roofing">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(192,57,43,0.25) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Roofing &amp; Siding</div>
+        <h1><span class="text-white">Your Roof Is Your</span><br><span class="text-orange">First Line of Defense.</span></h1>
+        <p style="color:rgba(255,255,255,0.80);max-width:480px;margin-top:14px">Don't wait for the bucket. A failing roof doesn't fix itself — and the longer you wait, the more it costs.</p>
+        <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap">
+          <button class="btn btn-red" onclick="goTo('page-contact')">Emergency Roof Call &#8594;</button>
+          <button class="btn btn-outline-white" onclick="goTo('page-contact')">Get a Free Inspection</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-three-col">
+          <div style="grid-column:1 / -1">
+            <span class="section-label">What This Is</span>
+            <h2>We Don't Patch Problems.<br><span class="text-red">We Solve Them.</span></h2>
+          </div>
+          <div><p>Roofing isn't just shingles — it's the system underneath: decking, underlayment, flashing, ventilation. VWG replaces or repairs all of it, not just what's visible from the street.</p></div>
+          <div><p>Siding is your home's second skin. Damaged or outdated siding lets in moisture, drives up energy costs, and drags down your home's value. We install fiber cement, vinyl, wood, and engineered siding to match any style.</p></div>
+          <div>
+            <h4 style="color:var(--red);margin-bottom:10px;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.06em">Why It Matters Now</h4>
+            <p>Small leaks become big structural damage. One bad winter with a compromised roof can cost more than the full replacement. Don't find out the hard way.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <h3>Roofing Services</h3>
+            <ul class="sub-checklist" style="margin-top:16px">
+              <li>Asphalt shingle replacement</li>
+              <li>Metal roofing installation</li>
+              <li>Flat roof systems</li>
+              <li>Flashing &amp; gutter replacement</li>
+              <li>Emergency leak repair</li>
+              <li>Full roof inspections</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Siding Services</h3>
+            <ul class="sub-checklist" style="margin-top:16px">
+              <li>Fiber cement siding</li>
+              <li>Vinyl siding replacement</li>
+              <li>Wood &amp; engineered wood siding</li>
+              <li>Trim &amp; soffit replacement</li>
+              <li>Partial damage repair</li>
+              <li>Storm damage assessment</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--navy)">
+      <div class="blueprint-overlay" style="position:absolute;inset:0"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">From Call to Complete.</h2></div>
+        <div class="process-numbered" style="--proc-color:var(--orange)">
+          <div class="proc-num-item"><div class="proc-num">01</div><h4>Inspection</h4><p>We get on the roof and find exactly what's failing — no guessing, no upselling.</p></div>
+          <div class="proc-num-item"><div class="proc-num">02</div><h4>Estimate</h4><p>Clear, itemized quote within 24–48 hours. You know exactly what you're paying for.</p></div>
+          <div class="proc-num-item"><div class="proc-num">03</div><h4>Installation</h4><p>Licensed crew, proper materials, full cleanup every single day.</p></div>
+          <div class="proc-num-item"><div class="proc-num">04</div><h4>Final Inspection</h4><p>We walk it with you. Any issue — we fix it before we leave.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-windows')"><h4>Windows &amp; Doors</h4><p>Often replaced at the same time as siding.</p></div>
+          <div class="related-card" onclick="goTo('sub-waterproofing')"><h4>Waterproofing &amp; Drainage</h4><p>Stop water at every entry point.</p></div>
+          <div class="related-card" onclick="goTo('sub-additions')"><h4>Additions &amp; Extensions</h4><p>Adding a room means a new roofline too.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px">
+          <button class="btn btn-red" onclick="goTo('page-contact')">Call Henry: (914) 906-8215</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-windows: Clean light design, two-col checklist -->
+  <div class="page hidden" id="sub-windows">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Windows &amp; Doors</div>
+        <h1><span class="text-white">Curb Appeal Meets</span><br><span class="text-orange">Energy Efficiency.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Window &amp; Door Pricing &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container" style="max-width:860px;margin:0 auto">
+        <span class="section-label">What This Is</span>
+        <h2>New Windows Pay for<br><span class="text-red">Themselves Over Time.</span></h2>
+        <p style="margin-top:16px;color:var(--muted)">Old windows are one of the single biggest sources of energy loss in a home. Drafts, condensation, and noise aren't just annoying — they're expensive. VWG installs energy-efficient windows and doors that lower your heating and cooling bills and update the look of your home inside and out.</p>
+        <div class="sub-split" style="margin-top:40px">
+          <div>
+            <h3 style="margin-bottom:16px">Window Services</h3>
+            <ul class="sub-checklist">
+              <li>Double &amp; triple-pane replacement windows</li>
+              <li>Bay &amp; bow windows</li>
+              <li>Casement, double-hung, and slider styles</li>
+              <li>Skylights &amp; roof windows</li>
+              <li>Storm windows</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="margin-bottom:16px">Door Services</h3>
+            <ul class="sub-checklist">
+              <li>Entry &amp; front door replacement</li>
+              <li>Sliding &amp; French patio doors</li>
+              <li>Garage door replacement</li>
+              <li>Storm &amp; screen doors</li>
+              <li>Custom door framing &amp; trim</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Simple. Fast. Done Right.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Measure &amp; Quote</h4><p>We measure every opening and provide a fixed price — no surprises.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Product Selection</h4><p>We walk you through style and efficiency options that match your home.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Installation</h4><p>Proper flashing, insulation, and trim — installed to last decades.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Clean Finish</h4><p>Interior and exterior trim finished, caulked, and painted if needed.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-roofing')"><h4>Roofing &amp; Siding</h4><p>Often done together for maximum efficiency.</p></div>
+          <div class="related-card" onclick="goTo('sub-additions')"><h4>Additions &amp; Extensions</h4><p>New spaces need new windows from the start.</p></div>
+          <div class="related-card" onclick="goTo('sub-insulation')"><h4>Insulation</h4><p>Seal it from the inside too.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px">
+          <button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-decks: Warm outdoor feel -->
+  <div class="page hidden" id="sub-decks">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(120deg,rgba(30,46,92,0.87) 40%,rgba(224,120,32,0.22) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Decks &amp; Porches</div>
+        <h1><span class="text-white">Outdoor Living</span><br><span class="text-orange">Built to Last Decades.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">A deck or porch is where summer happens. Build it right the first time — and enjoy it for the next 30 years.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Design My Deck &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Your Backyard.<br><span class="text-red">Your Way.</span></h2>
+            <p>VWG builds decks, porches, and outdoor platforms in wood, composite, and PVC. Every project starts with proper footing and framing — because a beautiful deck that isn't structurally sound isn't a deck worth building.</p>
+            <p style="margin-top:14px">From simple pressure-treated platforms to multi-level composite decks with built-in seating and pergolas, we build to your space, your budget, and your style.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Footing design &amp; permit filing</li>
+              <li>Pressure-treated, composite, or PVC decking</li>
+              <li>Railing systems — wood, metal, cable</li>
+              <li>Built-in benches &amp; planters (optional)</li>
+              <li>Pergolas &amp; shade structures</li>
+              <li>Stairs with proper rise/run</li>
+              <li>Lighting rough-in (optional)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>From Sketch to Sunset.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Design &amp; Materials</h4><p>We sketch the layout, pick materials together, and price it out clearly.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Permits &amp; Footings</h4><p>Proper permits pulled, footings dug and set below frost line.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Frame &amp; Deck</h4><p>Structure built, decking installed, railing framed and finished.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Finishing Touches</h4><p>Stairs, lighting rough-in, final inspection. Ready for your first barbecue.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-outdoor-kitchens')"><h4>Outdoor Kitchens</h4><p>Turn your deck into an entertainment destination.</p></div>
+          <div class="related-card" onclick="goTo('sub-retaining')"><h4>Retaining Walls</h4><p>Level the yard before you build.</p></div>
+          <div class="related-card" onclick="goTo('sub-paving')"><h4>Driveway &amp; Paving</h4><p>Connect the deck to a beautiful hardscape.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px">
+          <button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-excavation: Bold numbered card layout -->
+  <div class="page hidden" id="sub-excavation">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.88)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Excavation &amp; Site Work</div>
+        <h1><span class="text-white">Every Great Build</span><br><span class="text-orange">Starts with Great Prep.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Discuss Your Site Work &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <span class="section-label">What This Is</span>
+        <h2 style="margin-bottom:20px">The Work That<br><span class="text-red">Makes Everything Else Work.</span></h2>
+        <p style="color:var(--muted);max-width:700px">Excavation and site work is unglamorous — but it's the difference between a project that lasts and one that shifts, settles, or floods five years later. VWG handles the full scope: land clearing, grading, drainage setup, and utility coordination.</p>
+        <div class="sub-split" style="margin-top:40px">
+          <ul class="sub-checklist"><li>Land clearing &amp; tree removal coordination</li><li>Rough &amp; finish grading</li><li>Trenching for utilities</li><li>Basement excavation</li></ul>
+          <ul class="sub-checklist"><li>Drainage installation</li><li>Backfill &amp; compaction</li><li>Septic system prep</li><li>Site restoration</li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Dig It Right.<br><span class="text-orange">Build It Right.</span></h2></div>
+        <div class="process-numbered">
+          <div class="proc-num-item"><div class="proc-num">01</div><h4>Site Assessment</h4><p>We walk the site, assess soil conditions, slope, drainage, and utility locations.</p></div>
+          <div class="proc-num-item"><div class="proc-num">02</div><h4>Clearing &amp; Grading</h4><p>Vegetation removed, land graded to proper drainage slopes and building elevations.</p></div>
+          <div class="proc-num-item"><div class="proc-num">03</div><h4>Excavation</h4><p>Foundations, trenches, and utility paths cut precisely to spec.</p></div>
+          <div class="proc-num-item"><div class="proc-num">04</div><h4>Drainage &amp; Backfill</h4><p>Drainage systems installed, backfill compacted in lifts for long-term stability.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-new-construction')"><h4>New Construction</h4><p>Site work is step one of every new build.</p></div>
+          <div class="related-card" onclick="goTo('sub-paving')"><h4>Driveway Paving</h4><p>The subgrade determines how long the paving lasts.</p></div>
+          <div class="related-card" onclick="goTo('sub-waterproofing')"><h4>Waterproofing &amp; Drainage</h4><p>Keep the water moving away from the structure.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px">
+          <button class="btn btn-red" onclick="goTo('page-contact')">Call Henry: (914) 906-8215</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-paving: Clean minimal two-column -->
+  <div class="page hidden" id="sub-paving">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Road &amp; Driveway Paving</div>
+        <h1><span class="text-white">Clean Approach.</span><br><span class="text-orange">Clean Finish. Every Time.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Paving Estimate &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>A Driveway That<br><span class="text-red">Actually Holds Up.</span></h2>
+            <p>Cheap paving jobs crack in three years. Good paving jobs last twenty. The difference is the base — and VWG doesn't skip the base. We mill, grade, and compact before a single drop of asphalt or pavers goes down.</p>
+            <p style="margin-top:14px">From residential driveways to private road milling and paving, VWG handles the full scope. Asphalt, concrete, pavers — whichever suits the property and budget.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Existing surface milling (if applicable)</li>
+              <li>Base grading &amp; compaction</li>
+              <li>Asphalt or concrete paving</li>
+              <li>Paver installation — brick, bluestone, concrete</li>
+              <li>Edging &amp; curbing</li>
+              <li>Sealing (asphalt)</li>
+              <li>Drainage planning &amp; pitch correction</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Prep. Pave. Done.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Site Assessment</h4><p>Measure, check existing base, assess drainage needs.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Demo &amp; Base Prep</h4><p>Old material milled, base graded and compacted to spec.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Paving</h4><p>Asphalt or pavers installed in lifts, properly pitched for drainage.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Edging &amp; Seal</h4><p>Edges cut clean, sealer applied on asphalt. Ready to use in 24–48 hrs.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-excavation')"><h4>Excavation &amp; Site Work</h4><p>Base prep is where paving starts.</p></div>
+          <div class="related-card" onclick="goTo('sub-retaining')"><h4>Retaining Walls</h4><p>Keep the slope from undercutting the driveway.</p></div>
+          <div class="related-card" onclick="goTo('sub-outdoor-kitchens')"><h4>Outdoor Kitchens</h4><p>Complete the outdoor space.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-retaining: Centered layout stone feel -->
+  <div class="page hidden" id="sub-retaining">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,46,92,0.45) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Retaining Walls</div>
+        <h1><span class="text-white">Structural.</span><br><span class="text-orange">Beautiful. Both, Not One.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Wall Pricing &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container" style="max-width:900px;margin:0 auto">
+        <span class="section-label">What This Is</span>
+        <h2>Hold the Earth.<br><span class="text-red">Own the Yard.</span></h2>
+        <p style="margin-top:16px;color:var(--muted)">Retaining walls solve real problems — slopes that erode, grade changes that waste usable yard, unstable hillsides that threaten structures. VWG engineers and builds walls in block, stone, concrete, and timber that hold for decades.</p>
+        <div class="sub-split" style="margin-top:36px">
+          <ul class="sub-checklist"><li>Segmental retaining block</li><li>Natural &amp; manufactured stone</li><li>Poured concrete walls</li><li>Timber walls (residential)</li></ul>
+          <ul class="sub-checklist"><li>Drainage behind wall (critical)</li><li>Terraced multi-level systems</li><li>Engineered walls over 4ft</li><li>Permits where required</li></ul>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Built to Hold — Forever.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Site &amp; Engineering</h4><p>We assess soil, slope, and load. Walls over 4ft get engineered stamped drawings.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Excavation &amp; Base</h4><p>Foundation trench dug, compacted gravel base installed to spec.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Wall Construction</h4><p>Block or stone set in courses with batter, geogrid reinforcement where needed.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Drainage &amp; Backfill</h4><p>Drainage aggregate and pipe installed behind wall. Backfill compacted.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-excavation')"><h4>Excavation &amp; Site Work</h4><p>Every wall starts with proper earthwork.</p></div>
+          <div class="related-card" onclick="goTo('sub-paving')"><h4>Driveway Paving</h4><p>Complete the hardscape.</p></div>
+          <div class="related-card" onclick="goTo('sub-waterproofing')"><h4>Waterproofing &amp; Drainage</h4><p>Drainage behind the wall is not optional.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-waterproofing: Bold icon list, navy band -->
+  <div class="page hidden" id="sub-waterproofing">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(30,80,100,0.40) 100%)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Waterproofing &amp; Drainage</div>
+        <h1><span class="text-white">Keep Water Out.</span><br><span class="text-orange">Permanently.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Waterproofing Assessment &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Water Finds Every<br><span class="text-red">Crack You Ignore.</span></h2>
+            <p>A wet basement or water-infiltrated foundation wall doesn't dry out on its own. It gets worse — and it takes your framing, insulation, and home value down with it. VWG diagnoses where water is coming from and solves it at the source.</p>
+            <p style="margin-top:14px">We install interior and exterior waterproofing systems, French drains, sump pumps, and surface drainage solutions. We don't mask the problem with a coat of paint.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Foundation crack injection &amp; sealing</li>
+              <li>Exterior membrane waterproofing</li>
+              <li>Interior drainage systems (channel &amp; sump)</li>
+              <li>French drain installation</li>
+              <li>Sump pump installation &amp; backup</li>
+              <li>Window well drainage</li>
+              <li>Grading corrections</li>
+              <li>Downspout extensions</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--navy);position:relative;overflow:hidden">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Find It. Fix It. <span class="text-orange">Forget It.</span></h2></div>
+        <div class="process-numbered">
+          <div class="proc-num-item"><div class="proc-num">01</div><h4>Diagnostic Assessment</h4><p>We find where the water is actually coming from — not just where it's showing up.</p></div>
+          <div class="proc-num-item"><div class="proc-num">02</div><h4>Source Treatment</h4><p>Cracks sealed, exterior membrane applied, or exterior excavation for severe cases.</p></div>
+          <div class="proc-num-item"><div class="proc-num">03</div><h4>Drainage System</h4><p>Interior channel, sump pump, or French drain installed to manage ongoing water movement.</p></div>
+          <div class="proc-num-item"><div class="proc-num">04</div><h4>Grade &amp; Surface</h4><p>Ground graded away from foundation. Downspouts extended. Problem solved long-term.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-roofing')"><h4>Roofing &amp; Siding</h4><p>Water comes in from the top too.</p></div>
+          <div class="related-card" onclick="goTo('sub-excavation')"><h4>Excavation &amp; Site Work</h4><p>Exterior waterproofing requires excavation.</p></div>
+          <div class="related-card" onclick="goTo('sub-retaining')"><h4>Retaining Walls</h4><p>Proper drainage behind walls is essential.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Call Henry: (914) 906-8215</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-ironworks: Dark dramatic, craftsmanship focus -->
+  <div class="page hidden" id="sub-ironworks">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.92)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Ornamental Iron Works</div>
+        <h1><span class="text-white">Handcrafted Metalwork</span><br><span class="text-orange">That Lasts Generations.</span></h1>
+        <p style="color:rgba(255,255,255,0.75);max-width:460px;margin-top:14px">Iron work is where function meets artistry. Gates, railings, fences — built by hand, built to last.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Request Custom Ironwork &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div class="sub-checklist-box" style="background:var(--navy-dark)">
+            <h4 style="color:var(--white)">What We Fabricate</h4>
+            <ul class="sub-checklist sub-checklist--light">
+              <li>Entry &amp; driveway gates</li>
+              <li>Stair &amp; balcony railings</li>
+              <li>Fences &amp; fence posts</li>
+              <li>Decorative window guards</li>
+              <li>Custom door hardware</li>
+              <li>Handrails (interior &amp; exterior)</li>
+              <li>Pergola &amp; trellis frames</li>
+            </ul>
+          </div>
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Anyone Can Weld.<br><span class="text-red">Not Everyone Can Craft.</span></h2>
+            <p>Ornamental ironwork is one of the few things on a property that gets more beautiful with time. A well-made iron gate or railing doesn't just last — it becomes part of the character of the home.</p>
+            <p style="margin-top:14px">VWG works with skilled ironworkers to design and fabricate custom pieces. Whether it's a replica of historic ironwork on a Victorian home or a clean modern railing for a contemporary property, we design to fit the architecture.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Designed. Fabricated. Installed.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Design Consultation</h4><p>We look at the property, discuss style, and sketch options.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Custom Fabrication</h4><p>Piece fabricated by skilled ironworkers to exact specifications.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Surface Prep</h4><p>Primed and powder-coated or painted to resist rust for decades.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Installation</h4><p>Set in concrete or anchored to existing structure — plumb, level, and solid.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-decks')"><h4>Decks &amp; Porches</h4><p>Ironwork railings elevate any deck design.</p></div>
+          <div class="related-card" onclick="goTo('sub-retaining')"><h4>Retaining Walls</h4><p>Iron fencing often tops a retaining wall.</p></div>
+          <div class="related-card" onclick="goTo('sub-outdoor-kitchens')"><h4>Outdoor Kitchens</h4><p>Complete the outdoor space with custom metalwork.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request Custom Ironwork &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-outdoor-kitchens: Warm entertaining feel -->
+  <div class="page hidden" id="sub-outdoor-kitchens">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(120deg,rgba(30,46,92,0.88) 40%,rgba(192,57,43,0.28) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Outdoor Kitchens</div>
+        <h1><span class="text-white">Cook Outside.</span><br><span class="text-orange">Entertain Anywhere.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">An outdoor kitchen isn't just a grill on a patio. It's a built-in entertaining space your family will use every warm weekend.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Design My Outdoor Kitchen &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Your Backyard.<br><span class="text-red">Your Kitchen.</span></h2>
+            <p>VWG builds full outdoor kitchen setups — from simple grill stations with built-in storage to full kitchens with refrigeration, side burners, countertop seating, and pergola cover. We handle the structure, the countertops, the gas lines, and the electrical.</p>
+            <p style="margin-top:14px">Materials are specified for outdoor use — marine-grade stainless, concrete or porcelain counters, weather-treated cabinetry. These aren't indoor kitchens moved outside.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Custom masonry or metal frame structure</li>
+              <li>Built-in grill &amp; side burner installation</li>
+              <li>Outdoor refrigerator &amp; sink</li>
+              <li>Weather-rated countertops</li>
+              <li>Gas line rough-in &amp; connection</li>
+              <li>Electrical for lighting &amp; outlets</li>
+              <li>Pergola or shade structure (optional)</li>
+              <li>Bar seating &amp; cabinetry</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>From Concept to Cookout.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Design &amp; Layout</h4><p>We design around your space, your cooking style, and your budget.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Structure &amp; Utilities</h4><p>Gas lines, electrical, and water rough-in before enclosure is built.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Appliances &amp; Surfaces</h4><p>Counters installed, appliances set, cabinet doors hung.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Final Connections</h4><p>Gas &amp; electrical inspected and connected. First fire-up done with you.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Exterior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-decks')"><h4>Decks &amp; Porches</h4><p>The perfect platform for an outdoor kitchen.</p></div>
+          <div class="related-card" onclick="goTo('sub-paving')"><h4>Driveway &amp; Paving</h4><p>Extend the hardscape to match.</p></div>
+          <div class="related-card" onclick="goTo('sub-ironworks')"><h4>Ornamental Iron Works</h4><p>Custom railings and pergola frames.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─── Remaining pages (Steps 9–15) placeholder ─────────────────── -->
   <!-- ═══════════════════════════════════════ FOOTER ════════════════════════════════════ -->
   <footer class="site-footer">
     <span class="stripe"></span>
