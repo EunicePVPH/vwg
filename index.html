@@ -2145,6 +2145,252 @@
     @media (max-width: 480px) {
       .portfolio-grid { grid-template-columns: 1fr; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       BLOG
+    ═══════════════════════════════════════════════════════════════ */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .blog-card {
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.22s, box-shadow 0.22s;
+    }
+
+    .blog-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+    .blog-card-img {
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .blog-card-body { padding: 20px 22px 24px; }
+
+    .blog-tag {
+      display: inline-block;
+      font-family: var(--font-head);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      background: var(--red);
+      padding: 3px 9px;
+      border-radius: 3px;
+      margin-bottom: 10px;
+    }
+
+    .blog-tag--hero {
+      background: rgba(192,57,43,0.75);
+      backdrop-filter: blur(4px);
+    }
+
+    .blog-card-body h3 {
+      font-size: 1rem;
+      color: var(--navy);
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .blog-card-body p { font-size: 13.5px; color: var(--muted); margin-bottom: 14px; }
+
+    /* Blog post article */
+    .blog-meta {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .blog-lead {
+      font-size: 18px;
+      font-style: italic;
+      color: var(--text);
+      line-height: 1.7;
+      margin-bottom: 32px;
+      padding-left: 16px;
+      border-left: 3px solid var(--orange);
+    }
+
+    article h3 {
+      font-family: var(--font-head);
+      font-size: 1.25rem;
+      color: var(--navy);
+      margin: 28px 0 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    article p { color: var(--muted); font-size: 15px; line-height: 1.75; margin-bottom: 16px; }
+
+    .blog-cta-box {
+      background: var(--light);
+      border-radius: 8px;
+      border-left: 4px solid var(--red);
+      padding: 24px 28px;
+      margin-top: 40px;
+    }
+
+    .blog-cta-box p { color: var(--text); font-size: 15px; margin-bottom: 16px; font-style: italic; }
+
+    @media (max-width: 768px) { .blog-grid { grid-template-columns: 1fr; } }
+
+    /* ═══════════════════════════════════════════════════════════════
+       CONTACT PAGE
+    ═══════════════════════════════════════════════════════════════ */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--navy);
+    }
+
+    .form-req { color: var(--red); }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      padding: 12px 14px;
+      font-size: 14.5px;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.18s;
+      width: 100%;
+      resize: vertical;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--navy);
+    }
+
+    /* Direct contact */
+    .contact-direct {
+      background: var(--light);
+      border-radius: 10px;
+      padding: 32px 28px;
+      border-top: 4px solid var(--orange);
+      position: sticky;
+      top: 88px;
+    }
+
+    .contact-direct h3 {
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .contact-phone {
+      display: block;
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--red);
+      letter-spacing: 0.02em;
+      margin-bottom: 24px;
+      transition: opacity 0.18s;
+    }
+
+    .contact-phone:hover { opacity: 0.82; }
+
+    .contact-info-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .contact-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .contact-info-item svg { flex-shrink: 0; margin-top: 2px; }
+
+    .contact-info-item a {
+      color: var(--muted);
+      transition: color 0.18s;
+    }
+
+    .contact-info-item a:hover { color: var(--navy); }
+
+    .contact-trust-chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .contact-trust-chips span {
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: rgba(192,57,43,0.08);
+      color: var(--red);
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    .contact-note {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .contact-grid { grid-template-columns: 1fr; }
+      .contact-direct { position: static; }
+    }
+
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -5104,7 +5350,354 @@
     <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
   </div>
 
-  <!-- ─── Remaining pages (Steps 14–15) placeholder ─────────────────── -->
+  <!-- ─────────────────────── BLOG INDEX ─────────────────────── -->
+  <div class="page hidden" id="page-blog">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Blog</div>
+        <h1><span class="text-white">Straight Talk</span><br><span class="text-orange">From the Job Site.</span></h1>
+        <p style="color:rgba(255,255,255,0.75);max-width:460px;margin-top:14px">No fluff. Just useful information for Westchester homeowners.</p>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div class="blog-grid">
+          <div class="blog-card" onclick="goTo('blog-1')">
+            <div class="blog-card-img" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80')"></div>
+            <div class="blog-card-body">
+              <span class="blog-tag">Roofing &middot; Exterior</span>
+              <h3>5 Signs Your Roof Needs More Than a Patch Job</h3>
+              <p>Most homeowners wait too long. Here's how to know when a repair becomes a replacement — and why waiting costs you more.</p>
+              <span class="service-card-link">Read Article &#8594;</span>
+            </div>
+          </div>
+          <div class="blog-card" onclick="goTo('blog-2')">
+            <div class="blog-card-img" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80')"></div>
+            <div class="blog-card-body">
+              <span class="blog-tag">Interior &middot; Kitchens</span>
+              <h3>Kitchen Remodel vs. Kitchen Refresh: Which One Do You Actually Need?</h3>
+              <p>Not every kitchen needs a gut renovation. But some refreshes end up costing more than a remodel. We break it down.</p>
+              <span class="service-card-link">Read Article &#8594;</span>
+            </div>
+          </div>
+          <div class="blog-card" onclick="goTo('blog-3')">
+            <div class="blog-card-img" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80')"></div>
+            <div class="blog-card-body">
+              <span class="blog-tag">Exterior &middot; New Construction</span>
+              <h3>What Happens During a Home Addition? A Week-by-Week Breakdown</h3>
+              <p>Adding a room is exciting. It can also feel chaotic if you don't know what to expect. Here's the real timeline.</p>
+              <span class="service-card-link">Read Article &#8594;</span>
+            </div>
+          </div>
+          <div class="blog-card" onclick="goTo('blog-4')">
+            <div class="blog-card-img" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80')"></div>
+            <div class="blog-card-body">
+              <span class="blog-tag">HVAC</span>
+              <h3>Why Westchester Homeowners Are Switching to Ductless AC</h3>
+              <p>Central air isn't the only option. Ductless mini-split systems are quieter, more efficient, and easier to install.</p>
+              <span class="service-card-link">Read Article &#8594;</span>
+            </div>
+          </div>
+          <div class="blog-card" onclick="goTo('blog-5')">
+            <div class="blog-card-img" style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80')"></div>
+            <div class="blog-card-body">
+              <span class="blog-tag">Tips &middot; Hiring</span>
+              <h3>The Truth About Getting Multiple Contractor Quotes</h3>
+              <p>Everyone says get three quotes. But what are you actually comparing? Here's what to look for — and what to watch out for.</p>
+              <span class="service-card-link">Read Article &#8594;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div><!-- /page-blog -->
+
+  <!-- ─── Blog Post 1 ─── -->
+  <div class="page hidden" id="blog-1">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Roofing</div>
+        <span class="blog-tag blog-tag--hero">Roofing &middot; Exterior</span>
+        <h1 style="margin-top:12px"><span class="text-white">5 Signs Your Roof Needs<br>More Than a Patch Job</span></h1>
+      </div>
+    </section>
+    <article class="section" style="background:var(--white)">
+      <div class="container" style="max-width:780px;margin:0 auto">
+        <div class="blog-meta">By Henry Valencia &nbsp;&middot;&nbsp; June 2025 &nbsp;&middot;&nbsp; 5 min read</div>
+        <p class="blog-lead">Most homeowners wait too long. Here's how to know when a repair becomes a replacement — and why waiting costs you more in the long run.</p>
+        <h3>Sign 1: Curling or Missing Shingles</h3>
+        <p>When shingles start curling at the edges or corners, they've lost their bond with the layer beneath. That's not a surface problem — it's a structural one. Missing shingles leave your decking exposed to every rain event. One good storm while you're waiting for a "better time to deal with it" can turn a $3,000 roof repair into a $15,000 interior water damage job.</p>
+        <h3>Sign 2: Granule Loss in Your Gutters</h3>
+        <p>Asphalt shingles are coated with granules that protect them from UV degradation. When you start finding dark, sand-like grit in your gutters and downspout splash zones, your shingles are breaking down. This typically signals a roof that's in its final five years of useful life. New granule loss means the clock is ticking.</p>
+        <h3>Sign 3: Daylight Through the Attic Boards</h3>
+        <p>Grab a flashlight and get in your attic on a bright day. If you see daylight poking through the roof boards — even pinhole light — water is already finding those same entry points. This is past the patch-job stage. You're looking at full replacement with new decking.</p>
+        <h3>Sign 4: Sagging Sections</h3>
+        <p>A sagging roof is never a cosmetic issue. It means the decking or the structural supports beneath it are compromised — usually from long-term moisture intrusion. This is an emergency repair, not something to schedule for next season. A sagging roof can fail completely under snow load or heavy rain.</p>
+        <h3>Sign 5: The Roof Is Over 20 Years Old</h3>
+        <p>Most asphalt shingle roofs have a functional life of 20–25 years. If yours is in that range, even if it "looks okay," it's running on borrowed time. An inspection will tell you how much life is left. A good contractor will give you an honest answer — not just tell you what gets them the job.</p>
+        <h3>What to Do Next</h3>
+        <p>If you're seeing two or more of these signs, call for an inspection before anything else. A proper roof inspection takes 30–45 minutes and gives you a clear picture of what you're actually dealing with. VWG does these at no charge for homeowners in our service area.</p>
+        <div class="blog-cta-box">
+          <p>Have a roof concern? Call Henry directly.</p>
+          <a href="tel:9149068215" class="btn btn-red">(914) 906-8215 &#8594;</a>
+          <button class="btn btn-outline-navy" onclick="goTo('page-contact')" style="margin-left:12px">Request a Free Inspection</button>
+        </div>
+        <div style="margin-top:40px"><button class="btn btn-outline-navy" onclick="goTo('page-blog')">&#8592; Back to Blog</button></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ─── Blog Post 2 ─── -->
+  <div class="page hidden" id="blog-2">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.88) 45%,rgba(30,46,92,0.40) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Kitchens</div>
+        <span class="blog-tag blog-tag--hero">Interior &middot; Kitchens</span>
+        <h1 style="margin-top:12px"><span class="text-white">Kitchen Remodel vs. Kitchen Refresh:<br>Which One Do You Actually Need?</span></h1>
+      </div>
+    </section>
+    <article class="section" style="background:var(--white)">
+      <div class="container" style="max-width:780px;margin:0 auto">
+        <div class="blog-meta">By Henry Valencia &nbsp;&middot;&nbsp; June 2025 &nbsp;&middot;&nbsp; 6 min read</div>
+        <p class="blog-lead">Not every kitchen needs a gut renovation. But some refreshes end up costing more than a remodel. We break it down so you can make the right call.</p>
+        <h3>What a Kitchen Refresh Covers</h3>
+        <p>A refresh is surface-level work: new cabinet doors and hardware, new countertops, new appliances, a fresh coat of paint, maybe a new backsplash. You're keeping the existing layout, the existing cabinet boxes, the existing plumbing and electrical runs. A good refresh can transform the look of a kitchen for $8,000–$20,000 depending on materials.</p>
+        <p>The catch: if your cabinet boxes are damaged, if the layout doesn't work for how you actually cook, or if the plumbing is in the wrong place — a refresh is putting lipstick on a problem.</p>
+        <h3>What a Full Remodel Covers</h3>
+        <p>A remodel starts at demolition. Everything comes out: cabinets, counters, flooring, sometimes the drywall. You're redesigning the layout, moving plumbing and electrical if needed, and building the kitchen from scratch with new everything. Range: $30,000–$80,000+ depending on size and finishes.</p>
+        <p>The benefit: you fix everything that was wrong, get the layout you actually want, and end up with a kitchen that functions well for the next 20 years.</p>
+        <h3>The Cost Trap to Avoid</h3>
+        <p>Here's where homeowners get stuck: they spend $15,000 on a refresh — new counters, new doors, new appliances — and then two years later realize the layout still doesn't work and they still hate being in the kitchen. Now they have to remodel anyway, but they wasted $15,000 first.</p>
+        <p>If the layout is the problem, start with the remodel. If the layout works and you just want it to look better, a refresh is the right call.</p>
+        <h3>How to Decide</h3>
+        <p>Ask yourself two questions: <strong>Does the layout work for how we cook?</strong> And: <strong>Are the cabinet boxes structurally sound?</strong> If both answers are yes, a refresh will serve you well. If either answer is no, budget for the full remodel now rather than a refresh now and a remodel later.</p>
+        <div class="blog-cta-box">
+          <p>Not sure which one your kitchen needs? Call Henry — we'll walk you through it honestly.</p>
+          <button class="btn btn-red" onclick="goTo('page-contact')">Get a Free Kitchen Consultation &#8594;</button>
+        </div>
+        <div style="margin-top:40px"><button class="btn btn-outline-navy" onclick="goTo('page-blog')">&#8592; Back to Blog</button></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ─── Blog Post 3 ─── -->
+  <div class="page hidden" id="blog-3">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Construction</div>
+        <span class="blog-tag blog-tag--hero">Exterior &middot; New Construction</span>
+        <h1 style="margin-top:12px"><span class="text-white">What Happens During a Home Addition?<br>A Week-by-Week Breakdown</span></h1>
+      </div>
+    </section>
+    <article class="section" style="background:var(--white)">
+      <div class="container" style="max-width:780px;margin:0 auto">
+        <div class="blog-meta">By Henry Valencia &nbsp;&middot;&nbsp; June 2025 &nbsp;&middot;&nbsp; 7 min read</div>
+        <p class="blog-lead">Adding a room to your house is exciting. It can also feel chaotic if you don't know what to expect. Here's what the process actually looks like — week by week.</p>
+        <h3>Planning Week: Nothing Gets Built Without a Plan</h3>
+        <p>Before the first shovel goes in the ground, your contractor is doing design work, filing permit applications, and ordering materials with long lead times. In Westchester and the surrounding area, permits for additions can take 3–6 weeks depending on the municipality. This is not a process you can rush. Use this time to finalize your finish selections — you'll need to know what you're putting in before we can design what's holding it up.</p>
+        <h3>Permits Week: The Government's Turn</h3>
+        <p>Permit approval triggers the construction start. Your contractor should pull permits — not you, and not an unlicensed crew. Permits mean inspections, and inspections mean the work is checked. A contractor who tells you permits aren't necessary is telling you they plan to build something that won't pass inspection.</p>
+        <h3>Foundation Week: The Ground Truth</h3>
+        <p>Excavation, formwork, and concrete pour. For most additions, this is a stem wall or slab — 1–2 weeks of work that needs to cure properly before anything goes on top of it. This is also when underground utilities get confirmed. Surprises happen here. A good contractor budgets time for them.</p>
+        <h3>Framing Week: The Shape Appears</h3>
+        <p>This is the week that feels like magic. The framing crew turns lumber into the shape of your addition in 3–5 days. Walls, floor system, roof framing — it all happens fast and your neighbors start asking questions. Enjoy it. This is where the project looks best before it gets complicated.</p>
+        <h3>Finishing Weeks: The Long Middle</h3>
+        <p>After framing comes the long list: roofing over the addition, windows and doors, sheathing, insulation, drywall, mechanical rough-ins, tape and mud, flooring, paint, trim. This phase takes 3–6 weeks depending on scope. It's less visually dramatic but it's where 80% of the quality is determined.</p>
+        <h3>Final Walkthrough: Your Job Is to Find Problems</h3>
+        <p>Walk the space with your contractor before you close out the contract. Bring a flashlight. Check corners, check grout lines, open every door and window twice. A good contractor wants you to find the punch list items now — not six months after they've left.</p>
+        <div class="blog-cta-box">
+          <p>Thinking about adding to your home? Start with a site visit.</p>
+          <button class="btn btn-red" onclick="goTo('page-contact')">Schedule a Free Estimate &#8594;</button>
+        </div>
+        <div style="margin-top:40px"><button class="btn btn-outline-navy" onclick="goTo('page-blog')">&#8592; Back to Blog</button></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ─── Blog Post 4 ─── -->
+  <div class="page hidden" id="blog-4">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,60,100,0.40) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>HVAC</div>
+        <span class="blog-tag blog-tag--hero">HVAC</span>
+        <h1 style="margin-top:12px"><span class="text-white">Why Westchester Homeowners<br>Are Switching to Ductless AC</span></h1>
+      </div>
+    </section>
+    <article class="section" style="background:var(--white)">
+      <div class="container" style="max-width:780px;margin:0 auto">
+        <div class="blog-meta">By Henry Valencia &nbsp;&middot;&nbsp; June 2025 &nbsp;&middot;&nbsp; 5 min read</div>
+        <p class="blog-lead">Central air isn't the only option anymore. Ductless mini-split systems are quieter, more efficient, and easier to install than you think.</p>
+        <h3>What Is a Ductless System?</h3>
+        <p>A ductless mini-split system has two main components: an outdoor compressor and one or more indoor air handlers. Unlike central air, there's no ductwork. Each indoor unit conditions one zone — a room or floor — independently. The connection between inside and outside is a small hole in the wall for the refrigerant line set and electrical.</p>
+        <h3>Why It Works Better for Older Homes</h3>
+        <p>Most Westchester homes were built before central air was standard. Adding ductwork means significant demolition — opening walls, ceilings, and floors to route ducts through a structure that wasn't designed for them. Ductless systems solve this entirely. No ductwork means no demolition. An installation that would take 3–4 weeks with central air takes 1–2 days with ductless.</p>
+        <h3>The Efficiency Advantage</h3>
+        <p>Duct systems lose 20–30% of their conditioned air to leakage before it reaches the rooms you're trying to cool. Mini-splits eliminate that loss entirely. A quality ductless system operates at a SEER rating of 18–25+, compared to 14–18 for a standard central system. The difference shows up in your electric bill every month.</p>
+        <h3>Zone Control: The Overlooked Benefit</h3>
+        <p>A multi-zone ductless system lets each room control its own temperature independently. No more arguments about the thermostat. No more conditioning rooms that nobody is using. If you work from home in one room, you can cool that room without running the system for the whole house.</p>
+        <h3>Best Candidates for Ductless</h3>
+        <p>If you're in a home without existing ductwork, a home addition, a finished basement or attic, a garage or workshop, or a room that your central system doesn't reach well — ductless is almost always the right answer. For new construction with ductwork already planned, central air remains a strong option.</p>
+        <div class="blog-cta-box">
+          <p>Not sure which system is right for your home? We'll walk you through the options.</p>
+          <button class="btn btn-red" onclick="goTo('page-contact')">Schedule a Free HVAC Consult &#8594;</button>
+        </div>
+        <div style="margin-top:40px"><button class="btn btn-outline-navy" onclick="goTo('page-blog')">&#8592; Back to Blog</button></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ─── Blog Post 5 ─── -->
+  <div class="page hidden" id="blog-5">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Tips</div>
+        <span class="blog-tag blog-tag--hero">Tips &middot; Hiring</span>
+        <h1 style="margin-top:12px"><span class="text-white">The Truth About Getting<br>Multiple Contractor Quotes</span></h1>
+      </div>
+    </section>
+    <article class="section" style="background:var(--white)">
+      <div class="container" style="max-width:780px;margin:0 auto">
+        <div class="blog-meta">By Henry Valencia &nbsp;&middot;&nbsp; June 2025 &nbsp;&middot;&nbsp; 6 min read</div>
+        <p class="blog-lead">Everyone says get three quotes. But what are you actually comparing? Price, timeline, or who showed up and listened? Here's what to look for — and what to watch out for.</p>
+        <h3>What Quotes Don't Tell You</h3>
+        <p>A quote is a number on paper. It doesn't tell you who is actually going to show up to your house. It doesn't tell you whether the contractor has licensed workers or subcontracts everything to the lowest bidder. It doesn't tell you what their cleanup habits are, how they handle change orders, or whether they'll be responsive when something unexpected comes up at 4pm on a Friday.</p>
+        <h3>Red Flags Worth Walking Away From</h3>
+        <p>No written contract. Cash-only payment structure. A price that's 40% lower than the other quotes. No ability to provide proof of insurance. Vague scope of work with no material specifications. A quote delivered in 10 minutes without measuring anything. Any one of these should make you pause. Two or more should end the conversation.</p>
+        <h3>Green Flags That Signal the Right Contractor</h3>
+        <p>Pulls their own permits. Can explain what's in the quote line by line. Has real references you can call — not just a list of names. Shows up on time to the estimate appointment. Asks you questions before they start talking numbers. Gives you a realistic timeline, not the one you want to hear.</p>
+        <h3>What Questions to Ask</h3>
+        <p>Ask who will actually be working on your home — the estimator's crew, or a subcontractor they called last week. Ask how they handle unexpected conditions — like rot under siding or plumbing that's not where it should be. Ask how they communicate during the project. Ask what happens if you're not satisfied with a portion of the work.</p>
+        <h3>Why Relationships Matter More Than Price</h3>
+        <p>The cheapest quote almost never delivers the cheapest outcome. That $8,000 discount often comes back as cost overruns, material substitutions, and a final product that isn't what you agreed to. The contractor who communicates clearly, shows up when they say they will, and stands behind their work is worth the extra money every single time. You're not just buying materials and labor — you're buying the experience of working with someone who gives a damn about your home.</p>
+        <div class="blog-cta-box">
+          <p>Want one of those quotes from a contractor who will actually answer your questions?</p>
+          <button class="btn btn-red" onclick="goTo('page-contact')">Call Henry: (914) 906-8215 &#8594;</button>
+        </div>
+        <div style="margin-top:40px"><button class="btn btn-outline-navy" onclick="goTo('page-blog')">&#8592; Back to Blog</button></div>
+      </div>
+    </article>
+  </div>
+
+  <!-- ─────────────────────── CONTACT ─────────────────────── -->
+  <div class="page hidden" id="page-contact">
+    <section class="page-hero page-hero--sm page-hero--solid" style="min-height:280px">
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content" style="position:relative;z-index:1">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Contact</div>
+        <h1><span class="text-white">Ready to Build?</span><br><span class="text-orange">Let's Talk.</span></h1>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="contact-grid">
+
+          <!-- Form -->
+          <div>
+            <span class="section-label">Send Us a Message</span>
+            <h2 style="margin-bottom:28px">Tell Us What<br><span class="text-red">You're Working On.</span></h2>
+            <form class="contact-form" onsubmit="handleContactForm(event)">
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Full Name <span class="form-req">*</span></label>
+                  <input type="text" name="name" placeholder="Your full name" required />
+                </div>
+                <div class="form-group">
+                  <label>Phone Number <span class="form-req">*</span></label>
+                  <input type="tel" name="phone" placeholder="(xxx) xxx-xxxx" required />
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Email Address <span class="form-req">*</span></label>
+                <input type="email" name="email" placeholder="your@email.com" required />
+              </div>
+              <div class="form-group">
+                <label>Service Needed</label>
+                <select name="service">
+                  <option value="">Select a service...</option>
+                  <option>Exterior Work — New Construction</option>
+                  <option>Exterior Work — Roofing &amp; Siding</option>
+                  <option>Exterior Work — Decks &amp; Porches</option>
+                  <option>Exterior Work — Other</option>
+                  <option>Interior Work — Kitchen &amp; Bathroom</option>
+                  <option>Interior Work — Flooring</option>
+                  <option>Interior Work — Painting</option>
+                  <option>Interior Work — Other</option>
+                  <option>HVAC &amp; Systems</option>
+                  <option>Design Services — Drawings / 3D</option>
+                  <option>Multiple Services / Full Renovation</option>
+                  <option>Not Sure Yet</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Project Description</label>
+                <textarea name="description" rows="4" placeholder="Tell us about your project — location, scope, timeline, anything relevant..."></textarea>
+              </div>
+              <div class="form-group">
+                <label>How Did You Hear About Us?</label>
+                <select name="source">
+                  <option value="">Select one...</option>
+                  <option>Google Search</option>
+                  <option>Referral from a friend or neighbor</option>
+                  <option>Saw our truck / yard sign</option>
+                  <option>Facebook or Instagram</option>
+                  <option>Linktree</option>
+                  <option>Previous customer</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-red" style="width:100%;justify-content:center;padding:15px">Send My Request &#8594;</button>
+            </form>
+          </div>
+
+          <!-- Direct contact -->
+          <div class="contact-direct">
+            <span class="section-label">Prefer to Call?</span>
+            <h3>Henry Answers.</h3>
+            <a href="tel:9149068215" class="contact-phone">(914) 906-8215</a>
+            <div class="contact-info-list">
+              <div class="contact-info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:henry@valenciaworkgroup.com">henry@valenciaworkgroup.com</a>
+              </div>
+              <div class="contact-info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:office@valenciaworkgroup.com">office@valenciaworkgroup.com</a>
+              </div>
+              <div class="contact-info-item">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>We serve all of New York, New Jersey, and Connecticut. Not sure if we cover your area? Just call — if we can't help, we'll point you to someone who can.</span>
+              </div>
+            </div>
+            <div class="contact-trust-chips">
+              <span>&#10003; Free Estimates</span>
+              <span>&#10003; No Obligation</span>
+              <span>&#10003; Licensed &amp; Insured</span>
+            </div>
+            <div class="contact-note">
+              We're a real company with real people. Call during business hours and someone picks up.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div><!-- /page-contact -->
   <!-- ═══════════════════════════════════════ FOOTER ════════════════════════════════════ -->
   <footer class="site-footer">
     <span class="stripe"></span>
@@ -5260,6 +5853,16 @@
     function toggleMenu() {
       const menu = document.getElementById('mobile-menu');
       if (menu) menu.classList.toggle('open');
+    }
+
+    /* Contact form handler */
+    function handleContactForm(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('[type="submit"]');
+      btn.textContent = 'Message Sent! We\'ll be in touch.';
+      btn.style.background = 'var(--navy)';
+      btn.disabled = true;
+      e.target.reset();
     }
 
     /* Close services dropdown on outside click */
