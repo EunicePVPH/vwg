@@ -1932,6 +1932,219 @@
     @media (max-width: 480px) {
       .flooring-options { grid-template-columns: 1fr; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       PORTFOLIO PAGE
+    ═══════════════════════════════════════════════════════════════ */
+    .portfolio-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 36px;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 9px 18px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.18s, color 0.18s, border-color 0.18s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .portfolio-item {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .pf-img {
+      height: 240px;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.35s;
+    }
+
+    .portfolio-item:hover .pf-img { transform: scale(1.05); }
+
+    .pf-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(17,29,56,0);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-end;
+      padding: 20px;
+      transition: background 0.28s;
+    }
+
+    .portfolio-item:hover .pf-overlay { background: rgba(17,29,56,0.75); }
+
+    .pf-name {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--white);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.25s, transform 0.25s;
+    }
+
+    .pf-cat {
+      font-size: 12px;
+      color: var(--orange);
+      margin-top: 4px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s 0.05s, transform 0.3s 0.05s;
+    }
+
+    .portfolio-item:hover .pf-name,
+    .portfolio-item:hover .pf-cat { opacity: 1; transform: translateY(0); }
+
+    .portfolio-footer-note {
+      text-align: center;
+      margin-top: 52px;
+      padding: 32px;
+      background: var(--white);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .portfolio-footer-note p { font-size: 16px; color: var(--muted); line-height: 1.7; }
+    .portfolio-footer-note p + p { margin-top: 6px; font-size: 15px; }
+    .portfolio-footer-note strong { color: var(--navy); }
+
+    /* ═══════════════════════════════════════════════════════════════
+       COUNTERPARTS PAGE
+    ═══════════════════════════════════════════════════════════════ */
+    .cp-full-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+    }
+
+    .cp-full-card {
+      background: var(--white);
+      border-radius: 10px;
+      padding: 32px 28px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .cp-full-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .cp-full-logo-placeholder {
+      width: 52px;
+      height: 52px;
+      background: var(--navy);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 14px;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      flex-shrink: 0;
+    }
+
+    .cp-full-card h3 {
+      font-size: 1.1rem;
+      color: var(--navy);
+      margin-bottom: 2px;
+    }
+
+    .cp-full-type {
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    .cp-full-card > p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.68;
+      margin-bottom: 18px;
+    }
+
+    .cp-services {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .cp-services li {
+      font-family: var(--font-head);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      background: var(--light);
+      color: var(--navy);
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .cp-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+
+    .cp-contact span {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .cp-contact svg { color: var(--orange); flex-shrink: 0; }
+
+    .cp-btns { display: flex; gap: 10px; }
+
+    @media (max-width: 768px) {
+      .portfolio-grid { grid-template-columns: 1fr 1fr; }
+      .cp-full-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .portfolio-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -4591,7 +4804,307 @@
     </section>
   </div>
 
-  <!-- ─── Remaining pages (Steps 12–15) placeholder ─────────────────── -->
+  <!-- ─────────────────────── PORTFOLIO ─────────────────────── -->
+  <div class="page hidden" id="page-portfolio">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Portfolio</div>
+        <h1><span class="text-white">Our Work</span><br><span class="text-orange">Speaks for Itself.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">Browse projects by category or scroll through everything we've built.</p>
+      </div>
+    </section>
+
+    <!-- Metrics bar -->
+    <div class="trust-bar" style="background:var(--navy);border-bottom:none">
+      <div class="container">
+        <div class="trust-items" style="color:rgba(255,255,255,0.80)">
+          <span style="color:var(--orange);font-weight:800">500+</span>&nbsp;Projects
+          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <span style="color:var(--orange);font-weight:800">20+</span>&nbsp;Years
+          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <span>New York</span>
+          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <span>New Jersey</span>
+          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <span>Connecticut</span>
+        </div>
+      </div>
+    </div>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <!-- Filter tabs -->
+        <div class="portfolio-filters">
+          <button class="filter-btn active" onclick="filterPortfolio('all', this)">All Projects</button>
+          <button class="filter-btn" onclick="filterPortfolio('exterior', this)">Exterior</button>
+          <button class="filter-btn" onclick="filterPortfolio('interior', this)">Interior</button>
+          <button class="filter-btn" onclick="filterPortfolio('kitchen', this)">Kitchens &amp; Baths</button>
+          <button class="filter-btn" onclick="filterPortfolio('construction', this)">New Construction</button>
+          <button class="filter-btn" onclick="filterPortfolio('hvac', this)">HVAC</button>
+          <button class="filter-btn" onclick="filterPortfolio('design', this)">Design</button>
+        </div>
+
+        <!-- Portfolio grid -->
+        <div class="portfolio-grid">
+          <div class="portfolio-item" data-category="kitchen">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Kitchen Renovation</span><span class="pf-cat">Interior · Kitchens &amp; Baths</span></div>
+          </div>
+          <div class="portfolio-item" data-category="construction">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">New Construction Build</span><span class="pf-cat">Exterior · New Construction</span></div>
+          </div>
+          <div class="portfolio-item" data-category="exterior">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Exterior Renovation</span><span class="pf-cat">Exterior</span></div>
+          </div>
+          <div class="portfolio-item" data-category="kitchen">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Bathroom Remodel</span><span class="pf-cat">Interior · Kitchens &amp; Baths</span></div>
+          </div>
+          <div class="portfolio-item" data-category="design">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">3D Rendering Project</span><span class="pf-cat">Design Services</span></div>
+          </div>
+          <div class="portfolio-item" data-category="exterior">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Home Exterior</span><span class="pf-cat">Exterior</span></div>
+          </div>
+          <div class="portfolio-item" data-category="interior">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Interior Painting</span><span class="pf-cat">Interior · Painting</span></div>
+          </div>
+          <div class="portfolio-item" data-category="kitchen">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Kitchen Countertops</span><span class="pf-cat">Interior · Kitchens</span></div>
+          </div>
+          <div class="portfolio-item" data-category="construction">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1558618047-f7a8f4eb5e5e?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Home Addition</span><span class="pf-cat">Exterior · New Construction</span></div>
+          </div>
+          <div class="portfolio-item" data-category="interior">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Tile &amp; Stone Work</span><span class="pf-cat">Interior · Tile</span></div>
+          </div>
+          <div class="portfolio-item" data-category="hvac">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">HVAC Installation</span><span class="pf-cat">HVAC &amp; Systems</span></div>
+          </div>
+          <div class="portfolio-item" data-category="exterior">
+            <div class="pf-img" style="background-image:url('https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=600&q=80')"></div>
+            <div class="pf-overlay"><span class="pf-name">Deck Construction</span><span class="pf-cat">Exterior · Decks</span></div>
+          </div>
+        </div>
+
+        <div class="portfolio-footer-note">
+          <p>Have a project in mind? We'd love to add it to this page.</p>
+          <p>Call Henry: <a href="tel:9149068215"><strong>(914) 906-8215</strong></a> &nbsp;&middot;&nbsp; <span class="footer-link-cta" style="cursor:pointer" onclick="goTo('page-contact')">Get a Free Estimate &#8594;</span></p>
+        </div>
+      </div>
+    </section>
+  </div><!-- /page-portfolio -->
+
+  <!-- ─────────────────────── COUNTERPARTS ─────────────────────── -->
+  <div class="page hidden" id="page-counterparts">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(17,29,56,0.45) 100%)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Counterparts</div>
+        <h1><span class="text-white">One Family.</span><br><span class="text-orange">Every Trade You'll Ever Need.</span></h1>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container" style="max-width:760px;margin:0 auto;text-align:center">
+        <span class="section-label">About Our Network</span>
+        <p style="color:var(--muted);font-size:16px;line-height:1.75">Valencia Work Group didn't build a network of companies for the sake of expansion. Henry built it because homeowners kept asking for referrals they could trust. So instead of sending you to someone he'd never worked with, Henry built companies he knew. Companies that hold the same values, the same work ethic, and the same standard of care that Valencia Work Group was founded on.</p>
+        <p style="color:var(--muted);font-size:16px;line-height:1.75;margin-top:16px">We call them our Counterparts. Not subsidiaries. Not franchises. Real companies, run by real people, who happen to share a commitment to doing the job right.</p>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light);padding-top:0">
+      <div class="container">
+        <div class="cp-full-grid">
+
+          <div class="cp-full-card">
+            <div class="cp-full-header">
+              <div class="cp-full-logo-placeholder">PRG</div>
+              <div>
+                <h3>Phix Restoration Group Inc.</h3>
+                <div class="cp-full-type">Water, Fire &amp; Mold Restoration</div>
+              </div>
+            </div>
+            <p>When disaster hits your home — a burst pipe, a fire, a mold problem — Phix Restoration Group is who you call. Henry's team at Phix handles the full remediation process, from emergency water removal to property reconstruction. They make it look like it never happened.</p>
+            <ul class="cp-services">
+              <li>Water &amp; Storm Damage</li><li>Mold Remediation</li><li>Fire &amp; Smoke Restoration</li>
+              <li>Air Cleaning &amp; Sanitation</li><li>Property Reconstruction</li><li>Emergency Response</li>
+            </ul>
+            <div class="cp-contact">
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.04 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg> (914) 410-0763</span>
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> phixrestoration@gmail.com</span>
+            </div>
+            <div class="cp-btns">
+              <button class="btn btn-navy" style="font-size:12px;padding:10px 18px" onclick="goTo('cp-phix')">Learn More &#8594;</button>
+            </div>
+          </div>
+
+          <div class="cp-full-card">
+            <div class="cp-full-header">
+              <div class="cp-full-logo-placeholder" style="background:var(--gradient-ro)">LGI</div>
+              <div>
+                <h3>Luz Group Inc.</h3>
+                <div class="cp-full-type">Licensed Electrical Contractors</div>
+              </div>
+            </div>
+            <p>Luz means light — and that's exactly what Luz Group brings to every job. Henry and Raul run a full-spectrum electrical contracting operation serving residential and commercial clients. From emergency repairs to EV charger installations, Luz Group powers homes the right way.</p>
+            <ul class="cp-services">
+              <li>Electrical Repairs &amp; Upgrades</li><li>Panel Replacements</li><li>Generator Installation</li>
+              <li>EV Charging Stations</li><li>Smart Home Setup</li><li>Security Lighting</li>
+            </ul>
+            <div class="cp-contact">
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.04 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg> (914) 387-5067</span>
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> hv.luzgroupinc@gmail.com</span>
+            </div>
+            <div class="cp-btns">
+              <button class="btn btn-navy" style="font-size:12px;padding:10px 18px" onclick="goTo('cp-luz')">Learn More &#8594;</button>
+            </div>
+          </div>
+
+          <div class="cp-full-card">
+            <div class="cp-full-header">
+              <div class="cp-full-logo-placeholder" style="background:linear-gradient(135deg,#1a6b8a,#2a9dc5)">FA</div>
+              <div>
+                <h3>Flow Agents</h3>
+                <div class="cp-full-type">Plumbing &amp; Heating</div>
+              </div>
+            </div>
+            <p>Fast, reliable, and honest. Flow Agents handles everything plumbing and heating — from a leaky faucet to a full boiler installation. Licensed and insured. Available when you need them.</p>
+            <ul class="cp-services">
+              <li>Leak Detection &amp; Repair</li><li>Drain Cleaning</li><li>Boiler &amp; Furnace Services</li>
+              <li>Tankless Water Heaters</li><li>Emergency Plumbing</li><li>Heating Maintenance</li>
+            </ul>
+            <div class="cp-contact">
+              <span>flowagentsph.com</span>
+            </div>
+            <div class="cp-btns">
+              <button class="btn btn-navy" style="font-size:12px;padding:10px 18px" onclick="goTo('cp-flow')">Learn More &#8594;</button>
+            </div>
+          </div>
+
+          <div class="cp-full-card">
+            <div class="cp-full-header">
+              <div class="cp-full-logo-placeholder" style="background:linear-gradient(135deg,#2c5f2e,#4a9050)">NSR</div>
+              <div>
+                <h3>North Star Renovation Group Inc.</h3>
+                <div class="cp-full-type">General Contracting &middot; Westchester &amp; CT</div>
+              </div>
+            </div>
+            <p>A sister company to Valencia Work Group, North Star Renovation Group serves homeowners and property managers across Westchester County and Connecticut. Same standard of craftsmanship. Same family values. Different crew, same commitment.</p>
+            <ul class="cp-services">
+              <li>Custom Carpentry &amp; Millwork</li><li>Kitchen Remodels</li><li>Bathroom Renovations</li>
+              <li>Roofing &amp; Siding</li><li>Decks &amp; Railings</li><li>Painting &amp; Finishes</li>
+            </ul>
+            <div class="cp-contact">
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.04 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg> (914) 635-0317</span>
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> R.VNorthStarReno@Gmail.Com</span>
+            </div>
+            <div class="cp-btns">
+              <button class="btn btn-navy" style="font-size:12px;padding:10px 18px" onclick="goTo('cp-northstar')">Learn More &#8594;</button>
+            </div>
+          </div>
+
+          <div class="cp-full-card">
+            <div class="cp-full-header">
+              <div class="cp-full-logo-placeholder" style="background:linear-gradient(135deg,#1a3a6b,#2a6baf)">C1</div>
+              <div>
+                <h3>Comfort One Heating &amp; Cooling</h3>
+                <div class="cp-full-type">HVAC Contractor &middot; Westchester &amp; Rockland</div>
+              </div>
+            </div>
+            <p>The HVAC arm of the Valencia Work Group family. Comfort One keeps homes and businesses comfortable year-round — from furnace installations to emergency AC repairs. 35+ years of combined experience. 24/7 emergency service.</p>
+            <ul class="cp-services">
+              <li>Furnace Installation &amp; Repair</li><li>Boiler Services</li><li>Central &amp; Ductless AC</li>
+              <li>Heat Pumps</li><li>Duct Cleaning</li><li>Emergency HVAC</li>
+            </ul>
+            <div class="cp-contact">
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.04 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg> (914) 224-9439</span>
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> office@comfort1hc.com</span>
+            </div>
+            <div class="cp-btns">
+              <button class="btn btn-navy" style="font-size:12px;padding:10px 18px" onclick="goTo('cp-comfort')">Learn More &#8594;</button>
+            </div>
+          </div>
+
+          <div class="cp-full-card">
+            <div class="cp-full-header">
+              <div class="cp-full-logo-placeholder" style="background:linear-gradient(135deg,#3a1a2e,#8b3a5a)">ESH</div>
+              <div>
+                <h3>Executive Style Hair &amp; Co.</h3>
+                <div class="cp-full-type">Premium Barbershop &middot; New York</div>
+              </div>
+            </div>
+            <p>Not every member of the family swings a hammer. Executive Style Hair &amp; Co. is New York's premium grooming destination — precision cuts, beard sculpting, and a chair-side experience built for the man who expects the best. Because looking sharp matters too.</p>
+            <ul class="cp-services">
+              <li>Precision Haircuts</li><li>Executive Fades</li><li>Beard Sculpting</li>
+              <li>Hot Towel Shave</li><li>Hair Design &amp; Patterns</li><li>VIP Experience</li>
+            </ul>
+            <div class="cp-contact">
+              <span><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.04 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg> (914) 906-8215</span>
+              <span>theexecutivestyle.com</span>
+            </div>
+            <div class="cp-btns">
+              <button class="btn btn-navy" style="font-size:12px;padding:10px 18px" onclick="goTo('cp-executive')">Learn More &#8594;</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </div><!-- /page-counterparts -->
+
+  <!-- ─── 6 Individual Counterpart Pages ─── -->
+  <div class="page hidden" id="cp-phix">
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Phix Restoration Group</div><h1><span class="text-white">Phix Restoration</span><br><span class="text-orange">Group Inc.</span></h1><p style="color:rgba(255,255,255,0.75);margin-top:12px">Water, Fire &amp; Mold Restoration</p></div></section>
+    <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>When Disaster Hits.<br><span class="text-red">We Make It Look Like It Never Happened.</span></h2><p style="margin-top:16px;color:var(--muted)">When disaster hits your home — a burst pipe, a fire, a mold problem — Phix Restoration Group is who you call. Henry's team at Phix handles the full remediation process, from emergency water removal to property reconstruction.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 410-0763</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">VP:</strong> Michael Valencia — (914) 409-6448</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> phixrestoration@gmail.com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> phixrestoration.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Water &amp; Storm Damage</li><li>Mold Remediation</li><li>Fire &amp; Smoke Restoration</li><li>Air Cleaning &amp; Sanitation</li><li>Property Reconstruction</li><li>Emergency Response</li></ul></div></div></div></section>
+    <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
+  </div>
+
+  <div class="page hidden" id="cp-luz">
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Luz Group Inc.</div><h1><span class="text-white">Luz Group Inc.</span><br><span class="text-orange">Licensed Electrical Contractors</span></h1></div></section>
+    <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Powered Right.<br><span class="text-red">Every Connection.</span></h2><p style="margin-top:16px;color:var(--muted)">Luz means light — and that's exactly what Luz Group brings to every job. Henry and Raul run a full-spectrum electrical contracting operation serving residential and commercial clients. From emergency repairs to EV charger installations, Luz Group powers homes the right way.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 387-5067</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">VP:</strong> Raul Giraldo — (914) 482-2127</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> hv.luzgroupinc@gmail.com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> luzgroupelectric.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Electrical Repairs &amp; Upgrades</li><li>Panel Replacements</li><li>Generator Installation</li><li>EV Charging Stations</li><li>Smart Home Setup</li><li>Security Lighting &amp; Data/WiFi</li></ul></div></div></div></section>
+    <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
+  </div>
+
+  <div class="page hidden" id="cp-flow">
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Flow Agents</div><h1><span class="text-white">Flow Agents</span><br><span class="text-orange">Plumbing &amp; Heating</span></h1></div></section>
+    <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Plumbing Done Fast.<br><span class="text-red">Done Right. No Mess.</span></h2><p style="margin-top:16px;color:var(--muted)">Fast, reliable, and honest. Flow Agents handles everything plumbing and heating — from a leaky faucet to a full boiler installation. Licensed and insured. Available when you need them.</p><div style="margin-top:24px"><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> flowagentsph.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Leak Detection &amp; Repair</li><li>Drain Cleaning</li><li>Boiler &amp; Furnace Services</li><li>Tankless Water Heaters</li><li>Emergency Plumbing</li><li>Heating Maintenance</li></ul></div></div></div></section>
+    <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
+  </div>
+
+  <div class="page hidden" id="cp-northstar">
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>North Star</div><h1><span class="text-white">North Star</span><br><span class="text-orange">Renovation Group Inc.</span></h1></div></section>
+    <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Same Standard.<br><span class="text-red">Different Crew.</span></h2><p style="margin-top:16px;color:var(--muted)">A sister company to Valencia Work Group, North Star Renovation Group serves homeowners and property managers across Westchester County and Connecticut. Same standard of craftsmanship. Same family values. Different crew, same commitment.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">President:</strong> Raymundo Vargas</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">VP:</strong> Henry Valencia — (914) 635-0318</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> R.VNorthStarReno@Gmail.Com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> northstarrenogroup.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Custom Carpentry &amp; Millwork</li><li>Kitchen Remodels</li><li>Bathroom Renovations</li><li>Roofing &amp; Siding</li><li>Decks &amp; Railings</li><li>Painting &amp; Finishes</li></ul></div></div></div></section>
+    <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
+  </div>
+
+  <div class="page hidden" id="cp-comfort">
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Comfort One</div><h1><span class="text-white">Comfort One</span><br><span class="text-orange">Heating &amp; Cooling</span></h1></div></section>
+    <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Comfortable All Year.<br><span class="text-red">24/7 When You Need It.</span></h2><p style="margin-top:16px;color:var(--muted)">The HVAC arm of the Valencia Work Group family. Comfort One keeps homes and businesses comfortable year-round — from furnace installations to emergency AC repairs. 35+ years of combined experience. 24/7 emergency service.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 224-9439</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> office@comfort1hc.com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> comfort1hc.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Furnace Installation &amp; Repair</li><li>Boiler Services</li><li>Central &amp; Ductless AC</li><li>Heat Pumps</li><li>Duct Cleaning</li><li>Emergency HVAC</li></ul></div></div></div></section>
+    <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
+  </div>
+
+  <div class="page hidden" id="cp-executive">
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Executive Style Hair</div><h1><span class="text-white">Executive Style</span><br><span class="text-orange">Hair &amp; Co.</span></h1></div></section>
+    <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Because Looking Sharp<br><span class="text-red">Matters Too.</span></h2><p style="margin-top:16px;color:var(--muted)">Not every member of the family swings a hammer. Executive Style Hair &amp; Co. is New York's premium grooming destination — precision cuts, beard sculpting, and a chair-side experience built for the man who expects the best.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 906-8215</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> theexecutivestyle.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Precision Haircuts</li><li>Executive Fades</li><li>Beard Sculpting</li><li>Hot Towel Shave</li><li>Hair Design &amp; Patterns</li><li>VIP Experience</li></ul></div></div></div></section>
+    <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
+  </div>
+
+  <!-- ─── Remaining pages (Steps 14–15) placeholder ─────────────────── -->
   <!-- ═══════════════════════════════════════ FOOTER ════════════════════════════════════ -->
   <footer class="site-footer">
     <span class="stripe"></span>
