@@ -2391,6 +2391,106 @@
     @media (max-width: 480px) {
       .form-row { grid-template-columns: 1fr; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       LIGHT BRAND THEME — Navy + Orange
+       Overrides all dark sections to match logo: white bg, navy + orange
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* 1. Orange replaces red as primary accent color */
+    :root {
+      --red: #E07820;
+      --gradient-ro: linear-gradient(90deg, var(--navy), var(--orange));
+    }
+
+    /* 2. CTA banner → navy (was red) */
+    .cta-banner { background: var(--navy); }
+
+    /* 3. Home hero → light left panel, photo shows right */
+    .home-hero-overlay {
+      background: linear-gradient(100deg, rgba(255,255,255,0.97) 45%, rgba(255,255,255,0.22) 100%) !important;
+    }
+    .home-hero-content h1 { color: var(--navy); }
+    .hero-sub { color: var(--muted); }
+    .hero-eyebrow { color: var(--orange); }
+
+    /* 4. All page heroes → light left panel */
+    .page-hero-overlay {
+      background: linear-gradient(110deg, rgba(255,255,255,0.97) 38%, rgba(255,255,255,0.68) 56%, transparent 100%) !important;
+    }
+    .page-hero--solid { background: var(--light); }
+    .page-hero-content h1 { color: var(--navy); }
+    .breadcrumb { color: var(--navy); opacity: 0.6; }
+    .breadcrumb span { color: var(--navy); opacity: 0.4; }
+
+    /* 5. Metrics band → white with navy numbers */
+    .metrics-band {
+      background: var(--white) !important;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .metric-number { color: var(--navy); }
+    .metric-label { color: var(--muted); }
+    .metric-divider { background: var(--border); }
+
+    /* 6. Counterparts strip → light */
+    .counterparts-strip { background: var(--light) !important; }
+    .cp-strip-card {
+      background: var(--white) !important;
+      border: 1px solid var(--border) !important;
+    }
+    .cp-strip-card:hover {
+      background: var(--warm) !important;
+      border-color: var(--orange) !important;
+    }
+    .cp-strip-name { color: var(--navy) !important; }
+    .cp-strip-type { color: var(--muted) !important; }
+
+    /* 7. Process numbered sections → dark text on light bg */
+    .proc-num-item h4 { color: var(--navy); }
+    .proc-num-item p { color: var(--muted); }
+    .proc-num { opacity: 0.85; }
+
+    /* 8. Design accent card → light */
+    .design-split-card--accent {
+      background: var(--light);
+      border-color: var(--border);
+    }
+    .design-split-card--accent h3 { color: var(--navy); }
+    .design-split-card--accent p { color: var(--muted); }
+    .design-list--light li { color: var(--text); }
+    .design-list--light li::before { background: var(--orange); }
+
+    /* 9. Trust badges (About page) → light cards */
+    .trust-badge {
+      background: var(--white) !important;
+      border: 2px solid var(--border) !important;
+    }
+    .trust-badge strong { color: var(--navy) !important; }
+    .trust-badge span { color: var(--muted) !important; }
+
+    /* 10. Checklist checkmarks → orange */
+    .sub-checklist li::before { border-color: var(--orange); }
+
+    /* 11. Intro quote box — keep navy, soften for light page context */
+    .intro-quote-box {
+      background: var(--navy);
+      border-top: 4px solid var(--orange);
+    }
+
+    /* 12. Why cards → orange accent */
+    .why-card { border-top-color: var(--orange); }
+    .why-icon { background: rgba(224,120,32,0.10); }
+
+    /* 13. Service card link → orange */
+    .service-card-link { color: var(--orange); }
+
+    /* 14. Timeline → orange */
+    .timeline-dot { border-color: var(--orange); }
+    .timeline-year { color: var(--orange); }
+
+    /* 15. Design list bullet → orange */
+    .design-list li::before { background: var(--orange); }
   </style>
 </head>
 <body>
@@ -2534,7 +2634,7 @@
       <div class="container home-hero-content">
         <span class="hero-eyebrow">New York · New Jersey · Connecticut · Licensed &amp; Insured</span>
         <h1>
-          <span class="text-white">Your Home Deserves More<br>Than a Contractor.</span><br>
+          <span class="text-navy">Your Home Deserves More<br>Than a Contractor.</span><br>
           <span class="text-orange">It Deserves a Craftsman.</span>
         </h1>
         <p class="hero-sub">Valencia Work Group Inc. has been building, remodeling, and restoring homes across the Tri-State area for over 20 years. Family-owned. Fully equipped. Here when you need us.</p>
@@ -2761,8 +2861,8 @@
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1">
         <div style="text-align:center;margin-bottom:40px">
-          <h2 class="text-white">One Family.<br><span class="text-orange">Six Companies. Every Trade Covered.</span></h2>
-          <p style="color:rgba(255,255,255,0.65);max-width:580px;margin:16px auto 0;font-size:15px">Need an electrician? We know one. Plumber? Got that covered. HVAC? Restoration? Even a great barber? We built this network so you never have to search again. Every company in our family holds the same standard we do &#8212; because Henry built them that way.</p>
+          <h2 class="text-navy">One Family.<br><span class="text-orange">Six Companies. Every Trade Covered.</span></h2>
+          <p style="color:var(--muted);max-width:580px;margin:16px auto 0;font-size:15px">Need an electrician? We know one. Plumber? Got that covered. HVAC? Restoration? Even a great barber? We built this network so you never have to search again. Every company in our family holds the same standard we do &#8212; because Henry built them that way.</p>
         </div>
         <div class="cp-strip-grid">
           <div class="cp-strip-card" onclick="goTo('cp-phix')">
@@ -2831,7 +2931,7 @@
         <p class="cta-banner-body">Call Henry today for a free estimate. No pressure. No obligation. Just an honest conversation about what you need and how we can help.</p>
         <a href="tel:9149068215" class="cta-banner-phone">(914) 906-8215</a>
         <div class="cta-banner-btns">
-          <button class="btn" style="background:var(--white);color:var(--red);font-weight:700" onclick="goTo('page-contact')">Get My Free Estimate &#8594;</button>
+          <button class="btn" style="background:var(--white);color:var(--orange);font-weight:700" onclick="goTo('page-contact')">Get My Free Estimate &#8594;</button>
           <button class="btn btn-outline-white" onclick="goTo('page-contact')">Send Us an Email</button>
         </div>
       </div>
@@ -2848,7 +2948,7 @@
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> About</div>
-        <h1><span class="text-white">We're Not Just Contractors.</span><br><span class="text-orange">We're Your Neighbors.</span></h1>
+        <h1><span class="text-navy">We're Not Just Contractors.</span><br><span class="text-orange">We're Your Neighbors.</span></h1>
       </div>
     </section>
 
@@ -2948,13 +3048,13 @@
     </section>
 
     <!-- Licensed & Insured -->
-    <section class="section" style="background:var(--navy)">
+    <section class="section" style="background:var(--light)">
       <div class="blueprint-overlay" style="position:absolute;inset:0"></div>
       <div class="container" style="position:relative;z-index:1">
         <div style="text-align:center;margin-bottom:40px">
-          <span class="section-label section-label--light">Protection You Can Count On</span>
-          <h2 class="text-white">You're Covered.<br><span class="text-orange">Every Time.</span></h2>
-          <p style="color:rgba(255,255,255,0.65);max-width:540px;margin:16px auto 0">All contractors are fully licensed and insured across New York, New Jersey, and Connecticut. Plumbing services provided in partnership with A&amp;J Plumbing &amp; Heating.</p>
+          <span class="section-label">Protection You Can Count On</span>
+          <h2 class="text-navy">You're Covered.<br><span class="text-orange">Every Time.</span></h2>
+          <p style="color:var(--muted);max-width:540px;margin:16px auto 0">All contractors are fully licensed and insured across New York, New Jersey, and Connecticut. Plumbing services provided in partnership with A&amp;J Plumbing &amp; Heating.</p>
         </div>
         <div class="trust-badges">
           <div class="trust-badge">
@@ -2985,12 +3085,12 @@
   <div class="page hidden" id="page-exterior">
     <section class="page-hero page-hero--ext">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.93) 50%,rgba(17,29,56,0.35) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span onclick="goTo('page-exterior')">Services</span> <span>/</span> Exterior Work</div>
-        <h1><span class="text-white">Outside Your Home.</span><br><span class="text-orange">Under Our Care.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">From foundations to fences — if it lives outside your home, VWG handles it. Licensed crews, 20+ years of experience, and a track record that speaks for itself.</p>
+        <h1><span class="text-navy">Outside Your Home.</span><br><span class="text-orange">Under Our Care.</span></h1>
+        <p style="color:var(--muted);max-width:500px;margin-top:14px;font-size:16px">From foundations to fences — if it lives outside your home, VWG handles it. Licensed crews, 20+ years of experience, and a track record that speaks for itself.</p>
         <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Get a Free Exterior Estimate &#8594;</button>
       </div>
     </section>
@@ -3064,9 +3164,9 @@
     <section class="cta-banner" style="padding:56px 0">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1;text-align:center">
-        <h2 class="text-white" style="margin-bottom:16px">Ready to Talk Exterior?</h2>
-        <p style="color:rgba(255,255,255,0.75);margin-bottom:24px">Call Henry for a free on-site estimate. We'll walk the property with you and tell you exactly what we see.</p>
-        <button class="btn" style="background:var(--white);color:var(--red);font-weight:700" onclick="goTo('page-contact')">Get a Free Exterior Estimate &#8594;</button>
+        <h2 class="text-navy" style="margin-bottom:16px">Ready to Talk Exterior?</h2>
+        <p style="color:var(--muted);margin-bottom:24px">Call Henry for a free on-site estimate. We'll walk the property with you and tell you exactly what we see.</p>
+        <button class="btn" style="background:var(--white);color:var(--orange);font-weight:700" onclick="goTo('page-contact')">Get a Free Exterior Estimate &#8594;</button>
       </div>
     </section>
   </div><!-- /page-exterior -->
@@ -3075,11 +3175,11 @@
   <div class="page hidden" id="page-interior">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.85) 50%,rgba(30,46,92,0.35) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span>Services</span> <span>/</span> Interior Work</div>
-        <h1><span class="text-white">Every Detail. Every Finish.</span><br><span class="text-orange">Done Right.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">From the kitchen you've always wanted to the bathroom that finally makes sense — VWG brings craftsmanship to every inch of your interior space.</p>
+        <h1><span class="text-navy">Every Detail. Every Finish.</span><br><span class="text-orange">Done Right.</span></h1>
+        <p style="color:var(--muted);max-width:500px;margin-top:14px;font-size:16px">From the kitchen you've always wanted to the bathroom that finally makes sense — VWG brings craftsmanship to every inch of your interior space.</p>
         <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Ready to Reimagine Your Space? &#8594;</button>
       </div>
     </section>
@@ -3170,9 +3270,9 @@
     <section class="cta-banner" style="padding:56px 0">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1;text-align:center">
-        <h2 class="text-white" style="margin-bottom:16px">Ready to Reimagine Your Space?</h2>
-        <p style="color:rgba(255,255,255,0.75);margin-bottom:24px">Let's talk about what you've been putting off. Henry will walk you through what's possible and what it actually costs.</p>
-        <button class="btn" style="background:var(--white);color:var(--red);font-weight:700" onclick="goTo('page-contact')">Request a Free Interior Estimate &#8594;</button>
+        <h2 class="text-navy" style="margin-bottom:16px">Ready to Reimagine Your Space?</h2>
+        <p style="color:var(--muted);margin-bottom:24px">Let's talk about what you've been putting off. Henry will walk you through what's possible and what it actually costs.</p>
+        <button class="btn" style="background:var(--white);color:var(--orange);font-weight:700" onclick="goTo('page-contact')">Request a Free Interior Estimate &#8594;</button>
       </div>
     </section>
   </div><!-- /page-interior -->
@@ -3181,12 +3281,12 @@
   <div class="page hidden" id="page-hvac">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(30,60,100,0.45) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span>Services</span> <span>/</span> HVAC &amp; Systems</div>
-        <h1><span class="text-white">Comfort All Year.</span><br><span class="text-orange">Not Just a Promise.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">From new installations to emergency service calls — VWG keeps your home at the right temperature, 365 days a year.</p>
+        <h1><span class="text-navy">Comfort All Year.</span><br><span class="text-orange">Not Just a Promise.</span></h1>
+        <p style="color:var(--muted);max-width:500px;margin-top:14px;font-size:16px">From new installations to emergency service calls — VWG keeps your home at the right temperature, 365 days a year.</p>
         <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Schedule Your HVAC Estimate &#8594;</button>
       </div>
     </section>
@@ -3251,9 +3351,9 @@
     <section class="cta-banner" style="padding:56px 0">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1;text-align:center">
-        <h2 class="text-white" style="margin-bottom:16px">Don't Wait Until It Breaks.</h2>
-        <p style="color:rgba(255,255,255,0.75);margin-bottom:24px">Schedule a free HVAC consultation before the season hits. We'll assess your system and tell you exactly where you stand.</p>
-        <button class="btn" style="background:var(--white);color:var(--red);font-weight:700" onclick="goTo('page-contact')">Schedule Your HVAC Estimate &#8594;</button>
+        <h2 class="text-navy" style="margin-bottom:16px">Don't Wait Until It Breaks.</h2>
+        <p style="color:var(--muted);margin-bottom:24px">Schedule a free HVAC consultation before the season hits. We'll assess your system and tell you exactly where you stand.</p>
+        <button class="btn" style="background:var(--white);color:var(--orange);font-weight:700" onclick="goTo('page-contact')">Schedule Your HVAC Estimate &#8594;</button>
       </div>
     </section>
   </div><!-- /page-hvac -->
@@ -3261,12 +3361,12 @@
   <!-- ─────────────── DESIGN SERVICES ─────────────────── -->
   <div class="page hidden" id="page-design">
     <section class="page-hero page-hero--design">
-      <div class="page-hero-overlay" style="background:var(--navy-dark);position:absolute;inset:0"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay" style="opacity:0.8"></div>
       <div class="container page-hero-content" style="position:relative;z-index:2">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span>Services</span> <span>/</span> Design Services</div>
-        <h1><span class="text-white">See It Before</span><br><span class="text-orange">We Build It.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">Construction drawings, floor plans, and full 3D renderings — every project starts with a vision. We turn yours into something you can actually see before we ever break ground.</p>
+        <h1><span class="text-navy">See It Before</span><br><span class="text-orange">We Build It.</span></h1>
+        <p style="color:var(--muted);max-width:500px;margin-top:14px;font-size:16px">Construction drawings, floor plans, and full 3D renderings — every project starts with a vision. We turn yours into something you can actually see before we ever break ground.</p>
         <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Start With a Conversation &#8594;</button>
       </div>
     </section>
@@ -3295,17 +3395,17 @@
           </div>
           <div class="design-split-card design-split-card--accent" onclick="goTo('sub-3d')">
             <div class="design-card-icon">
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="1.5" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             </div>
-            <h3 style="color:var(--white)">3D Model Renderings</h3>
-            <p style="color:rgba(255,255,255,0.75)">See your finished project in photorealistic 3D before we ever pick up a tool. Walk through your new kitchen, addition, or full renovation — virtually — and make changes before they cost money.</p>
-            <ul class="design-list design-list--light">
+            <h3>3D Model Renderings</h3>
+            <p>See your finished project in photorealistic 3D before we ever pick up a tool. Walk through your new kitchen, addition, or full renovation — virtually — and make changes before they cost money.</p>
+            <ul class="design-list">
               <li>Photorealistic 3D renderings</li>
               <li>Interior &amp; exterior views</li>
               <li>Revision rounds included</li>
               <li>Print-ready presentation files</li>
             </ul>
-            <button class="btn btn-outline-white" style="margin-top:24px" onclick="goTo('sub-3d')">Learn More &#8594;</button>
+            <button class="btn btn-outline-navy" style="margin-top:24px" onclick="goTo('sub-3d')">Learn More &#8594;</button>
           </div>
         </div>
       </div>
@@ -3331,8 +3431,8 @@
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>New Construction</div>
-        <h1><span class="text-white">We've Built Homes</span><br><span class="text-orange">from the Ground Up.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">This is someone's biggest investment. We know what that means — and we show up accordingly.</p>
+        <h1><span class="text-navy">We've Built Homes</span><br><span class="text-orange">from the Ground Up.</span></h1>
+        <p style="color:var(--muted);max-width:480px;margin-top:14px">This is someone's biggest investment. We know what that means — and we show up accordingly.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Start Your Build &#8594;</button>
       </div>
     </section>
@@ -3363,12 +3463,12 @@
       </div>
     </section>
 
-    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+    <section class="section" style="background:var(--white);position:relative;overflow:hidden">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1">
         <div style="text-align:center;margin-bottom:48px">
-          <span class="section-label section-label--light">Our Process</span>
-          <h2 class="text-white">How a Build<br><span class="text-orange">Actually Happens.</span></h2>
+          <span class="section-label">Our Process</span>
+          <h2 class="text-navy">How a Build<br><span class="text-orange">Actually Happens.</span></h2>
         </div>
         <div class="process-numbered">
           <div class="proc-num-item"><div class="proc-num">01</div><h4>Plan &amp; Permit</h4><p>We sit down with you, finalize drawings, submit permits, and line up the schedule before a shovel touches dirt.</p></div>
@@ -3401,10 +3501,10 @@
   <div class="page hidden" id="sub-additions">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.88) 45%,rgba(30,46,92,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Additions &amp; Extensions</div>
-        <h1><span class="text-white">More Space.</span><br><span class="text-orange">Same Home. Better Life.</span></h1>
+        <h1><span class="text-navy">More Space.</span><br><span class="text-orange">Same Home. Better Life.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Plan My Addition &#8594;</button>
       </div>
     </section>
@@ -3412,9 +3512,9 @@
     <section class="section" style="background:var(--warm)">
       <div class="container">
         <div class="sub-split sub-split--reverse">
-          <div class="sub-checklist-box" style="background:var(--navy)">
-            <h4 style="color:var(--white)">What's Included</h4>
-            <ul class="sub-checklist sub-checklist--light">
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
               <li>Design &amp; permit drawings</li>
               <li>Foundation extension or pier system</li>
               <li>Structural framing &amp; connection to existing home</li>
@@ -3467,11 +3567,11 @@
   <div class="page hidden" id="sub-roofing">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(192,57,43,0.25) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Roofing &amp; Siding</div>
-        <h1><span class="text-white">Your Roof Is Your</span><br><span class="text-orange">First Line of Defense.</span></h1>
-        <p style="color:rgba(255,255,255,0.80);max-width:480px;margin-top:14px">Don't wait for the bucket. A failing roof doesn't fix itself — and the longer you wait, the more it costs.</p>
+        <h1><span class="text-navy">Your Roof Is Your</span><br><span class="text-orange">First Line of Defense.</span></h1>
+        <p style="color:var(--muted);max-width:480px;margin-top:14px">Don't wait for the bucket. A failing roof doesn't fix itself — and the longer you wait, the more it costs.</p>
         <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap">
           <button class="btn btn-red" onclick="goTo('page-contact')">Emergency Roof Call &#8594;</button>
           <button class="btn btn-outline-white" onclick="goTo('page-contact')">Get a Free Inspection</button>
@@ -3525,10 +3625,10 @@
       </div>
     </section>
 
-    <section class="section" style="background:var(--navy)">
+    <section class="section" style="background:var(--light)">
       <div class="blueprint-overlay" style="position:absolute;inset:0"></div>
       <div class="container" style="position:relative;z-index:1">
-        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">From Call to Complete.</h2></div>
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2 class="text-navy">From Call to Complete.</h2></div>
         <div class="process-numbered" style="--proc-color:var(--orange)">
           <div class="proc-num-item"><div class="proc-num">01</div><h4>Inspection</h4><p>We get on the roof and find exactly what's failing — no guessing, no upselling.</p></div>
           <div class="proc-num-item"><div class="proc-num">02</div><h4>Estimate</h4><p>Clear, itemized quote within 24–48 hours. You know exactly what you're paying for.</p></div>
@@ -3560,7 +3660,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Windows &amp; Doors</div>
-        <h1><span class="text-white">Curb Appeal Meets</span><br><span class="text-orange">Energy Efficiency.</span></h1>
+        <h1><span class="text-navy">Curb Appeal Meets</span><br><span class="text-orange">Energy Efficiency.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Window &amp; Door Pricing &#8594;</button>
       </div>
     </section>
@@ -3626,11 +3726,11 @@
   <div class="page hidden" id="sub-decks">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(120deg,rgba(30,46,92,0.87) 40%,rgba(224,120,32,0.22) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Decks &amp; Porches</div>
-        <h1><span class="text-white">Outdoor Living</span><br><span class="text-orange">Built to Last Decades.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">A deck or porch is where summer happens. Build it right the first time — and enjoy it for the next 30 years.</p>
+        <h1><span class="text-navy">Outdoor Living</span><br><span class="text-orange">Built to Last Decades.</span></h1>
+        <p style="color:var(--muted);max-width:460px;margin-top:14px">A deck or porch is where summer happens. Build it right the first time — and enjoy it for the next 30 years.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Design My Deck &#8594;</button>
       </div>
     </section>
@@ -3691,11 +3791,11 @@
   <div class="page hidden" id="sub-excavation">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.88)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Excavation &amp; Site Work</div>
-        <h1><span class="text-white">Every Great Build</span><br><span class="text-orange">Starts with Great Prep.</span></h1>
+        <h1><span class="text-navy">Every Great Build</span><br><span class="text-orange">Starts with Great Prep.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Discuss Your Site Work &#8594;</button>
       </div>
     </section>
@@ -3712,10 +3812,10 @@
       </div>
     </section>
 
-    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+    <section class="section" style="background:var(--white);position:relative;overflow:hidden">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1">
-        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Dig It Right.<br><span class="text-orange">Build It Right.</span></h2></div>
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2 class="text-navy">Dig It Right.<br><span class="text-orange">Build It Right.</span></h2></div>
         <div class="process-numbered">
           <div class="proc-num-item"><div class="proc-num">01</div><h4>Site Assessment</h4><p>We walk the site, assess soil conditions, slope, drainage, and utility locations.</p></div>
           <div class="proc-num-item"><div class="proc-num">02</div><h4>Clearing &amp; Grading</h4><p>Vegetation removed, land graded to proper drainage slopes and building elevations.</p></div>
@@ -3747,7 +3847,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Road &amp; Driveway Paving</div>
-        <h1><span class="text-white">Clean Approach.</span><br><span class="text-orange">Clean Finish. Every Time.</span></h1>
+        <h1><span class="text-navy">Clean Approach.</span><br><span class="text-orange">Clean Finish. Every Time.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Paving Estimate &#8594;</button>
       </div>
     </section>
@@ -3803,10 +3903,10 @@
   <div class="page hidden" id="sub-retaining">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,46,92,0.45) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Retaining Walls</div>
-        <h1><span class="text-white">Structural.</span><br><span class="text-orange">Beautiful. Both, Not One.</span></h1>
+        <h1><span class="text-navy">Structural.</span><br><span class="text-orange">Beautiful. Both, Not One.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Wall Pricing &#8594;</button>
       </div>
     </section>
@@ -3849,11 +3949,11 @@
   <div class="page hidden" id="sub-waterproofing">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(30,80,100,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Waterproofing &amp; Drainage</div>
-        <h1><span class="text-white">Keep Water Out.</span><br><span class="text-orange">Permanently.</span></h1>
+        <h1><span class="text-navy">Keep Water Out.</span><br><span class="text-orange">Permanently.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Waterproofing Assessment &#8594;</button>
       </div>
     </section>
@@ -3882,10 +3982,10 @@
         </div>
       </div>
     </section>
-    <section class="section" style="background:var(--navy);position:relative;overflow:hidden">
+    <section class="section" style="background:var(--light);position:relative;overflow:hidden">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1">
-        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Find It. Fix It. <span class="text-orange">Forget It.</span></h2></div>
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2 class="text-navy">Find It. Fix It. <span class="text-orange">Forget It.</span></h2></div>
         <div class="process-numbered">
           <div class="proc-num-item"><div class="proc-num">01</div><h4>Diagnostic Assessment</h4><p>We find where the water is actually coming from — not just where it's showing up.</p></div>
           <div class="proc-num-item"><div class="proc-num">02</div><h4>Source Treatment</h4><p>Cracks sealed, exterior membrane applied, or exterior excavation for severe cases.</p></div>
@@ -3911,21 +4011,21 @@
   <div class="page hidden" id="sub-ironworks">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.92)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Ornamental Iron Works</div>
-        <h1><span class="text-white">Handcrafted Metalwork</span><br><span class="text-orange">That Lasts Generations.</span></h1>
-        <p style="color:rgba(255,255,255,0.75);max-width:460px;margin-top:14px">Iron work is where function meets artistry. Gates, railings, fences — built by hand, built to last.</p>
+        <h1><span class="text-navy">Handcrafted Metalwork</span><br><span class="text-orange">That Lasts Generations.</span></h1>
+        <p style="color:var(--muted);max-width:460px;margin-top:14px">Iron work is where function meets artistry. Gates, railings, fences — built by hand, built to last.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Request Custom Ironwork &#8594;</button>
       </div>
     </section>
     <section class="section" style="background:var(--warm)">
       <div class="container">
         <div class="sub-split">
-          <div class="sub-checklist-box" style="background:var(--navy-dark)">
-            <h4 style="color:var(--white)">What We Fabricate</h4>
-            <ul class="sub-checklist sub-checklist--light">
+          <div class="sub-checklist-box">
+            <h4>What We Fabricate</h4>
+            <ul class="sub-checklist">
               <li>Entry &amp; driveway gates</li>
               <li>Stair &amp; balcony railings</li>
               <li>Fences &amp; fence posts</li>
@@ -3972,11 +4072,11 @@
   <div class="page hidden" id="sub-outdoor-kitchens">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(120deg,rgba(30,46,92,0.88) 40%,rgba(192,57,43,0.28) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-exterior')">Exterior</span><span>/</span>Outdoor Kitchens</div>
-        <h1><span class="text-white">Cook Outside.</span><br><span class="text-orange">Entertain Anywhere.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">An outdoor kitchen isn't just a grill on a patio. It's a built-in entertaining space your family will use every warm weekend.</p>
+        <h1><span class="text-navy">Cook Outside.</span><br><span class="text-orange">Entertain Anywhere.</span></h1>
+        <p style="color:var(--muted);max-width:460px;margin-top:14px">An outdoor kitchen isn't just a grill on a patio. It's a built-in entertaining space your family will use every warm weekend.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Design My Outdoor Kitchen &#8594;</button>
       </div>
     </section>
@@ -4035,11 +4135,11 @@
   <div class="page hidden" id="sub-kitchens">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.85) 45%,rgba(30,46,92,0.35) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Kitchens &amp; Bathrooms</div>
-        <h1><span class="text-white">You've Been Staring</span><br><span class="text-orange">at That Kitchen Long Enough.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">The kitchen is the heart of the home. The bathroom is your sanctuary. Let's build both the way you've always wanted them.</p>
+        <h1><span class="text-navy">You've Been Staring</span><br><span class="text-orange">at That Kitchen Long Enough.</span></h1>
+        <p style="color:var(--muted);max-width:480px;margin-top:14px">The kitchen is the heart of the home. The bathroom is your sanctuary. Let's build both the way you've always wanted them.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Start My Kitchen Remodel &#8594;</button>
       </div>
     </section>
@@ -4098,21 +4198,21 @@
   <div class="page hidden" id="sub-carpentry">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.92)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Custom Carpentry &amp; Millwork</div>
-        <h1><span class="text-white">Anyone Can Swing</span><br><span class="text-orange">a Hammer. Not Everyone Can Build a Legacy.</span></h1>
-        <p style="color:rgba(255,255,255,0.75);max-width:480px;margin-top:14px">Custom carpentry is the difference between a house and a home. Built-ins, trim, millwork — crafted to last and designed to impress.</p>
+        <h1><span class="text-navy">Anyone Can Swing</span><br><span class="text-orange">a Hammer. Not Everyone Can Build a Legacy.</span></h1>
+        <p style="color:var(--muted);max-width:480px;margin-top:14px">Custom carpentry is the difference between a house and a home. Built-ins, trim, millwork — crafted to last and designed to impress.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Discuss Custom Carpentry &#8594;</button>
       </div>
     </section>
     <section class="section" style="background:var(--warm)">
       <div class="container">
         <div class="sub-split sub-split--reverse">
-          <div class="sub-checklist-box" style="background:var(--navy)">
-            <h4 style="color:var(--white)">What We Build</h4>
-            <ul class="sub-checklist sub-checklist--light">
+          <div class="sub-checklist-box">
+            <h4>What We Build</h4>
+            <ul class="sub-checklist">
               <li>Custom built-in bookshelves &amp; cabinets</li>
               <li>Crown molding &amp; decorative trim</li>
               <li>Wainscoting &amp; wall paneling</li>
@@ -4163,7 +4263,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Flooring</div>
-        <h1><span class="text-white">The Floor Is the<br>Foundation of</span> <span class="text-orange">Every Room.</span></h1>
+        <h1><span class="text-navy">The Floor Is the<br>Foundation of</span> <span class="text-orange">Every Room.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Flooring Pricing &#8594;</button>
       </div>
     </section>
@@ -4212,10 +4312,10 @@
   <div class="page hidden" id="sub-countertops">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.87) 45%,rgba(17,29,56,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Countertops</div>
-        <h1><span class="text-white">The Surface That</span><br><span class="text-orange">Ties the Whole Room Together.</span></h1>
+        <h1><span class="text-navy">The Surface That</span><br><span class="text-orange">Ties the Whole Room Together.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Countertop Pricing &#8594;</button>
       </div>
     </section>
@@ -4262,11 +4362,11 @@
   <div class="page hidden" id="sub-painting">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.82) 40%,rgba(30,46,92,0.38) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Painting &amp; Wallpaper</div>
-        <h1><span class="text-white">The Finish Is</span><br><span class="text-orange">the Work.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">Clean lines. No drips. No cutting corners on prep. Paint done right makes everything else look better.</p>
+        <h1><span class="text-navy">The Finish Is</span><br><span class="text-orange">the Work.</span></h1>
+        <p style="color:var(--muted);max-width:460px;margin-top:14px">Clean lines. No drips. No cutting corners on prep. Paint done right makes everything else look better.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Paint Estimate &#8594;</button>
       </div>
     </section>
@@ -4323,10 +4423,10 @@
   <div class="page hidden" id="sub-tile">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.87) 50%,rgba(17,29,56,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Tile &amp; Stone</div>
-        <h1><span class="text-white">Tile Done Right</span><br><span class="text-orange">Is Art You Walk On.</span></h1>
+        <h1><span class="text-navy">Tile Done Right</span><br><span class="text-orange">Is Art You Walk On.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Tile Pricing &#8594;</button>
       </div>
     </section>
@@ -4355,10 +4455,10 @@
         </div>
       </div>
     </section>
-    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+    <section class="section" style="background:var(--white);position:relative;overflow:hidden">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1">
-        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Layout First. <span class="text-orange">Then Install.</span></h2></div>
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2 class="text-navy">Layout First. <span class="text-orange">Then Install.</span></h2></div>
         <div class="process-numbered">
           <div class="proc-num-item"><div class="proc-num">01</div><h4>Layout Planning</h4><p>Tile layout planned on paper before any adhesive is mixed. Patterns start at center.</p></div>
           <div class="proc-num-item"><div class="proc-num">02</div><h4>Substrate Prep</h4><p>Backer board, waterproof membrane, and leveling compound applied as required.</p></div>
@@ -4384,11 +4484,11 @@
   <div class="page hidden" id="sub-fireplaces">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(192,57,43,0.22) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Fireplaces</div>
-        <h1><span class="text-white">The Centerpiece</span><br><span class="text-orange">of the Room.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">A fireplace isn't just heat — it's the room's focal point. Built to impress and built to last.</p>
+        <h1><span class="text-navy">The Centerpiece</span><br><span class="text-orange">of the Room.</span></h1>
+        <p style="color:var(--muted);max-width:460px;margin-top:14px">A fireplace isn't just heat — it's the room's focal point. Built to impress and built to last.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Discuss My Fireplace &#8594;</button>
       </div>
     </section>
@@ -4445,20 +4545,20 @@
   <div class="page hidden" id="sub-entertainment">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.92)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Entertainment Centers &amp; Home Theater</div>
-        <h1><span class="text-white">Your Living Room.</span><br><span class="text-orange">Theater Quality.</span></h1>
+        <h1><span class="text-navy">Your Living Room.</span><br><span class="text-orange">Theater Quality.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Design My Media Room &#8594;</button>
       </div>
     </section>
     <section class="section" style="background:var(--white)">
       <div class="container">
         <div class="sub-split sub-split--reverse">
-          <div class="sub-checklist-box" style="background:var(--navy-dark)">
-            <h4 style="color:var(--white)">What We Build</h4>
-            <ul class="sub-checklist sub-checklist--light">
+          <div class="sub-checklist-box">
+            <h4>What We Build</h4>
+            <ul class="sub-checklist">
               <li>Custom built-in media walls</li>
               <li>Floating TV cabinet systems</li>
               <li>Dedicated home theater rooms</li>
@@ -4506,11 +4606,11 @@
   <div class="page hidden" id="sub-insulation">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,80,60,0.30) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Insulation</div>
-        <h1><span class="text-white">Seal It Right.</span><br><span class="text-orange">Lower Your Bills.</span></h1>
-        <p style="color:rgba(255,255,255,0.75);max-width:460px;margin-top:14px">A properly insulated home is a comfortable home. It's also a significantly cheaper-to-run home.</p>
+        <h1><span class="text-navy">Seal It Right.</span><br><span class="text-orange">Lower Your Bills.</span></h1>
+        <p style="color:var(--muted);max-width:460px;margin-top:14px">A properly insulated home is a comfortable home. It's also a significantly cheaper-to-run home.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get an Insulation Assessment &#8594;</button>
       </div>
     </section>
@@ -4569,11 +4669,11 @@
   <div class="page hidden" id="sub-hvac-install">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(30,60,100,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>HVAC Installations</div>
-        <h1><span class="text-white">A Comfortable Home</span><br><span class="text-orange">Isn't a Luxury. It's What We Guarantee.</span></h1>
+        <h1><span class="text-navy">A Comfortable Home</span><br><span class="text-orange">Isn't a Luxury. It's What We Guarantee.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Schedule HVAC Estimate &#8594;</button>
       </div>
     </section>
@@ -4602,10 +4702,10 @@
         </div>
       </div>
     </section>
-    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+    <section class="section" style="background:var(--white);position:relative;overflow:hidden">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1">
-        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">From Assessment<br><span class="text-orange">to First Cool Night.</span></h2></div>
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2 class="text-navy">From Assessment<br><span class="text-orange">to First Cool Night.</span></h2></div>
         <div class="process-numbered">
           <div class="proc-num-item"><div class="proc-num">01</div><h4>Load Calculation</h4><p>We measure the space and calculate exactly how much heating and cooling capacity the home needs.</p></div>
           <div class="proc-num-item"><div class="proc-num">02</div><h4>Equipment Selection</h4><p>We recommend equipment that matches the load, your budget, and your efficiency goals.</p></div>
@@ -4634,7 +4734,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Central AC Systems</div>
-        <h1><span class="text-white">Whole-Home Cooling.</span><br><span class="text-orange">One System. Done Right.</span></h1>
+        <h1><span class="text-navy">Whole-Home Cooling.</span><br><span class="text-orange">One System. Done Right.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Central AC Estimate &#8594;</button>
       </div>
     </section>
@@ -4690,11 +4790,11 @@
   <div class="page hidden" id="sub-ductless">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.88) 50%,rgba(30,70,100,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Ductless &amp; Split AC</div>
-        <h1><span class="text-white">Zone Cooling</span><br><span class="text-orange">Without the Ductwork.</span></h1>
+        <h1><span class="text-navy">Zone Cooling</span><br><span class="text-orange">Without the Ductwork.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Ductless System Quote &#8594;</button>
       </div>
     </section>
@@ -4753,7 +4853,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Tankless Water Heaters</div>
-        <h1><span class="text-white">Hot Water On Demand.</span><br><span class="text-orange">Lower Bills. Better Life.</span></h1>
+        <h1><span class="text-navy">Hot Water On Demand.</span><br><span class="text-orange">Lower Bills. Better Life.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Tankless Pricing &#8594;</button>
       </div>
     </section>
@@ -4809,19 +4909,19 @@
   <div class="page hidden" id="sub-boilers">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(192,57,43,0.22) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Boilers &amp; Furnaces</div>
-        <h1><span class="text-white">Reliable Heat for</span><br><span class="text-orange">Tri-State Winters.</span></h1>
+        <h1><span class="text-navy">Reliable Heat for</span><br><span class="text-orange">Tri-State Winters.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Heating Estimate &#8594;</button>
       </div>
     </section>
     <section class="section" style="background:var(--white)">
       <div class="container">
         <div class="sub-split sub-split--reverse">
-          <div class="sub-checklist-box" style="background:var(--navy)">
-            <h4 style="color:var(--white)">What's Included</h4>
-            <ul class="sub-checklist sub-checklist--light">
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
               <li>Boiler replacement (gas &amp; oil)</li>
               <li>High-efficiency condensing boilers</li>
               <li>Furnace installation &amp; replacement</li>
@@ -4869,10 +4969,10 @@
   <div class="page hidden" id="sub-radiant">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.88) 50%,rgba(224,120,32,0.20) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Radiant Heat</div>
-        <h1><span class="text-white">The Most Comfortable</span><br><span class="text-orange">Heat There Is.</span></h1>
+        <h1><span class="text-navy">The Most Comfortable</span><br><span class="text-orange">Heat There Is.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Explore Radiant Heating &#8594;</button>
       </div>
     </section>
@@ -4929,12 +5029,12 @@
   <!-- sub-drawings: Blueprint aesthetic, technical -->
   <div class="page hidden" id="sub-drawings">
     <section class="page-hero page-hero--design" style="min-height:320px">
-      <div class="page-hero-overlay" style="background:var(--navy-dark);position:absolute;inset:0"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay" style="opacity:0.9"></div>
       <div class="container page-hero-content" style="position:relative;z-index:2">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-design')">Design</span><span>/</span>Construction Drawings &amp; Floor Plans</div>
-        <h1><span class="text-white">Every Great Build</span><br><span class="text-orange">Starts with Great Drawings.</span></h1>
-        <p style="color:rgba(255,255,255,0.75);max-width:480px;margin-top:14px">Permits get filed on drawings. Contractors get priced on drawings. Your vision becomes real on drawings.</p>
+        <h1><span class="text-navy">Every Great Build</span><br><span class="text-orange">Starts with Great Drawings.</span></h1>
+        <p style="color:var(--muted);max-width:480px;margin-top:14px">Permits get filed on drawings. Contractors get priced on drawings. Your vision becomes real on drawings.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Request Drawing Services &#8594;</button>
       </div>
     </section>
@@ -4991,12 +5091,12 @@
   <div class="page hidden" id="sub-3d">
     <section class="page-hero" style="min-height:360px">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,46,92,0.45) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-design')">Design</span><span>/</span>3D Model Renderings</div>
-        <h1><span class="text-white">See Your Finished Project</span><br><span class="text-orange">Before We Break Ground.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">Photorealistic 3D renderings that let you walk through your renovation — virtually — and make changes before they cost money.</p>
+        <h1><span class="text-navy">See Your Finished Project</span><br><span class="text-orange">Before We Break Ground.</span></h1>
+        <p style="color:var(--muted);max-width:480px;margin-top:14px">Photorealistic 3D renderings that let you walk through your renovation — virtually — and make changes before they cost money.</p>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Request 3D Rendering &#8594;</button>
       </div>
     </section>
@@ -5025,10 +5125,10 @@
         </div>
       </div>
     </section>
-    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+    <section class="section" style="background:var(--white);position:relative;overflow:hidden">
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1">
-        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Concept to <span class="text-orange">Photorealistic.</span></h2></div>
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2 class="text-navy">Concept to <span class="text-orange">Photorealistic.</span></h2></div>
         <div class="process-numbered">
           <div class="proc-num-item"><div class="proc-num">01</div><h4>Design Brief</h4><p>We gather your floor plan, material choices, and style references.</p></div>
           <div class="proc-num-item"><div class="proc-num">02</div><h4>3D Modeling</h4><p>Space modeled in 3D with accurate dimensions and proportions.</p></div>
@@ -5058,23 +5158,23 @@
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Portfolio</div>
-        <h1><span class="text-white">Our Work</span><br><span class="text-orange">Speaks for Itself.</span></h1>
-        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">Browse projects by category or scroll through everything we've built.</p>
+        <h1><span class="text-navy">Our Work</span><br><span class="text-orange">Speaks for Itself.</span></h1>
+        <p style="color:var(--muted);max-width:480px;margin-top:14px">Browse projects by category or scroll through everything we've built.</p>
       </div>
     </section>
 
     <!-- Metrics bar -->
-    <div class="trust-bar" style="background:var(--navy);border-bottom:none">
+    <div class="trust-bar" style="background:var(--white);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
       <div class="container">
-        <div class="trust-items" style="color:rgba(255,255,255,0.80)">
+        <div class="trust-items">
           <span style="color:var(--orange);font-weight:800">500+</span>&nbsp;Projects
-          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <div class="trust-divider"></div>
           <span style="color:var(--orange);font-weight:800">20+</span>&nbsp;Years
-          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <div class="trust-divider"></div>
           <span>New York</span>
-          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <div class="trust-divider"></div>
           <span>New Jersey</span>
-          <div class="trust-divider" style="background:rgba(255,255,255,0.15)"></div>
+          <div class="trust-divider"></div>
           <span>Connecticut</span>
         </div>
       </div>
@@ -5157,11 +5257,11 @@
   <div class="page hidden" id="page-counterparts">
     <section class="page-hero">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(17,29,56,0.45) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Counterparts</div>
-        <h1><span class="text-white">One Family.</span><br><span class="text-orange">Every Trade You'll Ever Need.</span></h1>
+        <h1><span class="text-navy">One Family.</span><br><span class="text-orange">Every Trade You'll Ever Need.</span></h1>
       </div>
     </section>
 
@@ -5315,37 +5415,37 @@
 
   <!-- ─── 6 Individual Counterpart Pages ─── -->
   <div class="page hidden" id="cp-phix">
-    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Phix Restoration Group</div><h1><span class="text-white">Phix Restoration</span><br><span class="text-orange">Group Inc.</span></h1><p style="color:rgba(255,255,255,0.75);margin-top:12px">Water, Fire &amp; Mold Restoration</p></div></section>
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Phix Restoration Group</div><h1><span class="text-navy">Phix Restoration</span><br><span class="text-orange">Group Inc.</span></h1><p style="color:var(--muted);margin-top:12px">Water, Fire &amp; Mold Restoration</p></div></section>
     <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>When Disaster Hits.<br><span class="text-red">We Make It Look Like It Never Happened.</span></h2><p style="margin-top:16px;color:var(--muted)">When disaster hits your home — a burst pipe, a fire, a mold problem — Phix Restoration Group is who you call. Henry's team at Phix handles the full remediation process, from emergency water removal to property reconstruction.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 410-0763</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">VP:</strong> Michael Valencia — (914) 409-6448</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> phixrestoration@gmail.com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> phixrestoration.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Water &amp; Storm Damage</li><li>Mold Remediation</li><li>Fire &amp; Smoke Restoration</li><li>Air Cleaning &amp; Sanitation</li><li>Property Reconstruction</li><li>Emergency Response</li></ul></div></div></div></section>
     <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
   </div>
 
   <div class="page hidden" id="cp-luz">
-    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Luz Group Inc.</div><h1><span class="text-white">Luz Group Inc.</span><br><span class="text-orange">Licensed Electrical Contractors</span></h1></div></section>
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Luz Group Inc.</div><h1><span class="text-navy">Luz Group Inc.</span><br><span class="text-orange">Licensed Electrical Contractors</span></h1></div></section>
     <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Powered Right.<br><span class="text-red">Every Connection.</span></h2><p style="margin-top:16px;color:var(--muted)">Luz means light — and that's exactly what Luz Group brings to every job. Henry and Raul run a full-spectrum electrical contracting operation serving residential and commercial clients. From emergency repairs to EV charger installations, Luz Group powers homes the right way.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 387-5067</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">VP:</strong> Raul Giraldo — (914) 482-2127</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> hv.luzgroupinc@gmail.com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> luzgroupelectric.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Electrical Repairs &amp; Upgrades</li><li>Panel Replacements</li><li>Generator Installation</li><li>EV Charging Stations</li><li>Smart Home Setup</li><li>Security Lighting &amp; Data/WiFi</li></ul></div></div></div></section>
     <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
   </div>
 
   <div class="page hidden" id="cp-flow">
-    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Flow Agents</div><h1><span class="text-white">Flow Agents</span><br><span class="text-orange">Plumbing &amp; Heating</span></h1></div></section>
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Flow Agents</div><h1><span class="text-navy">Flow Agents</span><br><span class="text-orange">Plumbing &amp; Heating</span></h1></div></section>
     <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Plumbing Done Fast.<br><span class="text-red">Done Right. No Mess.</span></h2><p style="margin-top:16px;color:var(--muted)">Fast, reliable, and honest. Flow Agents handles everything plumbing and heating — from a leaky faucet to a full boiler installation. Licensed and insured. Available when you need them.</p><div style="margin-top:24px"><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> flowagentsph.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Leak Detection &amp; Repair</li><li>Drain Cleaning</li><li>Boiler &amp; Furnace Services</li><li>Tankless Water Heaters</li><li>Emergency Plumbing</li><li>Heating Maintenance</li></ul></div></div></div></section>
     <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
   </div>
 
   <div class="page hidden" id="cp-northstar">
-    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>North Star</div><h1><span class="text-white">North Star</span><br><span class="text-orange">Renovation Group Inc.</span></h1></div></section>
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>North Star</div><h1><span class="text-navy">North Star</span><br><span class="text-orange">Renovation Group Inc.</span></h1></div></section>
     <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Same Standard.<br><span class="text-red">Different Crew.</span></h2><p style="margin-top:16px;color:var(--muted)">A sister company to Valencia Work Group, North Star Renovation Group serves homeowners and property managers across Westchester County and Connecticut. Same standard of craftsmanship. Same family values. Different crew, same commitment.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">President:</strong> Raymundo Vargas</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">VP:</strong> Henry Valencia — (914) 635-0318</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> R.VNorthStarReno@Gmail.Com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> northstarrenogroup.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Custom Carpentry &amp; Millwork</li><li>Kitchen Remodels</li><li>Bathroom Renovations</li><li>Roofing &amp; Siding</li><li>Decks &amp; Railings</li><li>Painting &amp; Finishes</li></ul></div></div></div></section>
     <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
   </div>
 
   <div class="page hidden" id="cp-comfort">
-    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Comfort One</div><h1><span class="text-white">Comfort One</span><br><span class="text-orange">Heating &amp; Cooling</span></h1></div></section>
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Comfort One</div><h1><span class="text-navy">Comfort One</span><br><span class="text-orange">Heating &amp; Cooling</span></h1></div></section>
     <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Comfortable All Year.<br><span class="text-red">24/7 When You Need It.</span></h2><p style="margin-top:16px;color:var(--muted)">The HVAC arm of the Valencia Work Group family. Comfort One keeps homes and businesses comfortable year-round — from furnace installations to emergency AC repairs. 35+ years of combined experience. 24/7 emergency service.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 224-9439</div><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Email:</strong> office@comfort1hc.com</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> comfort1hc.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Furnace Installation &amp; Repair</li><li>Boiler Services</li><li>Central &amp; Ductless AC</li><li>Heat Pumps</li><li>Duct Cleaning</li><li>Emergency HVAC</li></ul></div></div></div></section>
     <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
   </div>
 
   <div class="page hidden" id="cp-executive">
-    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Executive Style Hair</div><h1><span class="text-white">Executive Style</span><br><span class="text-orange">Hair &amp; Co.</span></h1></div></section>
+    <section class="page-hero page-hero--sm page-hero--solid"><div class="blueprint-overlay"></div><div class="container page-hero-content" style="position:relative;z-index:1"><div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-counterparts')">Counterparts</span><span>/</span>Executive Style Hair</div><h1><span class="text-navy">Executive Style</span><br><span class="text-orange">Hair &amp; Co.</span></h1></div></section>
     <section class="section" style="background:var(--white)"><div class="container"><div class="sub-split"><div><h2>Because Looking Sharp<br><span class="text-red">Matters Too.</span></h2><p style="margin-top:16px;color:var(--muted)">Not every member of the family swings a hammer. Executive Style Hair &amp; Co. is New York's premium grooming destination — precision cuts, beard sculpting, and a chair-side experience built for the man who expects the best.</p><div style="margin-top:24px"><div style="margin-bottom:8px;color:var(--muted)"><strong style="color:var(--navy)">Phone:</strong> (914) 906-8215</div><div style="color:var(--muted)"><strong style="color:var(--navy)">Website:</strong> theexecutivestyle.com</div></div></div><div class="sub-checklist-box"><h4>Services</h4><ul class="sub-checklist"><li>Precision Haircuts</li><li>Executive Fades</li><li>Beard Sculpting</li><li>Hot Towel Shave</li><li>Hair Design &amp; Patterns</li><li>VIP Experience</li></ul></div></div></div></section>
     <section class="section" style="background:var(--light)"><div class="container" style="text-align:center"><button class="btn btn-red" onclick="goTo('page-counterparts')">&#8592; Back to All Counterparts</button></div></section>
   </div>
@@ -5358,8 +5458,8 @@
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Blog</div>
-        <h1><span class="text-white">Straight Talk</span><br><span class="text-orange">From the Job Site.</span></h1>
-        <p style="color:rgba(255,255,255,0.75);max-width:460px;margin-top:14px">No fluff. Just useful information for Westchester homeowners.</p>
+        <h1><span class="text-navy">Straight Talk</span><br><span class="text-orange">From the Job Site.</span></h1>
+        <p style="color:var(--muted);max-width:460px;margin-top:14px">No fluff. Just useful information for Westchester homeowners.</p>
       </div>
     </section>
 
@@ -5424,7 +5524,7 @@
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Roofing</div>
         <span class="blog-tag blog-tag--hero">Roofing &middot; Exterior</span>
-        <h1 style="margin-top:12px"><span class="text-white">5 Signs Your Roof Needs<br>More Than a Patch Job</span></h1>
+        <h1 style="margin-top:12px"><span class="text-navy">5 Signs Your Roof Needs<br>More Than a Patch Job</span></h1>
       </div>
     </section>
     <article class="section" style="background:var(--white)">
@@ -5457,11 +5557,11 @@
   <div class="page hidden" id="blog-2">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.88) 45%,rgba(30,46,92,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Kitchens</div>
         <span class="blog-tag blog-tag--hero">Interior &middot; Kitchens</span>
-        <h1 style="margin-top:12px"><span class="text-white">Kitchen Remodel vs. Kitchen Refresh:<br>Which One Do You Actually Need?</span></h1>
+        <h1 style="margin-top:12px"><span class="text-navy">Kitchen Remodel vs. Kitchen Refresh:<br>Which One Do You Actually Need?</span></h1>
       </div>
     </section>
     <article class="section" style="background:var(--white)">
@@ -5497,7 +5597,7 @@
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Construction</div>
         <span class="blog-tag blog-tag--hero">Exterior &middot; New Construction</span>
-        <h1 style="margin-top:12px"><span class="text-white">What Happens During a Home Addition?<br>A Week-by-Week Breakdown</span></h1>
+        <h1 style="margin-top:12px"><span class="text-navy">What Happens During a Home Addition?<br>A Week-by-Week Breakdown</span></h1>
       </div>
     </section>
     <article class="section" style="background:var(--white)">
@@ -5529,11 +5629,11 @@
   <div class="page hidden" id="blog-4">
     <section class="page-hero page-hero--sm">
       <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
-      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,60,100,0.40) 100%)"></div>
+      <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>HVAC</div>
         <span class="blog-tag blog-tag--hero">HVAC</span>
-        <h1 style="margin-top:12px"><span class="text-white">Why Westchester Homeowners<br>Are Switching to Ductless AC</span></h1>
+        <h1 style="margin-top:12px"><span class="text-navy">Why Westchester Homeowners<br>Are Switching to Ductless AC</span></h1>
       </div>
     </section>
     <article class="section" style="background:var(--white)">
@@ -5567,7 +5667,7 @@
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-blog')">Blog</span><span>/</span>Tips</div>
         <span class="blog-tag blog-tag--hero">Tips &middot; Hiring</span>
-        <h1 style="margin-top:12px"><span class="text-white">The Truth About Getting<br>Multiple Contractor Quotes</span></h1>
+        <h1 style="margin-top:12px"><span class="text-navy">The Truth About Getting<br>Multiple Contractor Quotes</span></h1>
       </div>
     </section>
     <article class="section" style="background:var(--white)">
@@ -5599,7 +5699,7 @@
       <div class="blueprint-overlay"></div>
       <div class="container page-hero-content" style="position:relative;z-index:1">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span>Contact</div>
-        <h1><span class="text-white">Ready to Build?</span><br><span class="text-orange">Let's Talk.</span></h1>
+        <h1><span class="text-navy">Ready to Build?</span><br><span class="text-orange">Let's Talk.</span></h1>
       </div>
     </section>
 
