@@ -1898,6 +1898,40 @@
       .process-numbered { grid-template-columns: 1fr; }
       .process-horizontal { grid-template-columns: 1fr; }
     }
+
+    /* Flooring / countertop options grid */
+    .flooring-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .floor-option {
+      background: var(--light);
+      border-radius: 8px;
+      padding: 22px 20px;
+      border-left: 4px solid var(--orange);
+    }
+
+    .floor-option-name {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+
+    .floor-option p { font-size: 13.5px; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      .flooring-options { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .flooring-options { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -3536,7 +3570,1028 @@
     </section>
   </div>
 
-  <!-- ─── Remaining pages (Steps 9–15) placeholder ─────────────────── -->
+  <!-- ══════════════════ INTERIOR SUBPAGES ══════════════════ -->
+
+  <!-- sub-kitchens: Warm residential, prominent photo tone -->
+  <div class="page hidden" id="sub-kitchens">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.85) 45%,rgba(30,46,92,0.35) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Kitchens &amp; Bathrooms</div>
+        <h1><span class="text-white">You've Been Staring</span><br><span class="text-orange">at That Kitchen Long Enough.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">The kitchen is the heart of the home. The bathroom is your sanctuary. Let's build both the way you've always wanted them.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Start My Kitchen Remodel &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Every Detail.<br><span class="text-red">The Way You Imagined It.</span></h2>
+            <p>VWG handles the full kitchen and bathroom renovation — from demolition to the last tile grout. We work with your design or bring in our design team to make sure the space works the way your family actually lives.</p>
+            <p style="margin-top:14px">We don't subcontract the critical work. Our crews handle the carpentry, tile, plumbing rough-in, and finish work in-house. One team. One standard.</p>
+            <h4 style="margin-top:28px;color:var(--red);font-size:0.9rem;text-transform:uppercase;letter-spacing:0.06em">Why It Matters</h4>
+            <p style="margin-top:8px">Kitchens and bathrooms drive more homebuyer decisions than any other room. Whether you're staying or selling, this is where investment turns into value.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Full demolition &amp; haul-out</li>
+              <li>Custom cabinetry or stock cabinet installation</li>
+              <li>Countertop fabrication &amp; installation</li>
+              <li>Tile backsplash &amp; flooring</li>
+              <li>Plumbing rough-in &amp; fixture installation</li>
+              <li>Electrical (outlets, under-cabinet lighting)</li>
+              <li>Painting &amp; trim work</li>
+              <li>Appliance installation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>From Demo to <span class="text-red">Done.</span></h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Design &amp; Selection</h4><p>Layout, cabinets, counters, tile, fixtures — chosen before anything is ordered.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Demo &amp; Rough-In</h4><p>Old space cleared, plumbing and electrical repositioned as needed.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Cabinetry &amp; Tile</h4><p>Cabinets hung level, backsplash and flooring tiled perfectly.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Fixtures &amp; Finish</h4><p>Counters set, fixtures installed, paint finished. Ready to use.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-flooring')"><h4>Flooring</h4><p>New floors complete the kitchen transformation.</p></div>
+          <div class="related-card" onclick="goTo('sub-countertops')"><h4>Countertops</h4><p>The surface that ties the whole kitchen together.</p></div>
+          <div class="related-card" onclick="goTo('sub-tile')"><h4>Tile &amp; Stone</h4><p>Backsplash and shower tile done beautifully.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-carpentry: Artisan dark feel -->
+  <div class="page hidden" id="sub-carpentry">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.92)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Custom Carpentry &amp; Millwork</div>
+        <h1><span class="text-white">Anyone Can Swing</span><br><span class="text-orange">a Hammer. Not Everyone Can Build a Legacy.</span></h1>
+        <p style="color:rgba(255,255,255,0.75);max-width:480px;margin-top:14px">Custom carpentry is the difference between a house and a home. Built-ins, trim, millwork — crafted to last and designed to impress.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Discuss Custom Carpentry &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split sub-split--reverse">
+          <div class="sub-checklist-box" style="background:var(--navy)">
+            <h4 style="color:var(--white)">What We Build</h4>
+            <ul class="sub-checklist sub-checklist--light">
+              <li>Custom built-in bookshelves &amp; cabinets</li>
+              <li>Crown molding &amp; decorative trim</li>
+              <li>Wainscoting &amp; wall paneling</li>
+              <li>Custom doors &amp; door casings</li>
+              <li>Coffered &amp; tray ceilings</li>
+              <li>Custom closet systems</li>
+              <li>Window seats &amp; benches</li>
+              <li>Stair treads, railings &amp; balusters</li>
+            </ul>
+          </div>
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Craftsmanship That<br><span class="text-red">Defines the Room.</span></h2>
+            <p>Mass-produced trim and cookie-cutter built-ins tell a story. Custom carpentry tells a different one. VWG's craftsmen work to exacting tolerances — corners meet clean, doors hang true, and finishes get painted twice.</p>
+            <p style="margin-top:14px">From the crown molding in a Greenwich colonial to a full wall of custom built-ins in a White Plains modern home — we've done it in every style and we know what it takes to get it right.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Measured Twice. Built Once.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Design &amp; Measure</h4><p>Every dimension is confirmed before materials are ordered. Nothing gets cut twice.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Shop Fabrication</h4><p>Larger pieces pre-built in-shop for quality control before arriving on site.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Installation</h4><p>Set plumb, level, and square. Every joint tight. Every transition clean.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Prime &amp; Paint</h4><p>Caulked, primed, and painted to a flawless finish.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-painting')"><h4>Painting &amp; Wallpaper</h4><p>The finish on the carpentry is what everyone sees.</p></div>
+          <div class="related-card" onclick="goTo('sub-fireplaces')"><h4>Fireplaces</h4><p>Custom mantel and surround work.</p></div>
+          <div class="related-card" onclick="goTo('sub-kitchens')"><h4>Kitchens &amp; Bathrooms</h4><p>Custom cabinetry is built carpentry at its best.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Call Henry: (914) 906-8215</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-flooring: Clean modern options layout -->
+  <div class="page hidden" id="sub-flooring">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Flooring</div>
+        <h1><span class="text-white">The Floor Is the<br>Foundation of</span> <span class="text-orange">Every Room.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Flooring Pricing &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px">
+          <span class="section-label">What This Is</span>
+          <h2>Every Type. <span class="text-red">Every Room. Done Right.</span></h2>
+          <p style="color:var(--muted);max-width:560px;margin:14px auto 0">VWG installs every major flooring type — and we recommend the right one for each room based on traffic, moisture, and your lifestyle. No upselling. Just the honest answer.</p>
+        </div>
+        <div class="flooring-options">
+          <div class="floor-option"><div class="floor-option-name">Hardwood</div><p>Solid and engineered. Refinishable. The gold standard for living spaces.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Luxury Vinyl Plank</div><p>Waterproof, durable, and beautiful. Perfect for kitchens and basements.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Tile</div><p>Porcelain and ceramic. Bathrooms, kitchens, mudrooms, laundry rooms.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Carpet</div><p>Bedrooms and finished basements. Softer underfoot, quieter room.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Laminate</div><p>Cost-effective, low-maintenance, available in dozens of wood looks.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Natural Stone</div><p>Marble, slate, travertine. Installed with the care these materials require.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Prep Is Everything.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Material Selection</h4><p>We walk you through options and help you choose what actually fits the space.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Subfloor Prep</h4><p>Level, clean, and dry subfloor before installation begins. This is where cheap jobs fail.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Installation</h4><p>Proper acclimation, expansion gaps, and pattern layout from the start.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Trim &amp; Transition</h4><p>Shoe molding, transitions, and thresholds finished cleanly between rooms.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-tile')"><h4>Tile &amp; Stone</h4><p>Tile floors for kitchens and baths.</p></div>
+          <div class="related-card" onclick="goTo('sub-kitchens')"><h4>Kitchens &amp; Bathrooms</h4><p>Often redone at the same time.</p></div>
+          <div class="related-card" onclick="goTo('sub-painting')"><h4>Painting &amp; Wallpaper</h4><p>New floors and fresh paint transform a room.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-countertops: Elegant material showcase -->
+  <div class="page hidden" id="sub-countertops">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.87) 45%,rgba(17,29,56,0.40) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Countertops</div>
+        <h1><span class="text-white">The Surface That</span><br><span class="text-orange">Ties the Whole Room Together.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Countertop Pricing &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <span class="section-label">What This Is</span>
+        <h2 style="margin-bottom:20px">Every Material.<br><span class="text-red">Fabricated and Installed Right.</span></h2>
+        <p style="color:var(--muted);max-width:680px">A countertop is one of the first things people notice in a kitchen or bath. VWG fabricates and installs every major countertop material — templated to the exact dimensions of your space, edge-profiled to your preference, and installed with zero gaps.</p>
+        <div class="flooring-options" style="margin-top:40px">
+          <div class="floor-option"><div class="floor-option-name">Quartz</div><p>Non-porous, low-maintenance, available in hundreds of colors and patterns.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Granite</div><p>Natural stone, each slab unique. Durable, heat-resistant, timeless.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Marble</div><p>Luxurious. Requires more care — we'll tell you exactly what to expect.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Butcher Block</div><p>Warm, functional, and beautiful. Perfect for kitchen islands.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Concrete</div><p>Custom cast and sealed. Industrial character that can't be replicated.</p></div>
+          <div class="floor-option"><div class="floor-option-name">Porcelain Slab</div><p>Large-format porcelain with the look of stone — lighter and more durable.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Template. Fabricate. Install.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Template</h4><p>Exact template of every counter run. No guessing at the fabrication shop.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Fabrication</h4><p>Cut, edged, and finished at the shop before it comes to your home.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Installation</h4><p>Set level, properly supported, and joined seamlessly at seams.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Plumbing Reconnect</h4><p>Sink and faucet reinstalled, silicone sealed, and tested.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-kitchens')"><h4>Kitchens &amp; Bathrooms</h4><p>Full room renovation including countertops.</p></div>
+          <div class="related-card" onclick="goTo('sub-tile')"><h4>Tile &amp; Stone</h4><p>Backsplash tile often pairs with new counters.</p></div>
+          <div class="related-card" onclick="goTo('sub-carpentry')"><h4>Custom Carpentry</h4><p>New cabinetry + new countertops = completely new kitchen.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-painting: Light airy feel -->
+  <div class="page hidden" id="sub-painting">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.82) 40%,rgba(30,46,92,0.38) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Painting &amp; Wallpaper</div>
+        <h1><span class="text-white">The Finish Is</span><br><span class="text-orange">the Work.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">Clean lines. No drips. No cutting corners on prep. Paint done right makes everything else look better.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Paint Estimate &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Prep First.<br><span class="text-red">Then Paint.</span></h2>
+            <p>Anyone can roll paint on a wall. The difference is what happens before the roller comes out — patching, sanding, priming, taping. That's where a paint job goes from good to great. VWG preps like it matters, because it does.</p>
+            <p style="margin-top:14px">We also install wallpaper — from simple grasscloth to complex pattern-matched traditional papers. Measured, seamed, and hung the way it was designed to be.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Surface patching, skim coat where needed</li>
+              <li>Sanding &amp; priming</li>
+              <li>Interior walls &amp; ceilings</li>
+              <li>Trim, doors &amp; windows</li>
+              <li>Exterior painting</li>
+              <li>Wallpaper removal &amp; installation</li>
+              <li>Color consultation available</li>
+              <li>Detailed masking &amp; floor protection</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>How We Paint. <span class="text-red">No Shortcuts.</span></h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Prep &amp; Patch</h4><p>Holes filled, cracks caulked, surfaces sanded smooth.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Prime</h4><p>Primer applied to ensure uniform color and proper adhesion.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Paint</h4><p>Two coats minimum. Brush cut-ins, roller on fields. Edge to edge clean.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Inspect &amp; Touch Up</h4><p>Final walkthrough in natural light. We fix anything that isn't perfect.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-carpentry')"><h4>Custom Carpentry</h4><p>New trim and millwork needs a great paint finish.</p></div>
+          <div class="related-card" onclick="goTo('sub-kitchens')"><h4>Kitchens &amp; Bathrooms</h4><p>Painting is part of every full renovation.</p></div>
+          <div class="related-card" onclick="goTo('sub-flooring')"><h4>Flooring</h4><p>New floors and fresh paint are the ultimate combo.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-tile: Pattern-forward, full-bleed section -->
+  <div class="page hidden" id="sub-tile">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.87) 50%,rgba(17,29,56,0.40) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Tile &amp; Stone</div>
+        <h1><span class="text-white">Tile Done Right</span><br><span class="text-orange">Is Art You Walk On.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Tile Pricing &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Every Grout Line.<br><span class="text-red">Every Pattern. Perfect.</span></h2>
+            <p>Bad tile work is obvious — uneven grout, lippage between tiles, patterns that don't align at the corners. VWG's tile installers don't cut corners on layout planning, leveling, or grouting. The work looks as good in ten years as it does the day it's done.</p>
+            <p style="margin-top:14px">We install ceramic, porcelain, natural stone, glass mosaic, and large-format tile. Floors, walls, showers, backsplashes, and feature walls.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What We Tile</h4>
+            <ul class="sub-checklist">
+              <li>Bathroom floors &amp; walls</li>
+              <li>Full shower surrounds</li>
+              <li>Kitchen backsplash</li>
+              <li>Fireplace surrounds</li>
+              <li>Mudroom &amp; laundry floors</li>
+              <li>Feature &amp; accent walls</li>
+              <li>Outdoor tile (porcelain)</li>
+              <li>Shower niches &amp; benches</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Layout First. <span class="text-orange">Then Install.</span></h2></div>
+        <div class="process-numbered">
+          <div class="proc-num-item"><div class="proc-num">01</div><h4>Layout Planning</h4><p>Tile layout planned on paper before any adhesive is mixed. Patterns start at center.</p></div>
+          <div class="proc-num-item"><div class="proc-num">02</div><h4>Substrate Prep</h4><p>Backer board, waterproof membrane, and leveling compound applied as required.</p></div>
+          <div class="proc-num-item"><div class="proc-num">03</div><h4>Tile Setting</h4><p>Set in proper thinset with the right trowel notch for each tile size.</p></div>
+          <div class="proc-num-item"><div class="proc-num">04</div><h4>Grouting &amp; Sealing</h4><p>Grouted clean, sealed where required, joints consistent throughout.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-kitchens')"><h4>Kitchens &amp; Bathrooms</h4><p>Tile is central to both spaces.</p></div>
+          <div class="related-card" onclick="goTo('sub-countertops')"><h4>Countertops</h4><p>Backsplash tile coordinates with the counter material.</p></div>
+          <div class="related-card" onclick="goTo('sub-fireplaces')"><h4>Fireplaces</h4><p>Stone and tile fireplace surrounds.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-fireplaces: Dark dramatic warm -->
+  <div class="page hidden" id="sub-fireplaces">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(192,57,43,0.22) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Fireplaces</div>
+        <h1><span class="text-white">The Centerpiece</span><br><span class="text-orange">of the Room.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:460px;margin-top:14px">A fireplace isn't just heat — it's the room's focal point. Built to impress and built to last.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Discuss My Fireplace &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Built for the Room<br><span class="text-red">You Want to Live In.</span></h2>
+            <p>VWG builds custom fireplace surrounds, installs gas inserts, and constructs full masonry fireplaces. Whether you're adding a new fireplace or reimagining an existing one with new stone, tile, or a custom mantel — we handle the full scope.</p>
+            <p style="margin-top:14px">We work with gas, electric, and wood-burning configurations. All work is code-compliant and inspected. The mantel is custom-built to the room.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Gas fireplace insert installation</li>
+              <li>Electric fireplace installation</li>
+              <li>Masonry fireplace construction</li>
+              <li>Custom mantel &amp; surround design</li>
+              <li>Stone &amp; tile surround installation</li>
+              <li>Hearth construction</li>
+              <li>Gas line connection</li>
+              <li>Chimney liner &amp; cap replacement</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>From Concept to First Fire.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Design &amp; Selection</h4><p>We help you choose the right type, style, and surround materials for your room.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Structural Prep</h4><p>Framing, hearth base, and code-compliant clearances established.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Surround &amp; Mantel</h4><p>Stone, tile, or custom millwork mantel installed to the design.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Connection &amp; Inspection</h4><p>Gas or electric connected, inspected, and tested. Ready for winter.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-tile')"><h4>Tile &amp; Stone</h4><p>Custom stone surrounds are our specialty.</p></div>
+          <div class="related-card" onclick="goTo('sub-carpentry')"><h4>Custom Carpentry</h4><p>The mantel is custom millwork at its finest.</p></div>
+          <div class="related-card" onclick="goTo('sub-radiant')"><h4>Radiant Heat</h4><p>The warmest floors to go with the warmest room.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Call Henry: (914) 906-8215</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-entertainment: Sleek dark tech-forward -->
+  <div class="page hidden" id="sub-entertainment">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:rgba(17,29,56,0.92)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Entertainment Centers &amp; Home Theater</div>
+        <h1><span class="text-white">Your Living Room.</span><br><span class="text-orange">Theater Quality.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Design My Media Room &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split sub-split--reverse">
+          <div class="sub-checklist-box" style="background:var(--navy-dark)">
+            <h4 style="color:var(--white)">What We Build</h4>
+            <ul class="sub-checklist sub-checklist--light">
+              <li>Custom built-in media walls</li>
+              <li>Floating TV cabinet systems</li>
+              <li>Dedicated home theater rooms</li>
+              <li>In-wall speaker rough-in</li>
+              <li>Projector ceiling mount &amp; screen</li>
+              <li>Acoustic panel installation</li>
+              <li>Wiring management &amp; conduit</li>
+              <li>Tiered seating construction</li>
+            </ul>
+          </div>
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Built-In. <span class="text-red">Wired Right. Looking Sharp.</span></h2>
+            <p>A TV on a stand is furniture. A built-in media wall is architecture. VWG designs and builds custom entertainment centers that house electronics cleanly, manage cables invisibly, and look like they were always part of the room.</p>
+            <p style="margin-top:14px">For dedicated home theaters, we handle the full build — room within a room framing, acoustic treatments, projector mount, screen, tiered seating base, and custom cabinetry around all of it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Wired. Built. Dialed In.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>AV &amp; Design Plan</h4><p>Sketch the layout, plan the wiring, and spec the built-ins to the equipment.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Rough Wiring</h4><p>Speaker, HDMI, and power conduits run in-wall before drywall closes up.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Carpentry Build</h4><p>Custom cabinetry and built-ins installed around the AV infrastructure.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Paint &amp; Finish</h4><p>Primed, painted, and detailed. Equipment installed and system tested.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Interior Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-carpentry')"><h4>Custom Carpentry</h4><p>Every media wall starts with custom millwork.</p></div>
+          <div class="related-card" onclick="goTo('sub-painting')"><h4>Painting &amp; Wallpaper</h4><p>Dark accent walls make the theater.</p></div>
+          <div class="related-card" onclick="goTo('sub-insulation')"><h4>Insulation</h4><p>Sound isolation starts with the right insulation in walls.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-insulation: Technical practical process-focused -->
+  <div class="page hidden" id="sub-insulation">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,80,60,0.30) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-interior')">Interior</span><span>/</span>Insulation</div>
+        <h1><span class="text-white">Seal It Right.</span><br><span class="text-orange">Lower Your Bills.</span></h1>
+        <p style="color:rgba(255,255,255,0.75);max-width:460px;margin-top:14px">A properly insulated home is a comfortable home. It's also a significantly cheaper-to-run home.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get an Insulation Assessment &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>The Work Nobody Sees.<br><span class="text-red">That Changes Everything.</span></h2>
+            <p>Insulation isn't glamorous, but it's one of the highest-return home improvement investments you can make. Air sealing alone can reduce heating and cooling costs by 15–20%. VWG installs spray foam and fiberglass insulation in new construction, gut renovations, and targeted upgrades.</p>
+            <p style="margin-top:14px">Spray foam creates a continuous air and vapor barrier — which fiberglass batts, installed incorrectly, do not. We'll tell you which is right for each application.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Open &amp; closed-cell spray foam</li>
+              <li>Fiberglass batt installation</li>
+              <li>Attic air sealing &amp; insulation</li>
+              <li>Basement rim joist sealing</li>
+              <li>Crawl space insulation</li>
+              <li>Exterior wall cavity fill (blown-in)</li>
+              <li>Sound isolation (between floors)</li>
+              <li>Thermal imaging assessment (optional)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Assess. Seal. Confirm.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Assessment</h4><p>We inspect the building envelope — attic, walls, basement — to find where you're losing heat.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Air Sealing</h4><p>Gaps, penetrations, and rim joists sealed before insulation is installed.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Insulation Install</h4><p>Spray foam or fiberglass installed to the correct R-value for your climate zone.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Verification</h4><p>Final inspection ensures no gaps, correct depth, and proper coverage throughout.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Work</span><h3>Other Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-hvac-install')"><h4>HVAC Installations</h4><p>Better insulation means your HVAC works less hard.</p></div>
+          <div class="related-card" onclick="goTo('sub-windows')"><h4>Windows &amp; Doors</h4><p>Seal the envelope from every angle.</p></div>
+          <div class="related-card" onclick="goTo('sub-new-construction')"><h4>New Construction</h4><p>Insulation is specified at the design phase on new builds.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request a Free Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════ HVAC SUBPAGES ══════════════════ -->
+
+  <!-- sub-hvac-install -->
+  <div class="page hidden" id="sub-hvac-install">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(30,60,100,0.40) 100%)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>HVAC Installations</div>
+        <h1><span class="text-white">A Comfortable Home</span><br><span class="text-orange">Isn't a Luxury. It's What We Guarantee.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Schedule HVAC Estimate &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Full System Design<br><span class="text-red">and Installation.</span></h2>
+            <p>Whether you're building new, replacing an aged-out system, or upgrading to a more efficient one — VWG handles the full HVAC installation from equipment selection to final commissioning. We size the system properly, not oversized so you feel like we're impressive, just correctly sized so it runs efficiently.</p>
+            <p style="margin-top:14px">We work with all major equipment brands and install in residential and light commercial applications across NY, NJ, and CT.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Load calculation (Manual J)</li>
+              <li>Equipment selection &amp; sizing</li>
+              <li>Ductwork design &amp; installation</li>
+              <li>Air handler &amp; condenser installation</li>
+              <li>Refrigerant line sets</li>
+              <li>Thermostat &amp; controls</li>
+              <li>System commissioning &amp; testing</li>
+              <li>Permit filing where required</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">From Assessment<br><span class="text-orange">to First Cool Night.</span></h2></div>
+        <div class="process-numbered">
+          <div class="proc-num-item"><div class="proc-num">01</div><h4>Load Calculation</h4><p>We measure the space and calculate exactly how much heating and cooling capacity the home needs.</p></div>
+          <div class="proc-num-item"><div class="proc-num">02</div><h4>Equipment Selection</h4><p>We recommend equipment that matches the load, your budget, and your efficiency goals.</p></div>
+          <div class="proc-num-item"><div class="proc-num">03</div><h4>Installation</h4><p>Ductwork, air handler, condenser, refrigerant lines, and controls installed by certified technicians.</p></div>
+          <div class="proc-num-item"><div class="proc-num">04</div><h4>Commission &amp; Test</h4><p>System charged, balanced, and tested in all operating modes. You get a walkthrough on operation.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Other HVAC Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-central-ac')"><h4>Central AC Systems</h4><p>Whole-home cooling as part of HVAC installation.</p></div>
+          <div class="related-card" onclick="goTo('sub-ductless')"><h4>Ductless &amp; Split Systems</h4><p>No ductwork? No problem.</p></div>
+          <div class="related-card" onclick="goTo('sub-boilers')"><h4>Boilers &amp; Furnaces</h4><p>Heating side of the full HVAC system.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Schedule Your HVAC Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-central-ac -->
+  <div class="page hidden" id="sub-central-ac">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Central AC Systems</div>
+        <h1><span class="text-white">Whole-Home Cooling.</span><br><span class="text-orange">One System. Done Right.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Central AC Estimate &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Cool Every Room.<br><span class="text-red">One Thermostat.</span></h2>
+            <p>Central air conditioning distributes conditioned air through the home's duct system — cooling every room from one outdoor condenser and one air handler. It's the most comfortable whole-home solution when installed correctly with the right sized equipment.</p>
+            <p style="margin-top:14px">VWG installs central AC in new construction and in existing homes with existing ductwork. Where ductwork needs modification or replacement, we handle that too.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Outdoor condenser unit installation</li>
+              <li>Indoor air handler or coil</li>
+              <li>Refrigerant line sets</li>
+              <li>Ductwork modification/replacement</li>
+              <li>New thermostat &amp; controls</li>
+              <li>System commissioning</li>
+              <li>Filter &amp; maintenance guidance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>From Assessment to First Cool Day.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Duct Assessment</h4><p>We inspect existing ductwork for leaks, restrictions, and sizing issues.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Equipment Sizing</h4><p>Properly-sized condenser and coil recommended based on square footage and load.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Installation</h4><p>Condenser set, coil installed, line sets run, thermostat wired.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Commission &amp; Test</h4><p>Refrigerant charged, airflow balanced, all rooms tested.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Other HVAC Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-ductless')"><h4>Ductless &amp; Split Systems</h4><p>Great for additions or homes without ductwork.</p></div>
+          <div class="related-card" onclick="goTo('sub-hvac-install')"><h4>Full HVAC Installation</h4><p>Heating and cooling as a complete system.</p></div>
+          <div class="related-card" onclick="goTo('sub-boilers')"><h4>Boilers &amp; Furnaces</h4><p>Heat to pair with your new AC system.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Schedule Your AC Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-ductless -->
+  <div class="page hidden" id="sub-ductless">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.88) 50%,rgba(30,70,100,0.40) 100%)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Ductless &amp; Split AC</div>
+        <h1><span class="text-white">Zone Cooling</span><br><span class="text-orange">Without the Ductwork.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Ductless System Quote &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Quiet. Efficient.<br><span class="text-red">No Ducts Required.</span></h2>
+            <p>Ductless mini-split systems cool and heat individual zones without any ductwork. An outdoor compressor connects to one or multiple indoor air handlers — each controllable independently. Perfect for additions, older homes, garages, or anyone who wants zone control without a full central system.</p>
+            <p style="margin-top:14px">Modern mini-splits are significantly more energy-efficient than central systems and have replaced window units as the go-to solution for Westchester homeowners.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Outdoor compressor unit</li>
+              <li>Indoor wall-mount air handler(s)</li>
+              <li>Line set installation (refrigerant + power)</li>
+              <li>Multi-zone systems (up to 5 zones)</li>
+              <li>WiFi thermostat &amp; smart controls</li>
+              <li>Heating mode (heat pump) option</li>
+              <li>System commissioning</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Zone by Zone. Perfectly Cool.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Zone Planning</h4><p>We assess the space and design a zoning plan that covers every room you need.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Mounting Locations</h4><p>Outdoor unit and indoor heads located for performance and aesthetics.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Line Set Run</h4><p>Refrigerant and electrical lines run cleanly through the building envelope.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Commission &amp; Train</h4><p>System charged, all zones tested, remote controls programmed and explained.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Other HVAC Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-central-ac')"><h4>Central AC</h4><p>Whole-home solution for ducted homes.</p></div>
+          <div class="related-card" onclick="goTo('sub-hvac-install')"><h4>Full HVAC Installation</h4><p>Heating and cooling as one system.</p></div>
+          <div class="related-card" onclick="goTo('sub-additions')"><h4>Additions &amp; Extensions</h4><p>Ductless is the go-to solution for new additions.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Get a Ductless Quote &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-tankless -->
+  <div class="page hidden" id="sub-tankless">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1400&q=80')"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Tankless Water Heaters</div>
+        <h1><span class="text-white">Hot Water On Demand.</span><br><span class="text-orange">Lower Bills. Better Life.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Tankless Pricing &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Never Run Out of<br><span class="text-red">Hot Water Again.</span></h2>
+            <p>A traditional tank heater stores 40–80 gallons of water at temperature all day — whether you use it or not. A tankless unit heats water only when you ask for it. Result: endless hot water and 20–30% lower energy costs.</p>
+            <p style="margin-top:14px">VWG installs gas and electric tankless units from the leading manufacturers. We handle the gas line sizing, venting, and condensate where applicable — it's not a simple swap.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Unit sizing &amp; selection</li>
+              <li>Gas line sizing &amp; modification</li>
+              <li>Dedicated venting installation</li>
+              <li>Water line connections</li>
+              <li>Old unit removal &amp; disposal</li>
+              <li>Permit filing where required</li>
+              <li>Maintenance guidance</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Old Tank Out. Tankless In. Done.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Assessment</h4><p>We evaluate gas line capacity, venting options, and flow rate requirements.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Equipment Selection</h4><p>Right-sized unit for your household demand recommended.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Installation</h4><p>Old unit removed, new unit mounted, gas line modified, venting installed.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Test &amp; Commission</h4><p>System pressure-tested, hot water confirmed at every fixture.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Other HVAC Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-boilers')"><h4>Boilers &amp; Furnaces</h4><p>Combination heating and hot water solutions.</p></div>
+          <div class="related-card" onclick="goTo('sub-radiant')"><h4>Radiant Heat</h4><p>Tankless often pairs with radiant floor heating.</p></div>
+          <div class="related-card" onclick="goTo('sub-hvac-install')"><h4>HVAC Installation</h4><p>Complete the mechanical system.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Get Tankless Pricing &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-boilers -->
+  <div class="page hidden" id="sub-boilers">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(192,57,43,0.22) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Boilers &amp; Furnaces</div>
+        <h1><span class="text-white">Reliable Heat for</span><br><span class="text-orange">Tri-State Winters.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get Heating Estimate &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split sub-split--reverse">
+          <div class="sub-checklist-box" style="background:var(--navy)">
+            <h4 style="color:var(--white)">What's Included</h4>
+            <ul class="sub-checklist sub-checklist--light">
+              <li>Boiler replacement (gas &amp; oil)</li>
+              <li>High-efficiency condensing boilers</li>
+              <li>Furnace installation &amp; replacement</li>
+              <li>Zone valve &amp; circulator replacement</li>
+              <li>Expansion tank &amp; pressure relief</li>
+              <li>Thermostat &amp; zone controls</li>
+              <li>Emergency service calls</li>
+              <li>Annual maintenance programs</li>
+            </ul>
+          </div>
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>The Heat That Keeps<br><span class="text-red">Your Family Warm.</span></h2>
+            <p>A failing boiler in January is not a problem you want to troubleshoot. VWG installs and services gas and oil boilers and forced-air furnaces across Westchester, NJ, and CT. We stock common parts and can respond quickly when your heat goes out.</p>
+            <p style="margin-top:14px">New boiler installations are sized properly using heat loss calculations — not the old contractor habit of "same size as the old one." A properly-sized boiler runs more efficiently and lasts longer.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Assessed. Installed. Running Right.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Heat Loss Calc</h4><p>We calculate the actual heat load — not guess at it.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Equipment Selection</h4><p>Right-sized, high-efficiency unit selected for your home and fuel type.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Installation</h4><p>Old system removed, new unit installed, connected, and vented properly.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Commission &amp; Test</h4><p>All zones tested, controls calibrated, efficiency confirmed.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Other HVAC Services</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-radiant')"><h4>Radiant Heat</h4><p>Boilers power radiant floor heating systems.</p></div>
+          <div class="related-card" onclick="goTo('sub-tankless')"><h4>Tankless Water Heaters</h4><p>Combination boiler and hot water solutions.</p></div>
+          <div class="related-card" onclick="goTo('sub-hvac-install')"><h4>Full HVAC</h4><p>Pair your boiler with a new AC system.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Schedule Heating Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-radiant -->
+  <div class="page hidden" id="sub-radiant">
+    <section class="page-hero page-hero--sm">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.88) 50%,rgba(224,120,32,0.20) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-hvac')">HVAC</span><span>/</span>Radiant Heat</div>
+        <h1><span class="text-white">The Most Comfortable</span><br><span class="text-orange">Heat There Is.</span></h1>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Explore Radiant Heating &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Heat Rises from<br><span class="text-red">the Floor Up.</span></h2>
+            <p>Radiant floor heating is the gold standard of indoor comfort. Warm water circulates through tubing embedded in or below the floor — heating it evenly from below, with no forced air, no hot/cold spots, and no noise. Once you've had it, nothing else compares.</p>
+            <p style="margin-top:14px">VWG installs radiant heating in new construction subfloors, existing floors (staple-up under subfloor), and in tile applications (electric mat). We spec the right boiler or water heater to run it efficiently.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>PEX tubing layout &amp; installation</li>
+              <li>Manifold installation &amp; zone control</li>
+              <li>Boiler or water heater sizing</li>
+              <li>Slab pour-in &amp; staple-up methods</li>
+              <li>Electric radiant mat (under tile)</li>
+              <li>Thermostat per zone</li>
+              <li>Pressure testing before floor close-up</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Under Every Floor. Over Every Winter.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Zone Design</h4><p>Floor plan divided into zones, tube spacing calculated for each room type.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Tubing Install</h4><p>PEX laid in pattern, secured, and connected to manifold.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Pressure Test</h4><p>System pressure-tested before floor cover goes on — no guessing later.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Boiler &amp; Commission</h4><p>Heat source connected, zones balanced, thermostats set. Enjoy the warmth.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Related Work</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-boilers')"><h4>Boilers &amp; Furnaces</h4><p>Radiant heat runs from a properly-sized boiler.</p></div>
+          <div class="related-card" onclick="goTo('sub-tile')"><h4>Tile &amp; Stone</h4><p>Tile floors carry radiant heat beautifully.</p></div>
+          <div class="related-card" onclick="goTo('sub-new-construction')"><h4>New Construction</h4><p>Best time to install radiant is before the floors go in.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Request Radiant Heat Estimate &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ══════════════════ DESIGN SUBPAGES ══════════════════ -->
+
+  <!-- sub-drawings: Blueprint aesthetic, technical -->
+  <div class="page hidden" id="sub-drawings">
+    <section class="page-hero page-hero--design" style="min-height:320px">
+      <div class="page-hero-overlay" style="background:var(--navy-dark);position:absolute;inset:0"></div>
+      <div class="blueprint-overlay" style="opacity:0.9"></div>
+      <div class="container page-hero-content" style="position:relative;z-index:2">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-design')">Design</span><span>/</span>Construction Drawings &amp; Floor Plans</div>
+        <h1><span class="text-white">Every Great Build</span><br><span class="text-orange">Starts with Great Drawings.</span></h1>
+        <p style="color:rgba(255,255,255,0.75);max-width:480px;margin-top:14px">Permits get filed on drawings. Contractors get priced on drawings. Your vision becomes real on drawings.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Request Drawing Services &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>Precise. Permit-Ready.<br><span class="text-red">No Surprises in the Field.</span></h2>
+            <p>Construction drawings aren't just pretty pictures. They're the contract between the designer and the builder — the document that makes sure what you agreed to is what actually gets built. VWG produces architectural drawings, structural drawings, and site plans for residential and light commercial projects.</p>
+            <p style="margin-top:14px">Every set includes dimensions, material callouts, and code notes. Most municipalities across NY, NJ, and CT require stamped drawings for permits — we coordinate that too.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Existing condition as-built drawings</li>
+              <li>Proposed floor plans</li>
+              <li>Exterior elevations</li>
+              <li>Cross-section drawings</li>
+              <li>Site plans</li>
+              <li>Structural framing plans</li>
+              <li>Permit-submission package</li>
+              <li>Revision rounds included</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label">Our Process</span><h2>Measure. Draw. Revise. Submit.</h2></div>
+        <div class="process-horizontal">
+          <div class="proc-h-item"><div class="proc-h-num">1</div><h4>Site Measure</h4><p>We field-measure every space and confirm existing conditions before drawing anything.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">2</div><h4>Design Draft</h4><p>Proposed design drawn up in CAD with all dimensions and material callouts.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">3</div><h4>Revision Round</h4><p>You review, we revise. We don't charge per hour — we charge to get it right.</p></div>
+          <div class="proc-h-item"><div class="proc-h-num">4</div><h4>Permit Package</h4><p>Final drawing set packaged and ready for permit submission.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Related Work</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-3d')"><h4>3D Renderings</h4><p>See the finished design before we break ground.</p></div>
+          <div class="related-card" onclick="goTo('sub-new-construction')"><h4>New Construction</h4><p>Every new build starts with a full drawing set.</p></div>
+          <div class="related-card" onclick="goTo('sub-additions')"><h4>Additions &amp; Extensions</h4><p>Addition permits require architectural drawings.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Start With a Conversation &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- sub-3d: Visual creative bold -->
+  <div class="page hidden" id="sub-3d">
+    <section class="page-hero" style="min-height:360px">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.90) 50%,rgba(30,46,92,0.45) 100%)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-design')">Design</span><span>/</span>3D Model Renderings</div>
+        <h1><span class="text-white">See Your Finished Project</span><br><span class="text-orange">Before We Break Ground.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:480px;margin-top:14px">Photorealistic 3D renderings that let you walk through your renovation — virtually — and make changes before they cost money.</p>
+        <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Request 3D Rendering &#8594;</button>
+      </div>
+    </section>
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="sub-split">
+          <div>
+            <span class="section-label">What This Is</span>
+            <h2>A Decision Made Early<br><span class="text-red">Saves Thousands Later.</span></h2>
+            <p>3D renderings let you see exactly what your finished project will look like before construction starts. Change the cabinet color. Move a wall. Try a different countertop. All of it costs nothing in 3D — and everything in the field.</p>
+            <p style="margin-top:14px">VWG produces photorealistic interior and exterior 3D renderings from your floor plan or design concept. We model furnishings, lighting, materials, and finishes so you're looking at something that feels real — because it will be.</p>
+          </div>
+          <div class="sub-checklist-box">
+            <h4>What's Included</h4>
+            <ul class="sub-checklist">
+              <li>Interior room renderings</li>
+              <li>Exterior home renderings</li>
+              <li>Multiple camera angle views</li>
+              <li>Material &amp; finish representation</li>
+              <li>Furniture &amp; fixture placement</li>
+              <li>Lighting simulation</li>
+              <li>Revision rounds included</li>
+              <li>High-resolution print files</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--navy-dark);position:relative;overflow:hidden">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1">
+        <div style="text-align:center;margin-bottom:40px"><span class="section-label section-label--light">Our Process</span><h2 class="text-white">Concept to <span class="text-orange">Photorealistic.</span></h2></div>
+        <div class="process-numbered">
+          <div class="proc-num-item"><div class="proc-num">01</div><h4>Design Brief</h4><p>We gather your floor plan, material choices, and style references.</p></div>
+          <div class="proc-num-item"><div class="proc-num">02</div><h4>3D Modeling</h4><p>Space modeled in 3D with accurate dimensions and proportions.</p></div>
+          <div class="proc-num-item"><div class="proc-num">03</div><h4>Materials &amp; Render</h4><p>Finishes applied, lighting set, high-quality renders produced.</p></div>
+          <div class="proc-num-item"><div class="proc-num">04</div><h4>Review &amp; Revise</h4><p>You review, we revise. Finalize and deliver print-ready files.</p></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:32px"><span class="section-label">Related Services</span><h3>Related Work</h3></div>
+        <div class="related-cards">
+          <div class="related-card" onclick="goTo('sub-drawings')"><h4>Construction Drawings</h4><p>3D often starts from the floor plan drawings.</p></div>
+          <div class="related-card" onclick="goTo('sub-kitchens')"><h4>Kitchens &amp; Bathrooms</h4><p>The rooms people most want to visualize first.</p></div>
+          <div class="related-card" onclick="goTo('sub-additions')"><h4>Additions &amp; Extensions</h4><p>See how the addition will look from the street.</p></div>
+        </div>
+        <div style="text-align:center;margin-top:40px"><button class="btn btn-red" onclick="goTo('page-contact')">Start With a Conversation &#8594;</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─── Remaining pages (Steps 12–15) placeholder ─────────────────── -->
   <!-- ═══════════════════════════════════════ FOOTER ════════════════════════════════════ -->
   <footer class="site-footer">
     <span class="stripe"></span>
