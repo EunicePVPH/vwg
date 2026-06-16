@@ -1493,6 +1493,237 @@
       .henry-grid { grid-template-columns: 1fr; }
       .henry-photo-wrap { width: 140px; height: 140px; margin: 0 auto; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       SERVICE CATEGORY PAGES
+    ═══════════════════════════════════════════════════════════════ */
+
+    /* Exterior — card grid */
+    .cat-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .cat-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 24px 20px;
+      cursor: pointer;
+      border-top: 3px solid transparent;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .cat-card:hover {
+      transform: translateY(-4px);
+      border-top-color: var(--orange);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cat-card-icon {
+      width: 44px;
+      height: 44px;
+      background: rgba(224,120,32,0.10);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .cat-card-name {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .cat-card-sub { font-size: 13px; color: var(--muted); }
+
+    /* Interior — photo cards */
+    .int-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 22px;
+    }
+
+    .int-card {
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .int-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .int-card-img {
+      height: 160px;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .int-card-body {
+      padding: 18px 20px 22px;
+    }
+
+    .int-card-body h4 {
+      color: var(--navy);
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .int-card-body p {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    /* HVAC — split layout */
+    .hvac-intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+
+    .hvac-services-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hvac-service-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: background 0.18s, border-color 0.18s;
+    }
+
+    .hvac-service-row:hover {
+      background: var(--light);
+      border-color: var(--navy);
+    }
+
+    .hvac-row-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(30,46,92,0.07);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .hvac-row-name {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--navy);
+    }
+
+    .hvac-row-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+    /* Design Services */
+    .page-hero--design {
+      min-height: 360px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .design-split-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .design-split-card {
+      background: var(--light);
+      border-radius: 10px;
+      padding: 40px 36px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid var(--border);
+    }
+
+    .design-split-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .design-split-card--accent {
+      background: var(--navy);
+      border-color: transparent;
+    }
+
+    .design-card-icon { margin-bottom: 20px; }
+
+    .design-split-card h3 {
+      color: var(--navy);
+      margin-bottom: 14px;
+      font-size: 1.4rem;
+    }
+
+    .design-split-card p { color: var(--muted); font-size: 14.5px; margin-bottom: 20px; }
+
+    .design-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .design-list li {
+      font-size: 14px;
+      color: var(--text);
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .design-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 8px;
+      height: 8px;
+      background: var(--red);
+      border-radius: 50%;
+    }
+
+    .design-list--light li { color: rgba(255,255,255,0.75); }
+
+    .design-list--light li::before { background: var(--orange); }
+
+    @media (max-width: 960px) {
+      .cat-cards-grid { grid-template-columns: repeat(3, 1fr); }
+      .hvac-intro-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .cat-cards-grid { grid-template-columns: repeat(2, 1fr); }
+      .int-cards-grid { grid-template-columns: 1fr 1fr; }
+      .design-split-cards { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .cat-cards-grid { grid-template-columns: 1fr; }
+      .int-cards-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -2083,7 +2314,347 @@
 
   </div><!-- /page-about -->
 
-  <!-- ─── Remaining pages (Steps 7–15) placeholder ─────────────────── -->
+  <!-- ─────────────── EXTERIOR WORK ─────────────────── -->
+  <div class="page hidden" id="page-exterior">
+    <section class="page-hero page-hero--ext">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.93) 50%,rgba(17,29,56,0.35) 100%)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span onclick="goTo('page-exterior')">Services</span> <span>/</span> Exterior Work</div>
+        <h1><span class="text-white">Outside Your Home.</span><br><span class="text-orange">Under Our Care.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">From foundations to fences — if it lives outside your home, VWG handles it. Licensed crews, 20+ years of experience, and a track record that speaks for itself.</p>
+        <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Get a Free Exterior Estimate &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:48px">
+          <span class="section-label">What We Build</span>
+          <h2>11 Exterior Services.<br><span class="text-red">One Team You Can Count On.</span></h2>
+        </div>
+        <div class="cat-cards-grid">
+          <div class="cat-card" onclick="goTo('sub-new-construction')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+            <div class="cat-card-name">New Construction</div>
+            <div class="cat-card-sub">Built from the ground up — the right way.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-additions')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></div>
+            <div class="cat-card-name">Additions &amp; Extensions</div>
+            <div class="cat-card-sub">More space, more value, seamlessly integrated.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-roofing')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M2 20h20M4 20V10l8-8 8 8v10"/></svg></div>
+            <div class="cat-card-name">Roofing &amp; Siding</div>
+            <div class="cat-card-sub">Your first line of defense. Don't wait.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-windows')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg></div>
+            <div class="cat-card-name">Windows &amp; Doors</div>
+            <div class="cat-card-sub">Curb appeal meets energy efficiency.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-decks')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><rect x="2" y="14" width="20" height="6" rx="1"/><line x1="6" y1="14" x2="6" y2="20"/><line x1="12" y1="14" x2="12" y2="20"/><line x1="18" y1="14" x2="18" y2="20"/></svg></div>
+            <div class="cat-card-name">Decks &amp; Porches</div>
+            <div class="cat-card-sub">Outdoor living built to last decades.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-excavation')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M12 22V12M2 7l10-5 10 5M2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+            <div class="cat-card-name">Excavation &amp; Site Work</div>
+            <div class="cat-card-sub">Every project starts with the right foundation.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-paving')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><rect x="2" y="16" width="20" height="5" rx="1"/><rect x="4" y="11" width="16" height="5"/><rect x="6" y="6" width="12" height="5"/></svg></div>
+            <div class="cat-card-name">Road &amp; Driveway Paving</div>
+            <div class="cat-card-sub">Clean approach, clean finish, every time.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-retaining')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><rect x="2" y="17" width="20" height="4" rx="1"/><rect x="4" y="12" width="16" height="5"/><path d="M6 12V8l6-4 6 4v4"/></svg></div>
+            <div class="cat-card-name">Retaining Walls</div>
+            <div class="cat-card-sub">Structural and beautiful — both, not one.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-waterproofing')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10C12 2 12 2 12 2z"/><path d="M12 2c0 0-4 5-4 10s4 10 4 10 4-5 4-10-4-10-4-10z"/></svg></div>
+            <div class="cat-card-name">Waterproofing &amp; Drainage</div>
+            <div class="cat-card-sub">Keep water out — permanently.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-ironworks')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><path d="M12 2l-4 8h8l-4-8zM4 22h16M8 14v8M16 14v8"/></svg></div>
+            <div class="cat-card-name">Ornamental Iron Works</div>
+            <div class="cat-card-sub">Handcrafted metalwork that lasts generations.</div>
+          </div>
+          <div class="cat-card" onclick="goTo('sub-outdoor-kitchens')">
+            <div class="cat-card-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round"><rect x="2" y="10" width="20" height="12" rx="2"/><path d="M7 10V6a5 5 0 0110 0v4"/><line x1="12" y1="14" x2="12" y2="18"/></svg></div>
+            <div class="cat-card-name">Outdoor Kitchens</div>
+            <div class="cat-card-sub">Cook outside. Entertain anywhere.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner" style="padding:56px 0">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1;text-align:center">
+        <h2 class="text-white" style="margin-bottom:16px">Ready to Talk Exterior?</h2>
+        <p style="color:rgba(255,255,255,0.75);margin-bottom:24px">Call Henry for a free on-site estimate. We'll walk the property with you and tell you exactly what we see.</p>
+        <button class="btn" style="background:var(--white);color:var(--red);font-weight:700" onclick="goTo('page-contact')">Get a Free Exterior Estimate &#8594;</button>
+      </div>
+    </section>
+  </div><!-- /page-exterior -->
+
+  <!-- ─────────────── INTERIOR WORK ─────────────────── -->
+  <div class="page hidden" id="page-interior">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(30,46,92,0.85) 50%,rgba(30,46,92,0.35) 100%)"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span>Services</span> <span>/</span> Interior Work</div>
+        <h1><span class="text-white">Every Detail. Every Finish.</span><br><span class="text-orange">Done Right.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">From the kitchen you've always wanted to the bathroom that finally makes sense — VWG brings craftsmanship to every inch of your interior space.</p>
+        <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Ready to Reimagine Your Space? &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--warm)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:48px">
+          <span class="section-label">Interior Services</span>
+          <h2>Nine Ways to Transform<br><span class="text-red">the Spaces You Live In.</span></h2>
+        </div>
+        <div class="int-cards-grid">
+          <div class="int-card" onclick="goTo('sub-kitchens')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Kitchens &amp; Bathrooms</h4>
+              <p>The rooms you live in every day — finally the way they should be.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-carpentry')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1558618047-f7a8f4eb5e5e?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Custom Carpentry &amp; Millwork</h4>
+              <p>Handcrafted built-ins, trim, and details that define a space.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-flooring')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1581858726788-75bc0f6a952d?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Flooring — All Types</h4>
+              <p>Hardwood, tile, LVP, carpet — installed to last and look great.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-countertops')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Countertops — All Types</h4>
+              <p>Quartz, granite, marble, butcher block — every surface done right.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-painting')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Painting &amp; Wallpaper</h4>
+              <p>Clean lines, no drips, no shortcuts. The finish is the work.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-tile')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Tile &amp; Stone</h4>
+              <p>From subway backsplashes to full stone feature walls.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-fireplaces')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1559583985-c80d8ad9b29f?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Fireplaces</h4>
+              <p>The centerpiece of the room — built to impress and built to last.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-entertainment')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Entertainment Centers &amp; Home Theater</h4>
+              <p>Custom built-in media walls and full home theater setups.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+          <div class="int-card" onclick="goTo('sub-insulation')">
+            <div class="int-card-img" style="background-image:url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=600&q=80')"></div>
+            <div class="int-card-body">
+              <h4>Spray Foam &amp; Fiberglass Insulation</h4>
+              <p>Seal it right. Lower your bills. Keep your home comfortable.</p>
+              <span class="service-card-link">Learn More &#8594;</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner" style="padding:56px 0">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1;text-align:center">
+        <h2 class="text-white" style="margin-bottom:16px">Ready to Reimagine Your Space?</h2>
+        <p style="color:rgba(255,255,255,0.75);margin-bottom:24px">Let's talk about what you've been putting off. Henry will walk you through what's possible and what it actually costs.</p>
+        <button class="btn" style="background:var(--white);color:var(--red);font-weight:700" onclick="goTo('page-contact')">Request a Free Interior Estimate &#8594;</button>
+      </div>
+    </section>
+  </div><!-- /page-interior -->
+
+  <!-- ─────────────── HVAC & SYSTEMS ─────────────────── -->
+  <div class="page hidden" id="page-hvac">
+    <section class="page-hero">
+      <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=1400&q=80')"></div>
+      <div class="page-hero-overlay" style="background:linear-gradient(110deg,rgba(17,29,56,0.92) 50%,rgba(30,60,100,0.45) 100%)"></div>
+      <div class="blueprint-overlay"></div>
+      <div class="container page-hero-content">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span>Services</span> <span>/</span> HVAC &amp; Systems</div>
+        <h1><span class="text-white">Comfort All Year.</span><br><span class="text-orange">Not Just a Promise.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">From new installations to emergency service calls — VWG keeps your home at the right temperature, 365 days a year.</p>
+        <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Schedule Your HVAC Estimate &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div class="hvac-intro-grid">
+          <div>
+            <span class="section-label">The Problem We Solve</span>
+            <h2>Most homeowners wait<br><span class="text-red">until it breaks.</span></h2>
+            <p style="color:var(--muted);margin-top:16px;margin-bottom:16px">A failing furnace in January. An AC that quits in July. These aren't just inconveniences — they're expensive emergencies that proper installation and maintenance prevent.</p>
+            <p style="color:var(--muted)">VWG handles every HVAC need from initial system design to installation, maintenance, and emergency repairs. One call. One team. Done right.</p>
+          </div>
+          <div class="hvac-services-list">
+            <div class="hvac-service-row" onclick="goTo('sub-hvac-install')">
+              <div class="hvac-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg></div>
+              <div>
+                <div class="hvac-row-name">HVAC Installations</div>
+                <div class="hvac-row-sub">Full system design and installation</div>
+              </div>
+            </div>
+            <div class="hvac-service-row" onclick="goTo('sub-central-ac')">
+              <div class="hvac-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><rect x="2" y="6" width="20" height="12" rx="2"/><line x1="6" y1="12" x2="18" y2="12"/></svg></div>
+              <div>
+                <div class="hvac-row-name">Central AC Systems</div>
+                <div class="hvac-row-sub">Whole-home cooling installed right</div>
+              </div>
+            </div>
+            <div class="hvac-service-row" onclick="goTo('sub-ductless')">
+              <div class="hvac-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2zM12 8v8M8 12h8"/></svg></div>
+              <div>
+                <div class="hvac-row-name">Ductless &amp; Split AC Systems</div>
+                <div class="hvac-row-sub">Zone cooling without the ductwork</div>
+              </div>
+            </div>
+            <div class="hvac-service-row" onclick="goTo('sub-tankless')">
+              <div class="hvac-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="12" y1="6" x2="12" y2="12"/></svg></div>
+              <div>
+                <div class="hvac-row-name">Tankless Water Heaters</div>
+                <div class="hvac-row-sub">Hot water on demand, lower bills</div>
+              </div>
+            </div>
+            <div class="hvac-service-row" onclick="goTo('sub-boilers')">
+              <div class="hvac-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 9h6M9 15h6"/></svg></div>
+              <div>
+                <div class="hvac-row-name">Boilers &amp; Furnaces</div>
+                <div class="hvac-row-sub">Reliable heat for Tri-State winters</div>
+              </div>
+            </div>
+            <div class="hvac-service-row" onclick="goTo('sub-radiant')">
+              <div class="hvac-row-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round"><path d="M3 12h18M3 8h18M3 16h18M3 4h18M3 20h18"/></svg></div>
+              <div>
+                <div class="hvac-row-name">Radiant Heat</div>
+                <div class="hvac-row-sub">The most comfortable heat there is</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta-banner" style="padding:56px 0">
+      <div class="blueprint-overlay"></div>
+      <div class="container" style="position:relative;z-index:1;text-align:center">
+        <h2 class="text-white" style="margin-bottom:16px">Don't Wait Until It Breaks.</h2>
+        <p style="color:rgba(255,255,255,0.75);margin-bottom:24px">Schedule a free HVAC consultation before the season hits. We'll assess your system and tell you exactly where you stand.</p>
+        <button class="btn" style="background:var(--white);color:var(--red);font-weight:700" onclick="goTo('page-contact')">Schedule Your HVAC Estimate &#8594;</button>
+      </div>
+    </section>
+  </div><!-- /page-hvac -->
+
+  <!-- ─────────────── DESIGN SERVICES ─────────────────── -->
+  <div class="page hidden" id="page-design">
+    <section class="page-hero page-hero--design">
+      <div class="page-hero-overlay" style="background:var(--navy-dark);position:absolute;inset:0"></div>
+      <div class="blueprint-overlay" style="opacity:0.8"></div>
+      <div class="container page-hero-content" style="position:relative;z-index:2">
+        <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span> <span>/</span> <span>Services</span> <span>/</span> Design Services</div>
+        <h1><span class="text-white">See It Before</span><br><span class="text-orange">We Build It.</span></h1>
+        <p style="color:rgba(255,255,255,0.78);max-width:500px;margin-top:14px;font-size:16px">Construction drawings, floor plans, and full 3D renderings — every project starts with a vision. We turn yours into something you can actually see before we ever break ground.</p>
+        <button class="btn btn-red" style="margin-top:24px" onclick="goTo('page-contact')">Start With a Conversation &#8594;</button>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--white)">
+      <div class="container">
+        <div style="text-align:center;margin-bottom:52px">
+          <span class="section-label">Design Services</span>
+          <h2>Your Vision.<br><span class="text-red">Our Precision.</span></h2>
+          <p style="color:var(--muted);max-width:520px;margin:14px auto 0">Every great project starts before the first nail. Design services from VWG give you confidence before you commit.</p>
+        </div>
+        <div class="design-split-cards">
+          <div class="design-split-card" onclick="goTo('sub-drawings')">
+            <div class="design-card-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 7h10M7 11h6M7 15h8"/></svg>
+            </div>
+            <h3>Construction Drawings<br>&amp; Floor Plans</h3>
+            <p>Precise, permit-ready drawings that show every dimension, every detail. Whether you need plans for a permit or just want to think through a layout, we draw it right.</p>
+            <ul class="design-list">
+              <li>Architectural floor plans</li>
+              <li>Structural drawings</li>
+              <li>Permit-ready documentation</li>
+              <li>Site plans &amp; elevations</li>
+            </ul>
+            <button class="btn btn-navy" style="margin-top:24px" onclick="goTo('sub-drawings')">Learn More &#8594;</button>
+          </div>
+          <div class="design-split-card design-split-card--accent" onclick="goTo('sub-3d')">
+            <div class="design-card-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--white)" stroke-width="1.5" stroke-linecap="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <h3 style="color:var(--white)">3D Model Renderings</h3>
+            <p style="color:rgba(255,255,255,0.75)">See your finished project in photorealistic 3D before we ever pick up a tool. Walk through your new kitchen, addition, or full renovation — virtually — and make changes before they cost money.</p>
+            <ul class="design-list design-list--light">
+              <li>Photorealistic 3D renderings</li>
+              <li>Interior &amp; exterior views</li>
+              <li>Revision rounds included</li>
+              <li>Print-ready presentation files</li>
+            </ul>
+            <button class="btn btn-outline-white" style="margin-top:24px" onclick="goTo('sub-3d')">Learn More &#8594;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="background:var(--light);text-align:center">
+      <div class="container" style="max-width:640px">
+        <span class="section-label">Start Here</span>
+        <h2>Start With a Conversation.<br><span class="text-red">End With a Plan.</span></h2>
+        <p style="color:var(--muted);margin:16px 0 28px">Tell us what you're thinking. We'll sketch it out, run the numbers, and show you what's possible — before any commitment is made.</p>
+        <button class="btn btn-red" onclick="goTo('page-contact')">Request Design Consultation &#8594;</button>
+      </div>
+    </section>
+  </div><!-- /page-design -->
+
+  <!-- ─── Remaining pages (Steps 8–15) placeholder ─────────────────── -->
   <!-- ═══════════════════════════════════════ FOOTER ════════════════════════════════════ -->
   <footer class="site-footer">
     <span class="stripe"></span>
