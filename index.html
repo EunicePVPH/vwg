@@ -236,11 +236,443 @@
       h1 { font-size: 2.2rem; }
       h2 { font-size: 1.7rem; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       NAVIGATION
+    ═══════════════════════════════════════════════════════════════ */
+    .site-nav {
+      background: var(--navy);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 16px rgba(17,29,56,0.45);
+    }
+
+    .nav-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+    }
+
+    /* Logo */
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-ro);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .nav-logo-name {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .nav-logo-tag {
+      font-family: var(--font-head);
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+      margin-top: 2px;
+    }
+
+    /* Desktop links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-link {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.82);
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: color 0.18s, background 0.18s;
+      white-space: nowrap;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--white);
+      background: rgba(255,255,255,0.10);
+    }
+
+    .nav-link.active {
+      color: var(--orange);
+    }
+
+    /* Services dropdown */
+    .nav-dropdown {
+      position: relative;
+    }
+
+    .nav-dropdown-toggle {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .nav-dropdown-toggle svg {
+      transition: transform 0.2s;
+    }
+
+    .nav-dropdown:hover .nav-dropdown-toggle svg,
+    .nav-dropdown.open .nav-dropdown-toggle svg {
+      transform: rotate(180deg);
+    }
+
+    .nav-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--navy-dark);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      min-width: 220px;
+      padding: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.18s, visibility 0.18s, transform 0.18s;
+      transform: translateX(-50%) translateY(-6px);
+    }
+
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown.open .nav-dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .nav-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .nav-dropdown-item:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .nav-dropdown-item-icon {
+      width: 28px;
+      height: 28px;
+      background: rgba(224,120,32,0.18);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-dropdown-item-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-dropdown-item-name {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .nav-dropdown-item-sub {
+      font-size: 11px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 1px;
+    }
+
+    /* CTA button in nav */
+    .nav-cta {
+      margin-left: 12px;
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: var(--red);
+      color: var(--white);
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: opacity 0.18s, transform 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .nav-cta:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+
+    /* Hamburger button */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 5px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .nav-hamburger:hover { background: rgba(255,255,255,0.14); }
+
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--white);
+      border-radius: 2px;
+      transition: transform 0.25s, opacity 0.25s;
+    }
+
+    /* Mobile menu */
+    #mobile-menu {
+      display: none;
+      flex-direction: column;
+      background: var(--navy-dark);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding: 12px 0 20px;
+    }
+
+    #mobile-menu.open {
+      display: flex;
+    }
+
+    .mob-link {
+      font-family: var(--font-head);
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.82);
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      border-left: 3px solid transparent;
+    }
+
+    .mob-link:hover,
+    .mob-link.active {
+      color: var(--white);
+      background: rgba(255,255,255,0.06);
+      border-left-color: var(--orange);
+    }
+
+    .mob-link.active { color: var(--orange); }
+
+    .mob-section-label {
+      font-family: var(--font-head);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      padding: 16px 24px 4px;
+    }
+
+    .mob-sub-link {
+      font-family: var(--font-body);
+      font-size: 14px;
+      color: rgba(255,255,255,0.65);
+      padding: 9px 24px 9px 36px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .mob-sub-link:hover {
+      color: var(--white);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .mob-cta {
+      margin: 14px 24px 0;
+      text-align: center;
+      background: var(--red);
+      color: var(--white);
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    /* Responsive: show hamburger, hide desktop links */
+    @media (max-width: 900px) {
+      .nav-links,
+      .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- Navigation injected here (Step 2) -->
+  <!-- ═══════════════════════════════════ NAVIGATION ═══════════════════════════════ -->
+  <nav class="site-nav">
+    <div class="nav-inner">
+
+      <!-- Logo -->
+      <div class="nav-logo" onclick="goTo('page-home')">
+        <div class="nav-logo-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M3 12L12 3l9 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="nav-logo-text">
+          <span class="nav-logo-name">Valencia Work Group</span>
+          <span class="nav-logo-tag">From Foundation to Finish.</span>
+        </div>
+      </div>
+
+      <!-- Desktop links -->
+      <div class="nav-links">
+        <span class="nav-link active" data-page="page-home" onclick="goTo('page-home')">Home</span>
+        <span class="nav-link" data-page="page-about" onclick="goTo('page-about')">About</span>
+
+        <!-- Services dropdown -->
+        <div class="nav-dropdown" id="services-dropdown">
+          <span class="nav-link nav-dropdown-toggle" onclick="document.getElementById('services-dropdown').classList.toggle('open')">
+            Services
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+              <path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <div class="nav-dropdown-menu">
+            <div class="nav-dropdown-item" onclick="goTo('page-exterior')">
+              <div class="nav-dropdown-item-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="10" width="20" height="12" rx="1" stroke="#E07820" stroke-width="2"/>
+                  <path d="M12 2L2 10h20L12 2z" stroke="#E07820" stroke-width="2" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="nav-dropdown-item-text">
+                <span class="nav-dropdown-item-name">Exterior Work</span>
+                <span class="nav-dropdown-item-sub">Roofing, siding, decks &amp; more</span>
+              </div>
+            </div>
+            <div class="nav-dropdown-item" onclick="goTo('page-interior')">
+              <div class="nav-dropdown-item-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="#E07820" stroke-width="2"/>
+                  <path d="M3 9h18M9 9v12" stroke="#E07820" stroke-width="2"/>
+                </svg>
+              </div>
+              <div class="nav-dropdown-item-text">
+                <span class="nav-dropdown-item-name">Interior Work</span>
+                <span class="nav-dropdown-item-sub">Kitchens, baths, flooring &amp; more</span>
+              </div>
+            </div>
+            <div class="nav-dropdown-item" onclick="goTo('page-hvac')">
+              <div class="nav-dropdown-item-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="4" stroke="#E07820" stroke-width="2"/>
+                  <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="#E07820" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="nav-dropdown-item-text">
+                <span class="nav-dropdown-item-name">HVAC &amp; Systems</span>
+                <span class="nav-dropdown-item-sub">Heating, cooling &amp; more</span>
+              </div>
+            </div>
+            <div class="nav-dropdown-item" onclick="goTo('page-design')">
+              <div class="nav-dropdown-item-icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <rect x="3" y="3" width="18" height="18" rx="2" stroke="#E07820" stroke-width="2"/>
+                  <path d="M7 7h10M7 12h6M7 17h8" stroke="#E07820" stroke-width="1.8" stroke-linecap="round"/>
+                </svg>
+              </div>
+              <div class="nav-dropdown-item-text">
+                <span class="nav-dropdown-item-name">Design Services</span>
+                <span class="nav-dropdown-item-sub">Drawings, plans &amp; 3D renderings</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <span class="nav-link" data-page="page-portfolio" onclick="goTo('page-portfolio')">Portfolio</span>
+        <span class="nav-link" data-page="page-counterparts" onclick="goTo('page-counterparts')">Counterparts</span>
+        <span class="nav-link" data-page="page-blog" onclick="goTo('page-blog')">Blog</span>
+        <span class="nav-link" data-page="page-contact" onclick="goTo('page-contact')">Contact</span>
+      </div>
+
+      <span class="nav-cta" onclick="goTo('page-contact')">Free Estimate</span>
+
+      <!-- Hamburger -->
+      <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu">
+      <span class="mob-link active" data-page="page-home" onclick="goTo('page-home')">Home</span>
+      <span class="mob-link" data-page="page-about" onclick="goTo('page-about')">About</span>
+
+      <div class="mob-section-label">Services</div>
+      <span class="mob-sub-link" onclick="goTo('page-exterior')">Exterior Work</span>
+      <span class="mob-sub-link" onclick="goTo('page-interior')">Interior Work</span>
+      <span class="mob-sub-link" onclick="goTo('page-hvac')">HVAC &amp; Systems</span>
+      <span class="mob-sub-link" onclick="goTo('page-design')">Design Services</span>
+
+      <span class="mob-link" data-page="page-portfolio" onclick="goTo('page-portfolio')">Portfolio</span>
+      <span class="mob-link" data-page="page-counterparts" onclick="goTo('page-counterparts')">Counterparts</span>
+      <span class="mob-link" data-page="page-blog" onclick="goTo('page-blog')">Blog</span>
+      <span class="mob-link" data-page="page-contact" onclick="goTo('page-contact')">Contact</span>
+      <div class="mob-cta" onclick="goTo('page-contact')">Get My Free Estimate →</div>
+    </div>
+  </nav>
+
   <!-- Pages injected here (Steps 4–15) -->
   <!-- Footer injected here (Step 3) -->
 
@@ -258,9 +690,8 @@
     }
 
     function setActiveNav(pageId) {
-      document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-      const active = document.querySelector(`[data-page='${pageId}']`);
-      if (active) active.classList.add('active');
+      document.querySelectorAll('.nav-link, .mob-link').forEach(l => l.classList.remove('active'));
+      document.querySelectorAll(`[data-page='${pageId}']`).forEach(el => el.classList.add('active'));
     }
 
     /* ─── Portfolio filter ─────────────────────────────────────── */
@@ -281,6 +712,12 @@
       const menu = document.getElementById('mobile-menu');
       if (menu) menu.classList.toggle('open');
     }
+
+    /* Close services dropdown on outside click */
+    document.addEventListener('click', function(e) {
+      const dd = document.getElementById('services-dropdown');
+      if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+    });
   </script>
 
 </body>
