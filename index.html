@@ -2422,12 +2422,12 @@ footer::before{content:'';display:block;height:3px;background:linear-gradient(90
   </div>
 
   <div class="portfolio-filters">
-    <button class="filter-btn active" onclick="filterPortfolio('all')">All</button>
-    <button class="filter-btn" onclick="filterPortfolio('carpentry')">Carpentry</button>
-    <button class="filter-btn" onclick="filterPortfolio('kitchens')">Kitchens &amp; Baths</button>
-    <button class="filter-btn" onclick="filterPortfolio('exterior')">Exterior</button>
-    <button class="filter-btn" onclick="filterPortfolio('flooring')">Flooring</button>
-    <button class="filter-btn" onclick="filterPortfolio('painting')">Painting</button>
+    <button class="filter-btn active" onclick="filterPortfolio(this,'all')">All</button>
+    <button class="filter-btn" onclick="filterPortfolio(this,'carpentry')">Carpentry</button>
+    <button class="filter-btn" onclick="filterPortfolio(this,'kitchens')">Kitchens &amp; Baths</button>
+    <button class="filter-btn" onclick="filterPortfolio(this,'exterior')">Exterior</button>
+    <button class="filter-btn" onclick="filterPortfolio(this,'flooring')">Flooring</button>
+    <button class="filter-btn" onclick="filterPortfolio(this,'painting')">Painting</button>
   </div>
 
   <div class="portfolio-metrics">
@@ -2847,9 +2847,9 @@ function setActiveNav(pageId) {
   if (el) el.classList.add('active');
 }
 
-function filterPortfolio(category) {
+function filterPortfolio(btn, category) {
   document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
+  btn.classList.add('active');
   document.querySelectorAll('.portfolio-masonry .portfolio-item').forEach(item => {
     item.style.display = (category === 'all' || item.dataset.category === category) ? 'block' : 'none';
   });
