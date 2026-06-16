@@ -551,6 +551,228 @@
       .nav-cta { display: none; }
       .nav-hamburger { display: flex; }
     }
+
+    /* ═══════════════════════════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════════════════════════ */
+    .site-footer {
+      background: var(--navy-dark);
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      margin-top: auto;
+    }
+
+    .footer-main {
+      padding: 64px 0 48px;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1.5fr;
+      gap: 40px;
+    }
+
+    /* Logo */
+    .footer-logo {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      cursor: pointer;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo-icon {
+      width: 38px;
+      height: 38px;
+      background: var(--gradient-ro);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .footer-logo-name {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--white);
+      line-height: 1.2;
+    }
+
+    .footer-logo-tag {
+      font-family: var(--font-head);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-top: 3px;
+    }
+
+    .footer-blurb {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 20px;
+      max-width: 280px;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 10px;
+    }
+
+    .footer-social-icon {
+      width: 34px;
+      height: 34px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.55);
+      transition: background 0.18s, color 0.18s;
+    }
+
+    .footer-social-icon:hover {
+      background: rgba(224,120,32,0.25);
+      color: var(--orange);
+    }
+
+    /* Columns */
+    .footer-heading {
+      font-family: var(--font-head);
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 18px;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .footer-links li span {
+      color: rgba(255,255,255,0.65);
+      cursor: pointer;
+      transition: color 0.18s;
+      font-size: 14px;
+    }
+
+    .footer-links li span:hover {
+      color: var(--white);
+    }
+
+    .footer-link-cta {
+      color: var(--orange) !important;
+      font-family: var(--font-head);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    /* Contact list */
+    .footer-contact-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-contact-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      color: rgba(255,255,255,0.65);
+      font-size: 13.5px;
+    }
+
+    .footer-contact-list li svg {
+      flex-shrink: 0;
+      margin-top: 2px;
+      color: var(--orange);
+    }
+
+    .footer-contact-list a {
+      color: rgba(255,255,255,0.65);
+      transition: color 0.18s;
+    }
+
+    .footer-contact-list a:hover { color: var(--white); }
+
+    /* Counterparts strip */
+    .footer-counterparts {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 18px 0;
+    }
+
+    .footer-counterparts .container {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+    }
+
+    .footer-counterparts-label {
+      font-family: var(--font-head);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      white-space: nowrap;
+    }
+
+    .footer-counterparts-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 20px;
+    }
+
+    .footer-counterparts-list span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.42);
+      cursor: pointer;
+      transition: color 0.18s;
+      white-space: nowrap;
+    }
+
+    .footer-counterparts-list span:hover { color: var(--orange); }
+
+    /* Bottom bar */
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 16px 0;
+    }
+
+    .footer-bottom .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.28);
+    }
+
+    .footer-bottom strong { color: rgba(255,255,255,0.45); }
+
+    @media (max-width: 900px) {
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+      .footer-brand { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 540px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .footer-bottom .container { justify-content: center; text-align: center; }
+    }
   </style>
 </head>
 <body>
@@ -674,7 +896,125 @@
   </nav>
 
   <!-- Pages injected here (Steps 4–15) -->
-  <!-- Footer injected here (Step 3) -->
+  <!-- ═══════════════════════════════════════ FOOTER ════════════════════════════════════ -->
+  <footer class="site-footer">
+    <span class="stripe"></span>
+
+    <div class="footer-main">
+      <div class="container">
+        <div class="footer-grid">
+
+          <!-- Col 1: Brand -->
+          <div class="footer-col footer-brand">
+            <div class="footer-logo" onclick="goTo('page-home')">
+              <div class="footer-logo-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 12L12 3l9 9" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M5 10v9a1 1 0 001 1h4v-5h4v5h4a1 1 0 001-1v-9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <div class="footer-logo-name">Valencia Work Group Inc.</div>
+                <div class="footer-logo-tag">From Foundation to Finish.</div>
+              </div>
+            </div>
+            <p class="footer-blurb">Family-owned general contractor serving NY, NJ &amp; CT for 20+ years. Licensed, insured, and ready to work.</p>
+            <div class="footer-social">
+              <a href="#" class="footer-social-icon" aria-label="Facebook">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+              </a>
+              <a href="#" class="footer-social-icon" aria-label="Instagram">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+              </a>
+              <a href="#" class="footer-social-icon" aria-label="LinkedIn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+              </a>
+              <a href="#" class="footer-social-icon" aria-label="Linktree">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 110 20A10 10 0 0112 2zm0 2a8 8 0 100 16A8 8 0 0012 4zm-1 4h2v5l3.5 2-1 1.7L11 15V8z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Col 2: Quick Links -->
+          <div class="footer-col">
+            <h4 class="footer-heading">Quick Links</h4>
+            <ul class="footer-links">
+              <li><span onclick="goTo('page-home')">Home</span></li>
+              <li><span onclick="goTo('page-about')">About</span></li>
+              <li><span onclick="goTo('page-exterior')">Services</span></li>
+              <li><span onclick="goTo('page-portfolio')">Portfolio</span></li>
+              <li><span onclick="goTo('page-counterparts')">Counterparts</span></li>
+              <li><span onclick="goTo('page-blog')">Blog</span></li>
+              <li><span onclick="goTo('page-contact')">Contact</span></li>
+            </ul>
+          </div>
+
+          <!-- Col 3: Services -->
+          <div class="footer-col">
+            <h4 class="footer-heading">Services</h4>
+            <ul class="footer-links">
+              <li><span onclick="goTo('page-exterior')">Exterior Work</span></li>
+              <li><span onclick="goTo('page-interior')">Interior Work</span></li>
+              <li><span onclick="goTo('page-hvac')">HVAC &amp; Systems</span></li>
+              <li><span onclick="goTo('page-design')">Design Services</span></li>
+              <li><span class="footer-link-cta" onclick="goTo('page-contact')">Free Estimate →</span></li>
+            </ul>
+          </div>
+
+          <!-- Col 4: Contact -->
+          <div class="footer-col">
+            <h4 class="footer-heading">Contact Us</h4>
+            <ul class="footer-contact-list">
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.82 19.79 19.79 0 01.04 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z"/></svg>
+                <a href="tel:9149068215">(914) 906-8215</a>
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:henry@valenciaworkgroup.com">henry@valenciaworkgroup.com</a>
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <a href="mailto:office@valenciaworkgroup.com">office@valenciaworkgroup.com</a>
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                <span>Serving NY · NJ · CT</span>
+              </li>
+              <li>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Licensed &amp; Insured</span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Counterparts strip -->
+    <div class="footer-counterparts">
+      <div class="container">
+        <span class="footer-counterparts-label">Our Counterparts:</span>
+        <div class="footer-counterparts-list">
+          <span onclick="goTo('cp-phix')">Phix Restoration Group</span>
+          <span onclick="goTo('cp-luz')">Luz Group Inc.</span>
+          <span onclick="goTo('cp-flow')">Flow Agents</span>
+          <span onclick="goTo('cp-northstar')">North Star Renovation Group</span>
+          <span onclick="goTo('cp-comfort')">Comfort One Heating &amp; Cooling</span>
+          <span onclick="goTo('cp-executive')">Executive Style Hair &amp; Co.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="footer-bottom">
+      <div class="container">
+        <span>© 2025 Valencia Work Group Inc. · All Rights Reserved</span>
+        <span>Built by <strong>ProVirtual PH</strong></span>
+      </div>
+    </div>
+  </footer>
 
   <script>
     /* ─── Page navigation ──────────────────────────────────────── */
