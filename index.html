@@ -2491,6 +2491,104 @@
 
     /* 15. Design list bullet → orange */
     .design-list li::before { background: var(--orange); }
+  
+    /* ══════════ ANIMATIONS & VISUAL ENHANCEMENTS ══════════ */
+
+    /* Page transitions */
+    @keyframes sect-enter {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes page-fade-out {
+      from { opacity: 1; }
+      to   { opacity: 0; }
+    }
+    .page-exiting {
+      animation: page-fade-out 0.16s ease forwards;
+      pointer-events: none;
+    }
+    .page-entering > section {
+      animation: sect-enter 0.54s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .page-entering > section:nth-child(1) { animation-delay: 0.04s; }
+    .page-entering > section:nth-child(2) { animation-delay: 0.13s; }
+    .page-entering > section:nth-child(3) { animation-delay: 0.22s; }
+    .page-entering > section:nth-child(4) { animation-delay: 0.31s; }
+    .page-entering > section:nth-child(5) { animation-delay: 0.40s; }
+
+    /* Nav scroll shadow + active */
+    .nav-scrolled { box-shadow: 0 2px 28px rgba(30,46,92,0.12) !important; }
+    .nav-link.active, .nav-dropdown-toggle.active { color: var(--orange) !important; }
+
+    /* Hero orange bottom stripe */
+    .page-hero { border-bottom: 4px solid var(--orange); }
+
+    /* Dropdown entrance */
+    .nav-dropdown.open .nav-dropdown-menu { animation: sect-enter 0.2s ease both; }
+
+    /* Card lift */
+    .cat-card {
+      will-change: transform;
+      transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease !important;
+    }
+    .cat-card:hover {
+      transform: translateY(-8px) !important;
+      box-shadow: 0 22px 52px rgba(30,46,92,0.17) !important;
+      border-color: var(--orange) !important;
+    }
+    .related-card { cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .related-card:hover { transform: translateY(-5px); box-shadow: 0 14px 36px rgba(30,46,92,0.1); }
+    .why-card    { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .why-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+    .proc-h-item { transition: transform 0.2s ease; }
+    .proc-h-item:hover { transform: translateY(-5px); }
+    .service-card { transition: transform 0.22s ease, box-shadow 0.22s ease; }
+    .service-card:hover { transform: translateY(-5px); box-shadow: 0 18px 44px rgba(30,46,92,0.14); }
+
+    /* Button lift */
+    .btn { transition: transform 0.15s ease, box-shadow 0.15s ease !important; }
+    .btn:hover { transform: translateY(-3px) !important; box-shadow: 0 10px 30px rgba(0,0,0,0.24) !important; }
+    .btn:active { transform: translateY(0) !important; }
+
+    /* ── Why section — full navy ── */
+    .section-why-navy { background: var(--navy) !important; }
+    .section-why-navy .section-label { color: var(--orange) !important; }
+    .section-why-navy h2 { color: var(--white) !important; }
+    .section-why-navy h2 .text-red,
+    .section-why-navy h2 .text-orange { color: var(--orange) !important; }
+    .section-why-navy .why-card {
+      background: rgba(255,255,255,0.05) !important;
+      border: 1px solid rgba(255,255,255,0.08) !important;
+      border-top: 3px solid var(--orange) !important;
+    }
+    .section-why-navy .why-card h4 { color: var(--white) !important; }
+    .section-why-navy .why-card p  { color: rgba(255,255,255,0.65) !important; }
+    .section-why-navy .why-icon svg { stroke: var(--orange) !important; }
+
+    /* ── Metrics band — navy ── */
+    .metrics-band { background: var(--navy-dark) !important; border: none !important; }
+    .metric-number { color: var(--orange) !important; }
+    .metric-label  { color: rgba(255,255,255,0.55) !important; }
+    .metric-divider { background: rgba(255,255,255,0.12) !important; }
+
+    /* ── Intro quote box fix for light theme ── */
+    .intro-quote-box p { color: rgba(255,255,255,0.88) !important; }
+    .intro-quote-box blockquote { color: rgba(255,255,255,0.95) !important; }
+
+    /* ── Homepage hero stronger typography ── */
+    .home-hero-content h1 { font-size: clamp(3rem, 7vw, 5.4rem) !important; line-height: 1.0 !important; }
+
+    /* ── Service page hero typography ── */
+    .page-hero-content h1 { font-size: clamp(2.4rem, 5.5vw, 4rem) !important; line-height: 1.05 !important; }
+
+    /* ── Counterparts strip spacing ── */
+    .counterparts-strip { padding: 32px 0 !important; }
+
+    /* ── Sub-split extra paragraph ── */
+    .sub-split p + p { margin-top: 16px; }
+    .sub-split p + p + p { margin-top: 16px; color: var(--navy); font-weight: 500; }
+
+
   </style>
 </head>
 <body>
@@ -2684,7 +2782,7 @@
               <span class="text-navy">We don't just build structures.</span><br>
               <span class="text-red">We build the spaces your family lives in.</span>
             </h2>
-            <p>For over two decades, our team has shown up — on time, fully equipped, and ready to work. From a leaking roof in Mount Vernon to a full landscape overhaul in Greenwich, we've done it all. And we've done it right.</p>
+            <p>Most contractors will take your deposit and go quiet. Valencia Work Group has been showing up — on time, fully equipped, and ready to work — for over 20 years across Westchester, Rockland, and beyond. There are no hidden subcontractors and no flipped jobs. When you hire us, you get our people. Every time.</p>
             <p style="margin-top:14px">We're not a call center. We're not a franchise. When you call Valencia Work Group, you talk to the people who will actually be on your job site. That's the difference.</p>
             <button class="btn btn-navy" onclick="goTo('page-about')" style="margin-top:28px">Meet the Team &#8594;</button>
           </div>
@@ -2695,8 +2793,8 @@
                   <path d="M0 38V22.6C0 14.867 2.2 8.867 6.6 4.6 11 .333 17.267-1.133 25.4.4L24.2 6.2c-4.667-.933-8.133-.2-10.4 2.2C11.533 10.8 10.4 14.4 10.4 19H20V38H0zm28 0V22.6c0-7.733 2.2-13.733 6.6-18C39 .333 45.267-1.133 53.4.4L52.2 6.2c-4.667-.933-8.133-.2-10.4 2.2-2.267 2.4-3.4 6-3.4 10.8H48V38H28z" fill="var(--orange)" fill-opacity="0.6"/>
                 </svg>
               </div>
-              <blockquote>We didn't start this company to be the biggest in Westchester. We started it to be the most trusted one.</blockquote>
-              <cite>&#8212; The VWG Team</cite>
+              <blockquote>We didn't start Valencia Work Group to be the biggest landscaping company in Westchester. We started it to be the one people call twice.</blockquote>
+              <cite>&#8212; The Valencia Work Group Team</cite>
             </div>
           </div>
         </div>
@@ -2756,7 +2854,7 @@
       <div class="container">
         <div style="text-align:center;margin-bottom:48px">
           <span class="section-label">What We Do</span>
-          <h2>Tell Us What You Need.<br><span class="text-orange">We'll Get It Done Right.</span></h2>
+          <h2>Tell Us What You Need.<br><span class="text-orange">We Show Up and We Finish.</span></h2>
         </div>
         <div class="cat-cards-grid">
           <div class="cat-card" onclick="goTo('sub-landscape-design')">
@@ -2806,8 +2904,8 @@
       </div>
     </section>
 
-    <!-- Section 6: Why VWG -->
-    <section class="section" style="background:var(--white)">
+    <!-- Section 6: Why Valencia Work Group -->
+    <section class="section section-why-navy">
       <div class="container">
         <div style="text-align:center;margin-bottom:48px">
           <span class="section-label">Why Choose Us</span>
@@ -2819,7 +2917,7 @@
               <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
             </div>
             <h4>You Talk to the People Doing the Work</h4>
-            <p>No middlemen. No runaround. When you call us, you reach the team actually showing up to your job site. We answer the phone.</p>
+            <p>No middlemen. No runaround. When you call us, you reach the team actually showing up to your job site. We answer the phone. Not a call center. Not a voicemail box. Not a call center. Not a voicemail box.</p>
           </div>
           <div class="why-card">
             <div class="why-icon">
@@ -2925,7 +3023,7 @@
         <div class="testimonials-grid">
           <div class="testimonial-card">
             <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-            <p>"The Valencia Work Group team transformed our entire backyard in less than three weeks. Clean, professional, and they left the place spotless every single day. I've recommended them to four of my neighbors already."</p>
+            <p>"The Valencia Work Group crew turned our overgrown backyard into something we actually use. Done in under three weeks. Clean, professional, and they left the place spotless every single day. I've recommended them to four of my neighbors already."</p>
             <div class="testimonial-author"><strong>Maria R.</strong><span>New Rochelle, NY</span></div>
           </div>
           <div class="testimonial-card">
@@ -2947,7 +3045,7 @@
       <div class="blueprint-overlay"></div>
       <div class="container" style="position:relative;z-index:1;text-align:center">
         <h2 class="cta-banner-h1">Stop Scrolling.<br>Start Building.</h2>
-        <p class="cta-banner-body">Call us today for a free estimate. No pressure. No obligation. Just an honest conversation about what you need and how we can help.</p>
+        <p class="cta-banner-body">We give straight answers and free estimates. No pressure, no runaround. No pressure. No obligation. Just an honest conversation about what you need and how we can help.</p>
         <a href="tel:9149068215" class="cta-banner-phone">(914) 906-8215</a>
         <div class="cta-banner-btns">
           <button class="btn" style="background:var(--white);color:var(--orange);font-weight:700" onclick="goTo('page-contact')">Get My Free Estimate &#8594;</button>
@@ -3170,7 +3268,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-services')">Services</span><span>/</span>Landscape Design</div>
-        <h1><span class="text-navy">Design Your</span><br><span class="text-orange">Outdoor Vision.</span></h1>
+        <h1><span class="text-navy">We Design It First.</span><br><span class="text-orange">Then We Build It.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Start With a Consultation &#8594;</button>
       </div>
     </section>
@@ -3178,10 +3276,10 @@
       <div class="container">
         <div class="sub-split">
           <div>
-            <span class="section-label">What We Do</span>
-            <h2>A Plan Before<br><span class="text-orange">the First Shovel.</span></h2>
-            <p>Landscape design is where every great outdoor space starts. Before we plant a single shrub or lay one stone, we draw it out — mapping your property, your priorities, and the look you want to achieve. You see it on paper first, then we build it.</p>
-            <p style="margin-top:14px">VWG creates custom landscape design plans for residential and commercial properties across Westchester County, New Jersey, and Connecticut. From simple planting plans to full outdoor living designs, we give your yard a blueprint before we give it a transformation.</p>
+            <span class="section-label">Start Here</span>
+            <h2>Before the First Shovel<br><span class="text-orange">Goes in the Ground.</span></h2>
+            <p>Half the landscape jobs we get called to fix started without a plan. A crew showed up and started digging. The patio ends up draining toward the house. The plants are in the wrong spots. The retaining wall shifts after the first winter because nobody checked the drainage. Valencia Work Group walks your property first, takes real measurements, and draws it out — plant placements, hardscape layout, drainage grading, all of it. You see exactly what you're getting and sign off before a dollar goes toward materials.</p>
+            <p style="margin-top:14px">We've worked in Westchester long enough to know the soil conditions, the frost depth, and which plants actually survive here versus which ones look great in the nursery and die by October. Your design accounts for all of that. When we hand the plan off to the installation crew — whether it's ours or yours — they're not guessing. Everything is specified, measured, and ready to build.</p>
           </div>
           <div class="sub-checklist-box">
             <h4>What's Included</h4>
@@ -3225,7 +3323,7 @@
           </div>
           <div>
             <h4 style="color:var(--orange);font-size:0.9rem;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px">Design + Install</h4>
-            <p>Design is just the start. VWG takes your plan all the way through installation — one company, one crew, one point of contact from sketch to finished yard.</p>
+            <p>Design cost is credited toward the full installation when you hire us to build it. We're not in the business of selling drawings. We're in the business of finished yards.</p>
           </div>
         </div>
       </div>
@@ -3250,7 +3348,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-services')">Services</span><span>/</span>Landscaping</div>
-        <h1><span class="text-navy">Transform Your</span><br><span class="text-orange">Outdoor Space.</span></h1>
+        <h1><span class="text-navy">Bare Ground</span><br><span class="text-orange">to Beautiful.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Free Estimate &#8594;</button>
       </div>
     </section>
@@ -3271,9 +3369,9 @@
           </div>
           <div>
             <span class="section-label">Full Installation</span>
-            <h2>From Bare Ground<br><span class="text-orange">To Beautiful.</span></h2>
-            <p>Whether you're starting from scratch or refreshing what's already there, VWG handles complete landscape installations. We bring in the materials, the crew, and the expertise to turn your yard into something you're proud to come home to.</p>
-            <p style="margin-top:14px">Every installation starts with a plan. We don't show up and start digging. We assess the space, discuss your vision, and execute it with the same discipline we bring to every job.</p>
+            <h2>From the Ground Up.<br><span class="text-orange">No Gaps, No Subcontractors.</span></h2>
+            <p>Landscaping companies will sell you the plants and disappear. Valencia Work Group handles the entire installation — grading, drainage, sod, plants, mulch, edging. Same crew, start to finish. Our people have been working in Westchester soil for over 20 years. They know what drains and what holds water, what survives Northeast winters, and how to prep ground that actually supports what goes into it. We don't plant whatever's available at the nursery. We plant what lasts here.</p>
+            <p style="margin-top:14px">Installation is cleaner than you'd expect. We protect what's already there — existing trees, flower beds, driveway edges. The site gets cleaned up at the end of every work day. When we do the final walkthrough with you, the yard looks finished, not like a construction zone that got abandoned.</p>
           </div>
         </div>
       </div>
@@ -3312,7 +3410,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-services')">Services</span><span>/</span>Lawn, Shrub &amp; Tree Care</div>
-        <h1><span class="text-navy">Always Green.</span><br><span class="text-orange">All Season Long.</span></h1>
+        <h1><span class="text-navy">Your Lawn.</span><br><span class="text-orange">Handled.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Maintenance Quote &#8594;</button>
       </div>
     </section>
@@ -3321,9 +3419,9 @@
         <div class="sub-split">
           <div>
             <span class="section-label">Maintenance Programs</span>
-            <h2>Your Yard.<br><span class="text-orange">Done Right. Every Week.</span></h2>
-            <p>A great-looking property doesn't happen by accident. It takes a consistent, professional maintenance program that covers everything — from weekly mowing to seasonal fertilizing, shrub shaping, and tree care.</p>
-            <p style="margin-top:14px">VWG offers weekly, bi-weekly, and seasonal maintenance programs for residential and commercial properties throughout Westchester County, NJ, and CT. One crew. One call. Everything handled.</p>
+            <h2>The Crew That Learns<br><span class="text-orange">Your Property.</span></h2>
+            <p>Most lawn services fail in one of two ways: they don't show up on schedule, or they show up with a different crew every week who have no idea what your property looked like the last time. Neither one works. Valencia Work Group runs a limited number of recurring maintenance accounts per season. That means the same crew comes to your property, visit after visit. They notice when something's off — the patch of grass turning brown, the shrub with pest damage, the mower height that needs adjusting. You shouldn't have to notice before we do.</p>
+            <p style="margin-top:14px">Programs are available weekly, bi-weekly, and seasonal. We handle it all — mowing, edging, fertilizing, weed control, shrub trimming, and seasonal cleanups. One call, one crew, one invoice. You manage your property. We maintain it. Contact us in late winter — maintenance slots fill early.</p>
           </div>
           <div class="sub-checklist-box">
             <h4>Services Included</h4>
@@ -3382,7 +3480,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-services')">Services</span><span>/</span>Sprinkler Systems</div>
-        <h1><span class="text-navy">Smarter Watering.</span><br><span class="text-orange">Zero Hassle.</span></h1>
+        <h1><span class="text-navy">Smart Irrigation.</span><br><span class="text-orange">Zero Guesswork.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Schedule a Sprinkler Estimate &#8594;</button>
       </div>
     </section>
@@ -3391,9 +3489,9 @@
         <div class="sub-split">
           <div>
             <span class="section-label">Installation &amp; Service</span>
-            <h2>Keep Everything<br><span class="text-orange">Green Without the Work.</span></h2>
-            <p>A properly designed and installed sprinkler system waters your lawn and landscape at the right time, in the right zones, with the right coverage — so your property stays healthy without you lifting a finger. When something needs attention, we fix it fast.</p>
-            <p style="margin-top:14px">VWG installs, services, and repairs all types of residential and commercial irrigation systems in Westchester County, New Jersey, and Connecticut. From new installs to emergency repairs, we handle it all.</p>
+            <h2>Designed for the Property,<br><span class="text-orange">Not Just Any Property.</span></h2>
+            <p>Bad irrigation is worse than no irrigation. Zones that overlap create standing water and disease. Zones that miss leave dry patches. Heads set too high get clipped by mowers. Pressure drops cut half a zone to nothing. Valencia Work Group designs every system from scratch — we map the property, zone it by lawn type and sun exposure, and place heads for actual coverage. Not roughly even. Actually covered. We pressure-test before we bury anything.</p>
+            <p style="margin-top:14px">We install Hunter and Rain Bird systems and service everything — any brand, any age. Spring startups and fall winterizations on schedule. Mid-season repairs when something gets hit or a head stops working. Smart controller upgrades for existing systems that can cut water usage by 30 to 40 percent by watering based on weather instead of a fixed timer.</p>
           </div>
           <div class="sub-checklist-box">
             <h4>What We Handle</h4>
@@ -3444,7 +3542,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-services')">Services</span><span>/</span>Masonry Work</div>
-        <h1><span class="text-navy">Built in Stone.</span><br><span class="text-orange">Built to Last.</span></h1>
+        <h1><span class="text-navy">Stone, Brick, Pavers.</span><br><span class="text-orange">Done to Last.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Masonry Estimate &#8594;</button>
       </div>
     </section>
@@ -3464,10 +3562,10 @@
             </ul>
           </div>
           <div>
-            <span class="section-label">All Types of Masonry</span>
-            <h2>Stone, Brick, Pavers.<br><span class="text-orange">Done Right.</span></h2>
-            <p>Masonry is one of those things that looks simple but requires real skill to get right. A patio that drains properly. Steps that don't crack after two winters. A retaining wall that actually holds. VWG brings two decades of masonry experience to every project in the region.</p>
-            <p style="margin-top:14px">We work in natural stone, manufactured pavers, brick, concrete block, and poured concrete. Whatever the look, whatever the material — we do it right or we don't do it at all.</p>
+            <span class="section-label">Masonry Work</span>
+            <h2>The Base Work You Can't See<br><span class="text-orange">Is What Actually Counts.</span></h2>
+            <p>Masonry fails in Westchester for one of two reasons: wrong base prep or wrong drainage. A beautiful bluestone patio laid on a sand base without proper compaction will shift after the first hard freeze. Mortar that isn't rated for outdoor exposure cracks within two seasons. Steps pitched incorrectly hold water and heave. Valencia Work Group has been doing this work in this region for over 20 years. We know what fails here and why. The preparation you never see once it's finished is what we don't cut corners on.</p>
+            <p style="margin-top:14px">We work in natural stone — bluestone, flagstone, fieldstone — as well as brick, manufactured concrete pavers, and poured concrete. We match material to application and to what the sub-base can support. If the existing base isn't right, we tell you before we quote, not after we've already dug it up. Work comes with a written warranty on installation.</p>
           </div>
         </div>
       </div>
@@ -3514,7 +3612,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-services')">Services</span><span>/</span>Fences</div>
-        <h1><span class="text-navy">Privacy. Security.</span><br><span class="text-orange">Curb Appeal.</span></h1>
+        <h1><span class="text-navy">Set Once.</span><br><span class="text-orange">Stands for Decades.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Get a Fence Estimate &#8594;</button>
       </div>
     </section>
@@ -3523,9 +3621,9 @@
         <div class="sub-split">
           <div>
             <span class="section-label">Fence Installation</span>
-            <h2>The Right Fence<br><span class="text-orange">For Your Property.</span></h2>
-            <p>A fence does a lot of work — it defines your property, adds privacy, keeps pets and kids safe, and can dramatically improve your curb appeal. But only if it's installed right. Posts that aren't set deep enough. Boards that weren't properly treated. Panels that sag after one winter. We've seen it all. We don't do it that way.</p>
-            <p style="margin-top:14px">VWG installs all types of residential and commercial fencing in Westchester County, NJ, and CT. From classic wood privacy fences to low-maintenance vinyl and ornamental aluminum — properly installed to last.</p>
+            <h2>The Difference Is in How<br><span class="text-orange">the Post Goes in the Ground.</span></h2>
+            <p>Frost depth in most of Westchester runs 36 to 42 inches. A post set at 24 inches — which is what a lot of budget fence installs do — will heave out of the ground after the first hard freeze and your fence starts leaning by spring. Valencia Work Group sets posts to proper depth, properly anchored. Cedar gets sealed before it goes into the ground. Vinyl gets UV-rated hardware. Aluminum gets powder-coated post caps that don't rust. The stuff that looks the same on paper makes all the difference after five winters.</p>
+            <p style="margin-top:14px">We install wood, vinyl, aluminum ornamental, chain link, and split-rail fencing. We also handle gate installation, electronic gate openers, and post repair for fences that are starting to lean or rot — you don't always need to replace the whole thing. We pull permits where required and work with you on property surveys if the lot lines aren't clearly marked.</p>
           </div>
           <div class="sub-checklist-box">
             <h4>Fence Types We Install</h4>
@@ -3576,7 +3674,7 @@
       <div class="page-hero-overlay"></div>
       <div class="container page-hero-content">
         <div class="breadcrumb"><span onclick="goTo('page-home')">Home</span><span>/</span><span onclick="goTo('page-services')">Services</span><span>/</span>Power Washing</div>
-        <h1><span class="text-navy">Like New.</span><br><span class="text-orange">One Treatment.</span></h1>
+        <h1><span class="text-navy">Ten Years of Buildup,</span><br><span class="text-orange">Gone in a Day.</span></h1>
         <button class="btn btn-red" style="margin-top:22px" onclick="goTo('page-contact')">Schedule a Power Wash &#8594;</button>
       </div>
     </section>
@@ -3597,9 +3695,9 @@
           </div>
           <div>
             <span class="section-label">Professional Cleaning</span>
-            <h2>Restore Every<br><span class="text-orange">Outdoor Surface.</span></h2>
-            <p>Dirt, algae, mildew, oil stains, and years of buildup — professional power washing removes it all. Not just from the surface, but from the cracks, seams, and low spots that a garden hose can't reach.</p>
-            <p style="margin-top:14px">VWG uses commercial-grade equipment and the right pressure settings for each surface. High pressure on concrete. Soft-wash technique on siding and wood. We don't damage what we're paid to clean.</p>
+            <h2>The Wrong Pressure<br><span class="text-orange">Does More Damage Than Dirt.</span></h2>
+            <p>High pressure on the wrong surface strips it. Stamped concrete loses its sealer. Old wood deck fibers split open. Vinyl siding gets water forced behind it into the wall. Valencia Work Group uses commercial-grade equipment and adjusts technique by surface — high pressure for concrete and masonry, soft-wash with appropriate solution for siding and wood. We're not just running a wand over your driveway. We're cleaning it without making it worse.</p>
+            <p style="margin-top:14px">Most jobs are completed the same day. We contain runoff so it doesn't track across your lawn or into your landscaping. Power washing before sealing, staining, or painting is essential — the coating won't bond to a dirty surface. We do the wash, give it proper dry time, and can coordinate with a sealing or staining job in the same visit.</p>
           </div>
         </div>
       </div>
@@ -3654,10 +3752,10 @@
       <div class="container">
         <div class="sub-split">
           <div>
-            <span class="section-label">Winter Services</span>
-            <h2>Snow Handled.<br><span class="text-orange">Before It's a Problem.</span></h2>
-            <p>When a storm hits overnight, your driveway needs to be clear before you leave for work and your walkways need to be safe for your family. That means a crew that shows up on time, every time — storm after storm, all winter long.</p>
-            <p style="margin-top:14px">VWG provides residential and commercial snow plowing and removal contracts for Westchester County, NJ, and CT. Seasonal and per-storm contracts available. We handle everything — plowing, salting, and hauling when accumulation demands it.</p>
+            <span class="section-label">Winter Contracts</span>
+            <h2>Signed Up in October.<br><span class="text-orange">Clear Before 6am All Winter.</span></h2>
+            <p>Westchester gets hit hard some years — multiple storms in a week, 20-inch snowfall, ice underneath. The homeowners who don't have seasonal contracts spend January calling around and landing on waitlists. Valencia Work Group's seasonal customers are priority accounts. They get cleared first, they get salted, they get the early-morning service when a storm comes through overnight. That's how our operation runs. We're honest about it upfront so there are no surprises in February.</p>
+            <p style="margin-top:14px">Per-storm accounts get serviced after seasonal customers are covered. If you need guaranteed priority — elderly family member at the property, medical appointments, a commute that can't wait — get a seasonal contract. We cover residential driveways and walkways as well as commercial lots, loading docks, and access roads. Seasonal contracts fill in September and October. Call us before the season starts.</p>
           </div>
           <div class="sub-checklist-box">
             <h4>What We Provide</h4>
@@ -4073,7 +4171,7 @@
         <h3>Sign 5: The Roof Is Over 20 Years Old</h3>
         <p>Most asphalt shingle roofs have a functional life of 20–25 years. If yours is in that range, even if it "looks okay," it's running on borrowed time. An inspection will tell you how much life is left. A good contractor will give you an honest answer — not just tell you what gets them the job.</p>
         <h3>What to Do Next</h3>
-        <p>If you're seeing two or more of these signs, call for an inspection before anything else. A proper roof inspection takes 30–45 minutes and gives you a clear picture of what you're actually dealing with. VWG does these at no charge for homeowners in our service area.</p>
+        <p>If you're seeing two or more of these signs, call for an inspection before anything else. A proper roof inspection takes 30–45 minutes and gives you a clear picture of what you're actually dealing with. Valencia Work Group does these at no charge for homeowners in our service area.</p>
         <div class="blog-cta-box">
           <p>Have a roofing concern? Give us a call.</p>
           <a href="tel:9149068215" class="btn btn-red">(914) 906-8215 &#8594;</a>
@@ -4455,14 +4553,21 @@
   <script>
     /* ─── Page navigation ──────────────────────────────────────── */
     function goTo(pageId) {
-      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
-      const target = document.getElementById(pageId);
-      if (target) target.classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const cur = document.querySelector('.page:not(.hidden)');
+      const nxt = document.getElementById(pageId);
+      if (!nxt || cur === nxt) return;
       setActiveNav(pageId);
-      // close mobile menu if open
-      const mobileMenu = document.getElementById('mobile-menu');
-      if (mobileMenu) mobileMenu.classList.remove('open');
+      cur.classList.add('page-exiting');
+      setTimeout(function() {
+        cur.classList.add('hidden');
+        cur.classList.remove('page-exiting');
+        nxt.classList.remove('hidden');
+        nxt.classList.add('page-entering');
+        window.scrollTo(0, 0);
+        setTimeout(function() { nxt.classList.remove('page-entering'); }, 750);
+        const mob = document.getElementById('mobile-menu');
+        if (mob) mob.classList.remove('open');
+      }, 160);
     }
 
     function setActiveNav(pageId) {
@@ -4503,6 +4608,20 @@
     document.addEventListener('click', function(e) {
       const dd = document.getElementById('services-dropdown');
       if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+    });
+  
+    // Nav scroll shadow
+    window.addEventListener('scroll', function() {
+      var nb = document.querySelector('.nav-bar');
+      if (nb) nb.classList.toggle('nav-scrolled', window.scrollY > 12);
+    });
+    // Animate home page on first load
+    document.addEventListener('DOMContentLoaded', function() {
+      var h = document.getElementById('page-home');
+      if (h) {
+        h.classList.add('page-entering');
+        setTimeout(function() { h.classList.remove('page-entering'); }, 750);
+      }
     });
   </script>
 
