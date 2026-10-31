@@ -1,0 +1,38 @@
+{
+ "vo1": {
+  "start": 0.35,
+  "dur": 1.5696598639455783,
+  "speed": 1.0,
+  "text": "Still doing everything yourself?"
+ },
+ "vo2": {
+  "start": 3.05,
+  "dur": 3.8791383219954647,
+  "speed": 1.06,
+  "text": "Emails. Content. Admin. Follow-ups. It all adds up."
+ },
+ "vo3": {
+  "start": 7.55,
+  "dur": 2.121315192743764,
+  "speed": 1.0,
+  "text": "What if you knew exactly where to start?"
+ },
+ "vo4": {
+  "start": 12.3,
+  "dur": 3.871496598639456,
+  "speed": 1.0,
+  "text": "Discover what needs your attention, and what could be handed off."
+ },
+ "vo5": {
+  "start": 17.4,
+  "dur": 2.313718820861678,
+  "speed": 1.0,
+  "text": "Make room to focus on what matters most."
+ },
+ "vo6": {
+  "start": 21.1,
+  "dur": 3.619138321995465,
+  "speed": 1.03,
+  "text": "Start with a Business Delegation Audit from Pro Virtual P H."
+ }
+}
