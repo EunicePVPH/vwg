@@ -12,6 +12,7 @@ from scipy import signal
 HERE = os.path.dirname(os.path.abspath(__file__))
 CUES = json.load(open(os.path.join(HERE, '../src/cues.json')))
 EV = json.load(open(sys.argv[1]))
+NOVO = os.environ.get('NOVO') == '1'   # NOVO=1 -> music + sfx only (no voiceover, no ducking)
 OUT = sys.argv[2]; os.makedirs(OUT, exist_ok=True)
 SR = 44100; DUR = CUES['end']; N = int(SR * DUR)
 rng = np.random.default_rng(606)
@@ -262,12 +263,14 @@ tonal.l *= pump; tonal.r *= pump
 # voice-over envelope -> ducking
 win = int(.12 * SR); env = np.convolve(vo_env, np.ones(win) / win, mode='same'); env = np.clip(env * 4, 0, 1)
 env = lp(env, 6, 1)
+if NOVO: env = env * 0
 duck_m = 1 - .45 * env; duck_f = 1 - .25 * env
 tl, tr = reverb(tonal.l, tonal.r, 2.2, .28); fl, fr = reverb(fxb.l, fxb.r, 1.6, .22)
 vl, vr = reverb(vo.l, vo.r, .55, .10)
 Ml = (tl * .55 + drums.l * .85) * duck_m; Mr = (tr * .55 + drums.r * .85) * duck_m
 Fl = fl * .8 * duck_f; Fr = fr * .8 * duck_f
-Ll = Ml + Fl + vl * 1.15; Rr = Mr + Fr + vr * 1.15
+vg = 0.0 if NOVO else 1.15
+Ll = Ml + Fl + vl * vg; Rr = Mr + Fr + vr * vg
 mix = np.stack([Ll, Rr], 1)
 act = vo_env > 0.02
 rm = lambda x: 20*np.log10(np.sqrt(np.mean(x[act]**2))+1e-9)
@@ -278,7 +281,7 @@ fo = int(.5 * SR); mix[-fo:] *= np.linspace(1, 0, fo)[:, None] ** 1.5
 mix /= np.max(np.abs(mix)) / 0.89
 pcm = (mix * 32767).astype(np.int16)
 import wave
-with wave.open(os.path.join(OUT, 'mix_raw.wav'), 'wb') as w:
+with wave.open(os.path.join(OUT, 'mix_raw_novo.wav' if NOVO else 'mix_raw.wav'), 'wb') as w:
     w.setnchannels(2); w.setsampwidth(2); w.setframerate(SR); w.writeframes(pcm.tobytes())
 # stems for inspection
 for name, (a, b) in (('vo', (vl, vr)), ('music', (Ml, Mr)), ('fx', (Fl, Fr))):
