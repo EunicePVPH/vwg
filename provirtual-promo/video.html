@@ -1,0 +1,625 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ProVirtual PH Promo Reel</title>
+<style>
+@font-face{font-family:'Mont';font-weight:500;src:url(fonts/Montserrat-500.ttf)}
+@font-face{font-family:'Mont';font-weight:600;src:url(fonts/Montserrat-600.ttf)}
+@font-face{font-family:'Mont';font-weight:700;src:url(fonts/Montserrat-700.ttf)}
+@font-face{font-family:'Mont';font-weight:800;src:url(fonts/Montserrat-800.ttf)}
+@font-face{font-family:'Mont';font-weight:900;src:url(fonts/Montserrat-900.ttf)}
+:root{
+  --navy0:#020c1c; --navy1:#04142e; --navy2:#062049; --navy3:#0a2d5e; --logo:#02254b;
+  --gold1:#f6dc94; --gold2:#d9a441; --gold3:#a0722a;
+  --goldgrad:linear-gradient(100deg,#9c6f26 0%,#e9c26b 28%,#fbe7a8 50%,#d9a441 72%,#9c6f26 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:1920px;background:#020c1c;overflow:hidden}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:'Mont',sans-serif;color:#fff;
+  background:radial-gradient(120% 80% at 50% 38%,#0a2d5e 0%,#062049 32%,#04142e 62%,#020c1c 100%)}
+.layer{position:absolute;left:0;top:0;width:1080px;height:1920px;perspective:1500px;perspective-origin:50% 50%;display:none}
+.el{position:absolute;left:50%;top:50%;transform-origin:50% 50%;will-change:transform}
+.txt{font-weight:900;line-height:1;white-space:nowrap;letter-spacing:-0.02em;text-transform:uppercase}
+.gold{background:var(--goldgrad);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+/* grain to avoid banding */
+#grain{position:absolute;inset:0;z-index:50;pointer-events:none;opacity:.5;mix-blend-mode:soft-light}
+#vig{position:absolute;inset:0;z-index:49;pointer-events:none;background:radial-gradient(100% 70% at 50% 50%,transparent 55%,rgba(0,5,15,.55) 100%)}
+/* cards */
+.card{width:460px;height:270px;border-radius:26px;background:linear-gradient(160deg,rgba(18,52,102,.97),rgba(6,26,58,.98));
+  border:1.5px solid rgba(233,194,107,.38);box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.04) inset;overflow:hidden}
+.card .hd{height:62px;display:flex;align-items:center;gap:14px;padding:0 24px;border-bottom:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04)}
+.card .hd i{width:14px;height:14px;border-radius:50%;background:var(--gold2);display:block}
+.card .hd b{font-weight:800;font-size:30px;letter-spacing:.06em;color:#fff}
+.card .bd{position:relative;padding:20px 24px}
+.row{display:flex;align-items:center;gap:14px;height:34px;margin-bottom:12px}
+.av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#f0cf85,#b0802f);flex:none}
+.ln{height:12px;border-radius:6px;background:rgba(255,255,255,.22)}
+.ln.g{background:rgba(233,194,107,.7)}
+.cb{width:26px;height:26px;border-radius:8px;border:2.5px solid rgba(233,194,107,.7);flex:none;position:relative}
+.badge{position:absolute;right:16px;top:12px;width:42px;height:42px;border-radius:50%;background:var(--goldgrad);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.45)}
+.badge svg{width:24px;height:24px}
+.pill{padding:14px 26px;border-radius:40px;background:rgba(6,26,58,.96);border:1.5px solid rgba(233,194,107,.55);font-weight:800;font-size:26px;letter-spacing:.08em;color:#fbe7a8;white-space:nowrap;box-shadow:0 14px 30px rgba(0,0,0,.5)}
+/* panel */
+.panel{width:900px;height:760px;border-radius:36px;background:linear-gradient(165deg,rgba(14,46,96,.96),rgba(4,18,42,.98));border:1.5px solid rgba(233,194,107,.4);box-shadow:0 50px 100px rgba(0,0,0,.55);overflow:hidden}
+.logoCard{width:940px;height:250px;border-radius:30px;background:#fdfdfd;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 2px rgba(233,194,107,.55)}
+.logoCard img{position:absolute;left:-53px;top:15px;width:953px;height:auto;display:block}
+.btn{border-radius:90px;font-weight:900;letter-spacing:.02em;text-align:center;white-space:nowrap}
+</style>
+</head>
+<body>
+<div id="stage">
+  <!-- background -->
+  <div class="layer" id="L_bg" style="display:block">
+    <div class="el" id="floor" style="width:3000px;height:3000px;
+      background-image:linear-gradient(rgba(233,194,107,.22) 2px,transparent 2px),linear-gradient(90deg,rgba(233,194,107,.22) 2px,transparent 2px);
+      background-size:150px 150px;"></div>
+    <div class="el" id="glow" style="width:1500px;height:1500px;border-radius:50%;background:radial-gradient(circle,rgba(233,194,107,.30),rgba(233,194,107,0) 62%)"></div>
+    <div class="el" id="beam" style="width:420px;height:3000px;background:linear-gradient(90deg,transparent,rgba(251,231,168,.20),transparent)"></div>
+  </div>
+  <!-- scene 1 -->
+  <div class="layer" id="L_s1"></div>
+  <!-- scene 2/3 -->
+  <div class="layer" id="L_s2"></div>
+  <!-- scene 4 -->
+  <div class="layer" id="L_s4"></div>
+  <!-- scene 5 -->
+  <div class="layer" id="L_s5"></div>
+  <!-- scene 6 -->
+  <div class="layer" id="L_s6"></div>
+  <!-- FX -->
+  <div class="layer" id="L_fx" style="display:block;z-index:40"></div>
+  <div id="vig"></div>
+  <img id="grain" src="assets/grain.png">
+</div>
+<script>
+/* ============ helpers ============ */
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const P=(t,a,b)=>clamp((t-a)/(b-a));
+const L=(a,b,p)=>a+(b-a)*p;
+const E={
+  lin:x=>x,
+  out2:x=>1-(1-x)*(1-x),
+  out3:x=>1-Math.pow(1-x,3),
+  out4:x=>1-Math.pow(1-x,4),
+  expo:x=>x>=1?1:1-Math.pow(2,-10*x),
+  io2:x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2,
+  io3:x=>x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2,
+  in3:x=>x*x*x,
+  in2:x=>x*x,
+  back:x=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(x-1,3)+c1*Math.pow(x-1,2)},
+  spring:x=>x>=1?1:1-Math.exp(-7*x)*Math.cos(x*11)
+};
+const $=id=>document.getElementById(id);
+function mk(parent,html,css,cls){
+  const d=document.createElement('div');
+  d.className='el '+(cls||'');
+  d.style.cssText=css||'';
+  d.innerHTML=html||'';
+  parent.appendChild(d);
+  return d;
+}
+function center(el){ el.style.marginLeft=(-el.offsetWidth/2)+'px'; el.style.marginTop=(-el.offsetHeight/2)+'px'; }
+// state: x,y from stage center
+function S(el,o){
+  const x=o.x||0,y=o.y||0,z=o.z||0,rx=o.rx||0,ry=o.ry||0,r=o.r||0,s=o.s===undefined?1:o.s,sx=o.sx===undefined?s:o.sx,sy=o.sy===undefined?s:o.sy;
+  el.style.transform=`translate3d(${x}px,${y}px,${z}px) rotateX(${rx}deg) rotateY(${ry}deg) rotateZ(${r}deg) scale(${sx},${sy})`;
+  el.style.opacity=o.o===undefined?1:o.o;
+  el.style.filter=o.blur?`blur(${o.blur}px)`:(o.f||'');
+  if(o.clip!==undefined) el.style.clipPath=o.clip;
+}
+function show(el,v){el.style.display=v?'block':'none'}
+function fit(el,w){ el.style.fontSize='100px'; const cw=el.scrollWidth; el.style.fontSize=(100*w/cw)+'px'; }
+const GOLD='#d9a441';
+const svgCheck='<svg viewBox="0 0 24 24" fill="none" stroke="#0a2349" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+
+async function main(){
+await Promise.all([500,600,700,800,900].map(w=>document.fonts.load(w+' 100px Mont')));
+document.querySelectorAll('.layer').forEach(l=>l.style.display='block');
+/* ============ background ============ */
+const floor=$('floor'), glow=$('glow'), beam=$('beam');
+for(const e of [floor,glow,beam]) center(e);
+
+/* ============ SCENE 1 ============ */
+const L1=$('L_s1');
+const w1=[['YOUR',380],['TO-DO',595],['LIST',810]].map(([t,y])=>{
+  const e=mk(L1,t,'font-size:260px;color:#fff;text-shadow:0 14px 40px rgba(0,0,0,.45)','txt'); e.dataset.y=y; return e;
+});
+const g1=[['NEVER',1085],['ENDS.',1300]].map(([t,y])=>{
+  const e=mk(L1,t,'font-size:260px','txt gold'); e.dataset.y=y; return e;
+});
+[w1[0],w1[1],w1[2],g1[0],g1[1]].forEach((e,i)=>{ e.dataset.i=i; });
+// widths: left align at x=100 .. compute later
+const s1line=mk(L1,'','width:880px;height:6px;background:var(--goldgrad);border-radius:3px;box-shadow:0 0 30px rgba(233,194,107,.8)');
+const s1sweep=mk(L1,'','width:260px;height:520px;background:linear-gradient(90deg,transparent,rgba(255,244,205,.85),transparent);mix-blend-mode:screen;transform:skewX(-18deg)');
+
+/* ============ SCENES 2/3: cards ============ */
+const L2=$('L_s2');
+const mocks={
+ EMAILS:`<div class="row"><div class="av"></div><div class="ln" style="width:210px"></div><div class="ln g" style="width:60px"></div></div>
+         <div class="row"><div class="av"></div><div class="ln" style="width:250px"></div></div>
+         <div class="row"><div class="av"></div><div class="ln" style="width:180px"></div><div class="ln g" style="width:40px"></div></div>`,
+ CONTENT:`<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"><div style="height:62px;border-radius:12px;background:linear-gradient(135deg,#f0cf85,#b0802f)"></div><div style="height:62px;border-radius:12px;background:rgba(255,255,255,.2)"></div><div style="height:62px;border-radius:12px;background:rgba(255,255,255,.12)"></div><div style="height:62px;border-radius:12px;background:linear-gradient(135deg,#f0cf85,#b0802f)"></div><div style="height:62px;border-radius:12px;background:rgba(255,255,255,.12)"></div><div style="height:62px;border-radius:12px;background:linear-gradient(135deg,#f0cf85,#b0802f)"></div><div style="height:62px;border-radius:12px;background:rgba(255,255,255,.2)"></div><div style="height:62px;border-radius:12px;background:rgba(255,255,255,.12)"></div></div>`,
+ WEBSITES:`<div style="height:128px;border-radius:14px;border:2px solid rgba(255,255,255,.22);padding:12px"><div style="display:flex;gap:8px;margin-bottom:12px"><div class="av" style="width:12px;height:12px"></div><div class="av" style="width:12px;height:12px;opacity:.6"></div><div class="ln" style="width:170px;height:12px;margin-left:10px"></div></div><div style="display:flex;gap:12px"><div style="width:150px;height:70px;border-radius:10px;background:rgba(255,255,255,.18)"></div><div style="flex:1"><div class="ln" style="width:100%;margin-bottom:10px"></div><div class="ln g" style="width:60%"></div></div></div></div>`,
+ ADMIN:`<div class="row"><div class="cb"></div><div class="ln" style="width:250px"></div></div><div class="row"><div class="cb"></div><div class="ln" style="width:190px"></div></div><div class="row"><div class="cb"></div><div class="ln" style="width:290px"></div></div>`,
+ LEADS:`<div class="row"><div class="av"></div><div class="ln" style="width:150px"></div><div class="ln g" style="width:100px;margin-left:auto"></div></div><div class="row"><div class="av"></div><div class="ln" style="width:190px"></div><div class="ln g" style="width:70px;margin-left:auto"></div></div><div class="row"><div class="av"></div><div class="ln" style="width:120px"></div><div class="ln g" style="width:120px;margin-left:auto"></div></div>`,
+ REPORTS:`<div style="display:flex;align-items:flex-end;gap:16px;height:150px;padding:0 6px"><div style="width:42px;height:50px;border-radius:8px 8px 0 0;background:rgba(255,255,255,.22)"></div><div style="width:42px;height:84px;border-radius:8px 8px 0 0;background:rgba(255,255,255,.22)"></div><div style="width:42px;height:68px;border-radius:8px 8px 0 0;background:rgba(255,255,255,.22)"></div><div style="width:42px;height:116px;border-radius:8px 8px 0 0;background:linear-gradient(#f0cf85,#b0802f)"></div><div style="width:42px;height:98px;border-radius:8px 8px 0 0;background:rgba(255,255,255,.22)"></div><div style="width:42px;height:140px;border-radius:8px 8px 0 0;background:linear-gradient(#f0cf85,#b0802f)"></div></div>`
+};
+const names=['EMAILS','CONTENT','WEBSITES','ADMIN','LEADS','REPORTS'];
+// chaos rest positions (offsets from center), entry vectors, rotation
+const chaos=[
+ {x:-170,y:-420,r:-5,from:[-1600,-420],t0:3.00},
+ {x: 170,y:-230,r: 4,from:[ 1600,-100],t0:3.14},
+ {x:-130,y:-40,r:-3,from:[ -300,-1800],t0:3.28},
+ {x: 140,y: 150,r: 5,from:[ 1500, 900],t0:3.42},
+ {x:-110,y: 340,r:-4,from:[-1600, 700],t0:3.56},
+ {x: 110,y: 530,r: 3,from:[  300, 1800],t0:3.70}
+];
+const cards=names.map((n,i)=>{
+  const e=mk(L2,`<div class="hd"><i></i><b>${n}</b></div><div class="bd">${mocks[n]}</div><div class="badge" style="opacity:0">${svgCheck}</div>`,'','card');
+  e.style.zIndex=10+i; center(e); return e;
+});
+const pillsDef=[['NEW',-330,-300,3.5],['DUE TODAY',260,-130,3.75],['REPLY',-300,160,4.0],['TO DO',300,330,4.25],['URGENT',-120,600,4.5],['NEW',320,-480,4.75]];
+const pills=pillsDef.map(([t,x,y,t0])=>{const e=mk(L2,t,'','pill'); e.style.zIndex=30; center(e); e.dataset.x=x;e.dataset.y=y;e.dataset.t0=t0; return e;});
+const capA=mk(L2,'EVERYTHING. ALL AT ONCE.','font-size:40px;color:#fbe7a8;letter-spacing:.08em;font-weight:800;text-transform:uppercase;white-space:nowrap');
+capA.style.zIndex=40; center(capA);
+// scene3 headline
+const h3=['YOU DON’T','HAVE TO','DO IT ALL.'].map((t,i)=>{
+  const e=mk(L2,t,'font-size:140px;'+(i==2?'':'color:#fff'),'txt'+(i==2?' gold':'')); e.style.zIndex=45; return e;
+});
+const h3wrap=h3.map(e=>{ e.style.fontSize='140px'; return e;});
+// grid positions
+const gridPos=[[-226,-270],[226,-270],[-226,0],[226,0],[-226,270],[226,270]];
+// scene 3 connectors (gold lines between cards) drawn via svg
+const conn=mk(L2,'<svg width="1080" height="1920" viewBox="0 0 1080 1920" style="position:absolute;left:-540px;top:-960px"><path id="cpath" d="" fill="none" stroke="#e9c26b" stroke-width="3" stroke-linecap="round" stroke-dasharray="14 12" opacity=".8"/></svg>','width:1080px;height:1920px;pointer-events:none');
+conn.style.zIndex=5; conn.style.marginLeft='-540px'; conn.style.marginTop='-960px'; conn.style.left='50%';conn.style.top='50%';
+conn.firstChild.style.left='0px';conn.firstChild.style.top='0px';
+
+/* ============ SCENE 4 ============ */
+const L4=$('L_s4');
+const logoCard=mk(L4,'<img src="assets/provirtual-logo.jpg"><div class="lsweep" style="position:absolute;top:0;left:0;width:240px;height:100%;background:linear-gradient(90deg,transparent,rgba(233,194,107,.55),rgba(255,244,205,.8),rgba(233,194,107,.55),transparent);transform:skewX(-20deg);mix-blend-mode:multiply;opacity:0"></div>','','logoCard');
+center(logoCard);
+const s4line=mk(L4,'','width:940px;height:5px;background:var(--goldgrad);border-radius:3px;box-shadow:0 0 28px rgba(233,194,107,.9)');
+const s4ring=mk(L4,'','width:980px;height:300px;border-radius:44px;border:2px solid rgba(233,194,107,.35)');
+const h4=[['YOUR PARTNER',0],['IN GETTING',0],['MORE DONE.',1]].map(([t,g])=>{
+  const w=mk(L4,'','overflow:hidden;height:150px;padding-top:12px'); // mask
+  const inner=document.createElement('div'); inner.className='txt'+(g?' gold':''); inner.style.cssText='font-size:110px;'+(g?'':'color:#fff'); inner.textContent=t;
+  w.appendChild(inner); w.inner=inner; return w;
+});
+const tag4=mk(L4,'REMOTE SUPPORT. REAL RESULTS.','font-size:0px','txt'); // placeholder (unused)
+tag4.style.display='none';
+
+/* ============ SCENE 5 ============ */
+const L5=$('L_s5');
+const cats=[
+ {n:'01',a:'ADMIN &',b:'OPERATIONS'},
+ {n:'02',a:'SOCIAL MEDIA',b:'& CONTENT'},
+ {n:'03',a:'WEBSITES & DIGITAL',b:'MARKETING'},
+ {n:'04',a:'LEAD GENERATION',b:'& RESEARCH'}
+];
+const catTitles=cats.map(c=>{
+  const w=mk(L5,'','overflow:hidden;height:250px;width:900px');
+  w.innerHTML=`<div style="display:flex;align-items:center;gap:18px;height:50px"><div style="font-weight:800;font-size:32px;letter-spacing:.2em;color:#e9c26b">${c.n}</div><div style="height:3px;width:90px;background:var(--goldgrad)"></div></div>
+  <div class="txt" style="font-size:80px;margin-top:12px;color:#fff;height:90px"><span>${c.a}</span></div><div class="txt gold" style="font-size:80px;height:90px"><span>${c.b}</span></div>`;
+  w.style.height='250px'; center(w); return w;
+});
+catTitles.forEach(w=>{
+  const a=w.children[1],b=w.children[2]; a.style.fontSize=b.style.fontSize='100px';
+  const m=Math.max(a.firstChild.offsetWidth,b.firstChild.offsetWidth); const f=Math.min(118,100*870/m);
+  a.style.fontSize=b.style.fontSize=f+'px'; a.style.height=b.style.height=(f*1.12)+'px';
+  w.style.height=(62+f*2.3)+'px'; w.style.marginTop=(-w.offsetHeight/2)+'px';
+});
+const panels=[0,1,2,3].map(i=>{ const p=mk(L5,'','','panel'); center(p); return p; });
+// panel contents built with absolute children
+function A(parent,css,html){const d=document.createElement('div');d.style.cssText='position:absolute;'+css;d.innerHTML=html||'';parent.appendChild(d);return d;}
+/* panel 1: admin & operations — inbox rows sorted into folders + checklist + progress */
+const P1={};
+P1.rows=[];
+for(let i=0;i<4;i++){
+  const r=A(panels[0],`left:40px;top:${64+i*92}px;width:520px;height:72px;border-radius:18px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12)`,
+   `<div class="cb" style="position:absolute;left:20px;top:20px"></div><div class="ln" style="position:absolute;left:68px;top:18px;width:${[270,220,300,240][i]}px"></div><div class="ln" style="position:absolute;left:68px;top:42px;width:${[170,150,190,130][i]}px;height:9px;background:rgba(255,255,255,.12)"></div>`);
+  const ck=A(r,'left:20px;top:20px;width:26px;height:26px;border-radius:8px;background:var(--goldgrad);display:flex;align-items:center;justify-content:center;opacity:0','<div style="width:18px;height:18px">'+svgCheck+'</div>');
+  r.ck=ck; P1.rows.push(r);
+}
+P1.cal=A(panels[0],'left:600px;top:64px;width:260px;height:350px;border-radius:20px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);overflow:hidden',
+  `<div style="height:56px;background:rgba(233,194,107,.16);display:flex;align-items:center;padding:0 20px;font-weight:800;font-size:22px;letter-spacing:.14em;color:#fbe7a8">THIS WEEK</div>`);
+P1.blocks=[];
+[[0,76,'#e9c26b',150],[1,134,'rgba(255,255,255,.28)',180],[2,196,'#e9c26b',120],[3,254,'rgba(255,255,255,.28)',200]].forEach(([i,y,c,w])=>{
+  const b=A(P1.cal,`left:20px;top:${y}px;width:${w}px;height:44px;border-radius:12px;background:${c};opacity:0`); P1.blocks.push(b);
+});
+P1.barBg=A(panels[0],'left:40px;top:470px;width:820px;height:20px;border-radius:10px;background:rgba(255,255,255,.1)');
+P1.bar=A(P1.barBg,'left:0;top:0;height:20px;width:0;border-radius:10px;background:var(--goldgrad);box-shadow:0 0 18px rgba(233,194,107,.7)');
+P1.lab=A(panels[0],'left:40px;top:510px;font-weight:800;font-size:30px;letter-spacing:.14em;color:#fbe7a8','TASKS HANDLED');
+P1.mini=[];
+for(let i=0;i<3;i++){ P1.mini.push(A(panels[0],`left:${40+i*280}px;top:590px;width:260px;height:110px;border-radius:20px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);opacity:0`,
+ `<div class="ln g" style="position:absolute;left:24px;top:26px;width:${[120,90,140][i]}px"></div><div class="ln" style="position:absolute;left:24px;top:56px;width:${[190,170,150][i]}px"></div><div class="ln" style="position:absolute;left:24px;top:78px;width:${[110,130,90][i]}px;height:9px;background:rgba(255,255,255,.12)"></div>`)); }
+
+/* panel 2: social media & content — calendar grid + phone post */
+const P2={};
+P2.tiles=[];
+for(let r=0;r<3;r++) for(let c=0;c<4;c++){
+  const gold=((r*4+c)%3==0);
+  P2.tiles.push(A(panels[1],`left:${44+c*118}px;top:${108+r*128}px;width:104px;height:112px;border-radius:16px;background:${gold?'linear-gradient(135deg,#f0cf85,#b0802f)':'rgba(255,255,255,.12)'};border:1.5px solid rgba(255,255,255,.14);opacity:0`));
+}
+P2.cap=A(panels[1],'left:44px;top:44px;font-weight:800;font-size:26px;letter-spacing:.16em;color:#fbe7a8','CONTENT CALENDAR');
+P2.phone=A(panels[1],'left:560px;top:60px;width:300px;height:620px;border-radius:44px;background:#06142e;border:3px solid rgba(255,255,255,.28);overflow:hidden;box-shadow:0 30px 60px rgba(0,0,0,.5)',
+ `<div style="position:absolute;left:112px;top:14px;width:76px;height:14px;border-radius:8px;background:rgba(255,255,255,.2)"></div>
+  <div style="position:absolute;left:20px;top:50px;display:flex;align-items:center;gap:12px"><div class="av"></div><div class="ln" style="width:120px"></div></div>
+  <div id="postimg" style="position:absolute;left:20px;top:100px;width:260px;height:260px;border-radius:20px;background:linear-gradient(135deg,#1b4a8f,#0a2d5e 55%,#e9c26b 120%);overflow:hidden"></div>
+  <div style="position:absolute;left:20px;top:380px;display:flex;gap:14px"><div class="av" style="width:34px;height:34px;opacity:.9"></div><div class="av" style="width:34px;height:34px;background:rgba(255,255,255,.3)"></div><div class="av" style="width:34px;height:34px;background:rgba(255,255,255,.3)"></div></div>
+  <div class="ln" style="position:absolute;left:20px;top:440px;width:240px"></div><div class="ln" style="position:absolute;left:20px;top:468px;width:180px;background:rgba(255,255,255,.14)"></div>`);
+P2.sched=A(panels[1],'left:590px;top:600px;width:240px;height:60px;border-radius:30px;background:var(--goldgrad);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;letter-spacing:.12em;color:#0a2349;opacity:0','SCHEDULED');
+P2.shine=A(panels[1],'left:0;top:0;width:60px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent);transform:skewX(-18deg)');
+P2.post=document.getElementById('postimg');
+P2.dots=[];
+/* panel 3: websites & digital marketing — browser assembling + growth line */
+const P3={};
+P3.br=A(panels[2],'left:44px;top:56px;width:812px;height:420px;border-radius:24px;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.22);overflow:hidden',
+ `<div style="height:52px;background:rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;padding:0 20px"><div class="av" style="width:14px;height:14px"></div><div class="av" style="width:14px;height:14px;opacity:.6"></div><div class="av" style="width:14px;height:14px;opacity:.35"></div><div style="margin-left:18px;height:26px;width:420px;border-radius:13px;background:rgba(255,255,255,.14)"></div></div>`);
+P3.nav=A(P3.br,'left:30px;top:76px;width:752px;height:36px;border-radius:10px;background:rgba(255,255,255,.1);opacity:0');
+P3.hero=A(P3.br,'left:30px;top:130px;width:752px;height:150px;border-radius:16px;background:linear-gradient(120deg,#12418a,#0a2d5e);opacity:0',
+ `<div class="ln" style="position:absolute;left:30px;top:34px;width:340px;height:20px;background:rgba(255,255,255,.7)"></div><div class="ln" style="position:absolute;left:30px;top:68px;width:250px;height:12px"></div><div style="position:absolute;left:30px;top:98px;width:150px;height:34px;border-radius:17px;background:var(--goldgrad)"></div>`);
+P3.c=[0,1,2].map(i=>A(P3.br,`left:${30+i*258}px;top:298px;width:236px;height:100px;border-radius:14px;background:rgba(255,255,255,.1);opacity:0`,
+ `<div class="ln g" style="position:absolute;left:18px;top:22px;width:${[90,120,70][i]}px"></div><div class="ln" style="position:absolute;left:18px;top:52px;width:180px;height:10px"></div><div class="ln" style="position:absolute;left:18px;top:72px;width:130px;height:10px;background:rgba(255,255,255,.12)"></div>`));
+P3.chart=A(panels[2],'left:44px;top:510px;width:812px;height:210px;border-radius:24px;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.18)',
+ `<svg width="812" height="210" viewBox="0 0 812 210" style="position:absolute;left:0;top:0"><g stroke="rgba(255,255,255,.1)" stroke-width="2"><path d="M30 50H782M30 100H782M30 150H782"/></g>
+  <path id="gpath" d="M30 172 C 130 168, 190 150, 270 138 S 400 120, 470 92 S 620 60, 782 28" fill="none" stroke="url(#gg)" stroke-width="7" stroke-linecap="round"/>
+  <defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#b0802f"/><stop offset=".6" stop-color="#e9c26b"/><stop offset="1" stop-color="#fbe7a8"/></linearGradient></defs>
+  <circle id="gdot" r="13" fill="#fbe7a8" stroke="#a0722a" stroke-width="4" cx="30" cy="172"/></svg>`);
+P3.gpath=P3.chart.querySelector('#gpath'); P3.gdot=P3.chart.querySelector('#gdot');
+P3.gl=P3.gpath.getTotalLength();
+/* panel 4: lead generation & research — search bar + funnel + contact rows */
+const P4={};
+P4.search=A(panels[3],'left:44px;top:50px;width:812px;height:80px;border-radius:40px;background:rgba(255,255,255,.07);border:2px solid rgba(233,194,107,.55);overflow:hidden',
+ `<svg viewBox="0 0 24 24" width="34" height="34" style="position:absolute;left:28px;top:23px" fill="none" stroke="#e9c26b" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+  <div id="qtext" style="position:absolute;left:84px;top:0;height:80px;line-height:80px;font-weight:700;font-size:30px;letter-spacing:.06em;color:#fff;white-space:nowrap"></div>`);
+P4.q=P4.search.querySelector('#qtext');
+P4.fun=A(panels[3],'left:44px;top:170px;width:360px;height:520px',
+ `<svg width="360" height="520" viewBox="0 0 360 520"><path d="M10 20 H350 L240 250 V420 L120 500 V250 Z" fill="rgba(255,255,255,.06)" stroke="rgba(233,194,107,.6)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M60 130 H300" stroke="rgba(255,255,255,.18)" stroke-width="3"/><path d="M96 220 H264" stroke="rgba(255,255,255,.18)" stroke-width="3"/></svg>`);
+P4.dots=[];
+for(let i=0;i<14;i++){ P4.dots.push(A(P4.fun,'left:0;top:0;width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#fbe7a8,#b0802f);opacity:0')); }
+P4.rows=[];
+for(let i=0;i<4;i++){
+  P4.rows.push(A(panels[3],`left:450px;top:${180+i*128}px;width:406px;height:104px;border-radius:22px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.14);opacity:0`,
+  `<div class="av" style="position:absolute;left:22px;top:24px;width:56px;height:56px"></div><div class="ln" style="position:absolute;left:100px;top:28px;width:${[170,140,190,150][i]}px;height:14px;background:rgba(255,255,255,.45)"></div><div class="ln" style="position:absolute;left:100px;top:58px;width:${[220,200,170,210][i]}px;height:10px;background:rgba(255,255,255,.18)"></div><div style="position:absolute;right:20px;top:28px;width:48px;height:48px;border-radius:50%;background:var(--goldgrad);display:flex;align-items:center;justify-content:center"><div style="width:26px;height:26px">${svgCheck}</div></div>`));
+}
+// tracker
+const tracker=mk(L5,'','width:900px;height:60px');
+const trk=[0,1,2,3].map(i=>{const d=document.createElement('div');d.style.cssText=`position:absolute;top:24px;left:${i*228}px;width:216px;height:10px;border-radius:5px;background:rgba(255,255,255,.18);overflow:hidden`;d.innerHTML='<div style="height:100%;width:0;background:var(--goldgrad)"></div>';tracker.appendChild(d);return d;});
+center(tracker);
+const wipe=mk(L5,'','width:400px;height:2400px;background:linear-gradient(90deg,rgba(233,194,107,0),rgba(233,194,107,.95) 50%,rgba(233,194,107,0));mix-blend-mode:screen;transform:skewX(-14deg)');
+wipe.style.zIndex=30;
+
+/* ============ SCENE 6 ============ */
+const L6=$('L_s6');
+const logo6=mk(L6,'<img src="assets/provirtual-logo.jpg"><div class="lsweep6" style="position:absolute;top:0;left:0;width:240px;height:100%;background:linear-gradient(90deg,transparent,rgba(233,194,107,.55),rgba(255,244,205,.8),rgba(233,194,107,.55),transparent);transform:skewX(-20deg);mix-blend-mode:multiply;opacity:0"></div>','','logoCard');
+center(logo6);
+const h6=[['MORE SUPPORT.',0],['MORE ROOM',0],['TO GROW.',1]].map(([t,g])=>{
+  const w=mk(L6,'','overflow:hidden;height:130px;padding-top:10px');
+  const inner=document.createElement('div'); inner.className='txt'+(g?' gold':''); inner.style.cssText='font-size:100px;'+(g?'':'color:#fff'); inner.textContent=t;
+  w.appendChild(inner); w.inner=inner; return w;
+});
+const cta1=mk(L6,'LET’S WORK TOGETHER.','width:840px;height:130px;line-height:130px;font-size:50px;background:var(--goldgrad);color:#0a2349;box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 60px rgba(233,194,107,.35)','btn');
+const cta2=mk(L6,`<span style="display:inline-block;vertical-align:middle;margin-right:18px;margin-top:-6px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#fbe7a8" stroke-width="2.2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg></span><span style="vertical-align:middle">MESSAGE PROVIRTUAL PH</span>`,'width:840px;height:112px;line-height:108px;font-size:36px;color:#fff;border:3px solid rgba(233,194,107,.85);background:rgba(6,26,58,.7)','btn');
+const s6ring=mk(L6,'','width:1000px;height:330px;border-radius:50px;border:2px solid rgba(233,194,107,.35)');
+
+/* ============ FX ============ */
+const LF=$('L_fx');
+const flash=mk(LF,'','width:1080px;height:1920px;background:radial-gradient(circle at 50% 50%,#fff6d8,#f1d189 40%,rgba(241,209,137,0) 75%);opacity:0');
+const fxline=mk(LF,'','width:1080px;height:8px;background:linear-gradient(90deg,transparent,#fff3c9,transparent);box-shadow:0 0 50px 12px rgba(233,194,107,.9);opacity:0');
+
+// center everything that has size
+[...w1,...g1,s1line,s1sweep,s4line,s4ring,...h4,...catTitles,...panels,tracker,wipe,...h6,cta1,cta2,s6ring,flash,fxline,...h3].forEach(center);
+// left-align scene 1 words by measuring
+w1.concat(g1).forEach(e=>{ e._w=e.offsetWidth; });
+// headline sizes fit
+const hs1=Math.min(...[w1[1]].map(e=>880/e.offsetWidth*260));
+// fit scene 3/4/6 headlines
+(function(){
+  let m=Math.max(...h3.map(e=>e.scrollWidth)); h3.forEach(e=>{e.style.fontSize=(140*860/m)+'px';}); h3.forEach(center);
+  const w4=Math.max(...h4.map(w=>w.inner.scrollWidth)); const f4=110*860/w4; h4.forEach(w=>{w.inner.style.fontSize=f4+'px';});
+  const w6=Math.max(...h6.map(w=>w.inner.scrollWidth)); const f6=100*880/w6; h6.forEach(w=>{w.inner.style.fontSize=f6+'px';});
+  h4.forEach(w=>{w.style.height=(f4*1.2)+'px';w.style.width='900px';w.inner.style.textAlign='center'; w.inner.style.width='900px'; w.style.marginLeft='-450px';w.style.marginTop=(-w.offsetHeight/2)+'px'});
+  h6.forEach(w=>{w.style.height=(f6*1.25)+'px';w.style.width='920px';w.inner.style.textAlign='center'; w.inner.style.width='920px'; w.style.marginLeft='-460px';w.style.marginTop=(-w.offsetHeight/2)+'px'});
+  // scene 1 fixed size so all lines align: size 260 -> TO-DO width
+  const f1=Math.min(260,780/Math.max(w1[1].scrollWidth,g1[0].scrollWidth)*260);
+  w1.concat(g1).forEach(e=>{e.style.fontSize=f1+'px'; e.style.marginLeft='0px'; e.style.marginTop=(-e.offsetHeight/2)+'px'; e._w=e.scrollWidth;});
+})();
+
+/* ============ SCENE UPDATE FUNCTIONS ============ */
+function bgUpdate(t){
+  // floor grid plane (2.5D) scrolling toward viewer
+  const sc=t<9?0.55:(t<12?0.7:(t<17?0.45:0.55));
+  floor.style.backgroundPosition=`0px ${(t*60)%150}px`;
+  S(floor,{y:1000,z:-300,rx:74,o:sc*0.55});
+  // glow
+  let gx=0,gy=-100,go=.55;
+  if(t<3){gy=-200;go=.5+.25*Math.sin(t*3)*0;}
+  else if(t<6){gy=100;go=.35;}
+  else if(t<9){gy=-300;go=.4;}
+  else if(t<12){gy=-130;go=.9;}
+  else if(t<17){gy=-100;go=.5;}
+  else {gy=-250;go=.75;}
+  S(glow,{x:gx,y:gy,o:go});
+  // beam
+  const bx=L(-1100,1100,((t*0.18)%1));
+  S(beam,{x:bx,r:24,o:.9});
+}
+
+function updS1(t){
+  const lay=L1; show(lay,t<3.15);
+  if(t>=3.15) return;
+  const lines=w1.concat(g1);
+  const ex=P(t,2.55,3.1); // exit: zoom through
+  const exs=E.in3(ex);
+  lines.forEach((e,i)=>{
+    const y0=parseFloat(e.dataset.y)-960;
+    const x0=-390; // left aligned origin (element left edge at center+x0 since marginLeft 0 and left:50%)
+    let st,en,o=1,z=0,blur=0,clip;
+    if(i<3){ st=-0.12+i*0.15; en=st+0.55;
+      const p=E.out4(P(t,st,en)); z=L(-1900,0,p); blur=(1-p)*18; o=clamp(P(t,st,st+0.08)+0.0,0,1);
+      
+    } else { st=1.00+(i-3)*0.20; en=st+0.7;
+      const p=E.expo(P(t,st,en)); o=t>=st?1:0; clip=`inset(0 ${(1-p)*100}% 0 0)`;
+      z=L(0,0,p);
+    }
+    // camera: slow push
+    const push=L(0,90,E.out2(P(t,0.3,2.6)));
+    // shake on impacts
+    let shx=0,shy=0;
+    const imps=[0.0,0.16,0.32,1.30,1.50];
+    imps.forEach(it=>{const d=t-it-0.45*0; const tt=t-(it+0.4); if(i<3&&it<1&&false){} });
+    S(e,{x:x0,y:y0,z:z+push+exs*1500,o:o*(1-P(t,2.8,3.1)),blur:blur+exs*14,clip:clip});
+  });
+  // gold line + sweep
+  const lp=E.expo(P(t,0.85,1.3));
+  g1.forEach(e=>{e.style.backgroundPosition=`${L(100,0,E.io2(P(t,1.1,2.2)))}% 50%`;});
+  S(s1line,{x:0,y:-960+960+ -0 + (1085-960)-150,sx:lp,sy:1,o:t>0.8?clamp(1-P(t,2.4,2.7)):0});
+  const sp=E.io2(P(t,1.45,2.2));
+  S(s1sweep,{o:0});
+  s1sweep.style.clipPath='';
+}
+
+const scrP=[]; // placeholders
+function updS2(t){
+  show(L2,t>=2.95&&t<9.4);
+  if(!(t>=2.95&&t<9.4)) return;
+  // --- cards ---
+  const gs= t<7.0?1:L(1,0.86,E.io3(P(t,7.0,7.9)));
+  const gcy= t<7.0?0:L(0,-360,E.io3(P(t,7.0,7.9)));
+  const org=E.spring(P(t,6.0,7.0)); // reorganize spring
+  const exit=P(t,8.75,9.35); const exE=E.in3(exit);
+  const jit=P(t,5.0,6.0);
+  const pts=[];
+  cards.forEach((c,i)=>{
+    const cd=chaos[i];
+    const pin=E.out4(P(t,cd.t0,cd.t0+0.55));
+    let x=L(cd.from[0],cd.x,pin), y=L(cd.from[1],cd.y,pin), r=L(cd.from[0]<0?-40:40,cd.r,pin), s=L(0.7,1.22,pin);
+    let z=0, rx=0, ry=0;
+    // chaos intensification (drift/wobble) between 4.8 and 6.0
+    const w=P(t,4.0,6.0);
+    if(t<6.0){
+      x+=Math.sin(t*5+i*1.7)*18*w; y+=Math.cos(t*4.3+i*2.1)*14*w; r+=Math.sin(t*6+i)*2.5*w;
+      s*=1+0.06*w*Math.sin(t*3+i)+0.10*w;
+      // pre-organize: tension (cards pull inward slightly)
+      const tn=P(t,5.7,6.0); s*=1+0.05*tn;
+    } else {
+      const gp=gridPos[i]; const tx=gp[0]*gs, ty=gp[1]*gs+gcy*1; const ts=0.92*gs;
+      x=L(x,tx,org); y=L(y,ty,org); r=L(r,0,org); s=L(s,ts,org);
+      z=0;
+      // tilt in during phase B
+      const tp=E.io3(P(t,7.0,7.9)); rx=0;
+    }
+    if(t>=8.75){ z=L(0,1400,exE); x*=L(1,1.6,exE); y*=L(1,1.6,exE);}
+    pts.push([x,y]);
+    // check badges
+    const bp=E.back(P(t,6.5+i*0.12,6.75+i*0.12));
+    const bdg=c.querySelector('.badge'); bdg.style.opacity=t>=6.5+i*0.12?1:0; bdg.style.transform=`scale(${bp})`;
+    // dim non-hover before organize: nothing
+    S(c,{x,y,z,r,s,rx,o:(1-exE*1.0)*(t<cd.t0?0:1),blur:exE*10});
+    // glow border when organized
+    c.style.borderColor=`rgba(233,194,107,${L(0.38,0.9,P(t,6.2,7.0))})`;
+  });
+  // connectors in grid phase
+  const cp=P(t,6.9,7.4);
+  if(t>=6.6&&t<8.8){
+    const q=pts; // draw serpentine between grid cards
+    const d=`M${540+q[0][0]} ${960+q[0][1]} L${540+q[1][0]} ${960+q[1][1]} L${540+q[3][0]} ${960+q[3][1]} L${540+q[2][0]} ${960+q[2][1]} L${540+q[4][0]} ${960+q[4][1]} L${540+q[5][0]} ${960+q[5][1]}`;
+    conn.querySelector('#cpath').setAttribute('d',d);
+    const cpath=conn.querySelector('#cpath'); const len=cpath.getTotalLength(); cpath.style.strokeDasharray=`${len}`; cpath.style.strokeDashoffset=`${len*(1-E.io2(cp))}`;
+    conn.style.opacity=cp>0?clamp(1-exit*3)*0.9:0;
+    conn.style.display='block';
+  } else conn.style.display='none';
+  // pills
+  pills.forEach(p=>{
+    const t0=parseFloat(p.dataset.t0); const pp=E.back(P(t,t0,t0+0.3));
+    const out=P(t,5.9,6.1);
+    const x=parseFloat(p.dataset.x)+Math.sin(t*4+t0*3)*10, y=parseFloat(p.dataset.y)+Math.cos(t*3.3+t0)*8;
+    S(p,{x,y,s:pp*(1-out*1),r:Math.sin(t*3+t0)*3,o:(t>=t0?1:0)*(1-out)});
+  });
+  // captions
+  const cap=P(t,3.4,3.9)*(1-P(t,5.9,6.1));
+  S(capA,{y:-960+285,o:cap,s:1+(1-cap)*0.1});
+  // headline S3
+  const hp=P(t,7.55,8.1);
+  h3.forEach((e,i)=>{
+    const st=7.55+i*0.16; const p=E.out4(P(t,st,st+0.55));
+    const yy=[0,1,2].map(k=>1075-960+ k*152)[i];
+    S(e,{y:yy+L(60,0,p),z:L(-600,0,p),o:p*(1-exE),blur:(1-p)*10+exE*8,x:L(0,0,p)});
+    e.style.clipPath='';
+  });
+  // scene 2 -> scene 3 flash at 6.0
+  // gold "organize" pulse handled in FX
+}
+
+/* ============ Scene 4 update ============ */
+function updS4(t){
+  const vis=t>=8.95&&t<12.15; show(L4,vis); if(!vis) return;
+  const lp=E.expo(P(t,9.0,9.45));
+  const rv=E.expo(P(t,9.35,10.0));
+  // drift camera
+  const dr=P(t,9.0,12.0);
+  const ry=L(14,-4,E.out2(dr));
+  const sc=L(0.92,1.02,E.lin(dr));
+  // line: draws from center, then fades as card opens
+  S(s4line,{y:-130,sx:lp,sy:1,o:t<10.1?1-P(t,9.7,10.1):0});
+  const cy=-130;
+  S(logoCard,{y:cy,z:L(-200,60,E.out3(dr)),ry:ry,s:sc,clip:`inset(${(1-rv)*50}% 0 ${(1-rv)*50}% 0 round 30px)`,o:t>9.3?1:0});
+  const img=logoCard.querySelector('img'); img.style.transform=`scale(${L(1.25,1,E.out4(P(t,9.35,10.4)))})`; img.style.transformOrigin='50% 50%';
+  // light sweep
+  const sw=logoCard.querySelector('.lsweep'); const swp=E.io2(P(t,10.0,10.8));
+  sw.style.opacity=(t>10.0&&t<10.8)?1:0; sw.style.transform=`translateX(${L(-300,1250,swp)}px) skewX(-20deg)`;
+  S(s4ring,{y:cy,z:L(-200,60,E.out3(dr)),ry:ry,s:sc*L(1.08,1.0,E.out3(P(t,9.5,10.5))),o:rv*0.9*(1-P(t,11.7,12.1))});
+  // headline: rise masks
+  h4.forEach((w,i)=>{
+    const st=10.25+i*0.22; const p=E.out4(P(t,st,st+0.6));
+    S(w,{y:-130+215+i*(parseFloat(w.style.height)*0.88)+70+L(0,0,p),o:t>=st?1:0});
+    w.inner.style.transform=`translateY(${(1-p)*115}%)`;
+  });
+  // fade/exit whole layer
+  L4.style.opacity=1-P(t,11.85,12.15);
+}
+
+/* ============ Scene 5 ============ */
+const catStart=[12.0,13.25,14.5,15.75], catDur=1.25;
+function panelState(i,t){
+  const lt=t-catStart[i]; // local
+  if(i==0){
+    P1.rows.forEach((r,k)=>{
+      const pin=E.out3(P(lt,0.15+k*0.08,0.5+k*0.08));
+      r.style.opacity=pin; r.style.transform=`translateX(${(1-pin)*-60}px)`;
+      const ck=P(lt,0.45+k*0.17,0.62+k*0.17); r.ck.style.opacity=ck>0?1:0; r.ck.style.transform=`scale(${E.back(ck)})`;
+      r.style.borderColor=ck>=1?'rgba(233,194,107,.7)':'rgba(255,255,255,.12)';
+    });
+    P1.blocks.forEach((b,k)=>{const p=E.out3(P(lt,0.3+k*0.12,0.6+k*0.12)); b.style.opacity=p; b.style.transform=`translateX(${(1-p)*40}px)`;});
+    P1.bar.style.width=(820*E.io2(P(lt,0.3,1.15)))+'px';
+    P1.mini.forEach((m,k)=>{const p=E.out3(P(lt,0.6+k*0.1,0.9+k*0.1)); m.style.opacity=p; m.style.transform=`translateY(${(1-p)*30}px)`;});
+  }
+  if(i==1){
+    P2.tiles.forEach((tl,k)=>{const p=E.back(P(lt,0.1+k*0.04,0.4+k*0.04)); tl.style.opacity=p>0?1:0; tl.style.transform=`scale(${p})`;});
+    const pp=E.out3(P(lt,0.25,0.7)); P2.phone.style.opacity=pp; P2.phone.style.transform=`translateY(${(1-pp)*60}px)`;
+    const sh=P(lt,0.5,1.1); P2.shine.style.left=(L(-100,1000,E.io2(sh)))+'px'; P2.shine.style.opacity=(sh>0&&sh<1)?1:0;
+    const sp=E.back(P(lt,0.85,1.1)); P2.sched.style.opacity=sp>0?1:0; P2.sched.style.transform=`scale(${sp})`;
+    P2.post.style.backgroundPosition='0 0';
+  }
+  if(i==2){
+    const a=E.out3(P(lt,0.1,0.4)); P3.nav.style.opacity=a; P3.nav.style.transform=`translateY(${(1-a)*-24}px)`;
+    const b=E.out3(P(lt,0.25,0.55)); P3.hero.style.opacity=b; P3.hero.style.transform=`translateY(${(1-b)*30}px)`;
+    P3.c.forEach((c,k)=>{const p=E.out3(P(lt,0.45+k*0.1,0.75+k*0.1)); c.style.opacity=p; c.style.transform=`translateY(${(1-p)*30}px)`;});
+    const g=E.io2(P(lt,0.35,1.1)); P3.gpath.style.strokeDasharray=P3.gl; P3.gpath.style.strokeDashoffset=P3.gl*(1-g);
+    const pt=P3.gpath.getPointAtLength(P3.gl*g); P3.gdot.setAttribute('cx',pt.x); P3.gdot.setAttribute('cy',pt.y);
+    P3.gdot.style.opacity=g>0?1:0;
+  }
+  if(i==3){
+    const txt='MARKETING MANAGERS IN MANILA';
+    const q='NEW LEADS & RESEARCH'; const n=Math.floor(q.length*P(lt,0.1,0.55)); P4.q.textContent=q.slice(0,n)+((n<q.length&&Math.floor(lt*8)%2==0)?'|':'');
+    P4.dots.forEach((d,k)=>{
+      const st=0.3+k*0.055; const p=P(lt,st,st+0.5);
+      const xs=[0.15,0.35,0.55,0.8,0.25,0.65,0.45,0.9,0.1,0.7,0.3,0.5,0.85,0.4];
+      const sx=20+xs[k]*320, ex=180, y=L(30,430,E.in2(p)*0.5+p*0.5);
+      const x=L(sx, y<260?L(sx,180,P(y,30,260)):180 ,1);
+      d.style.opacity=(p>0&&p<1)?1:0; d.style.transform=`translate(${x-11}px,${y}px)`;
+    });
+    P4.rows.forEach((r,k)=>{const p=E.out3(P(lt,0.5+k*0.14,0.8+k*0.14)); r.style.opacity=p; r.style.transform=`translateX(${(1-p)*60}px)`;});
+  }
+}
+function updS5(t){
+  const vis=t>=11.9&&t<17.15; show(L5,vis); if(!vis) return;
+  const idx=Math.min(3,Math.max(0,Math.floor((t-12.0)/catDur+1e-6)));
+  for(let i=0;i<4;i++){
+    const active=(i==idx);
+    const st=catStart[i], en=st+catDur;
+    const inP=E.out4(P(t,st-0.0,st+0.45)); // enter
+    const outP=E.in3(P(t,en-0.28,en)); // exit
+    let vi = (t>=st-0.05&&t<en+0.02);
+    if(i==0) vi = t>=11.9&&t<en+0.02;
+    if(i==3) vi = t>=st-0.05&&t<17.15;
+    show(panels[i],vi); show(catTitles[i],vi);
+    if(!vi) continue;
+    const e=(i==0)?E.out3(P(t,12.0,12.55)):inP;
+    const out=(i==3)?E.in3(P(t,16.85,17.15)):outP;
+    const dirIn = (i%2==0)?1:-1;
+    S(catTitles[i],{x:0,y:-960+410,o:1,s:1});
+    // title mask rise
+    const kids=catTitles[i].children;
+    kids[1].style.transform=`translateY(${(1-E.out4(P(t,st+0.05,st+0.5)))*105}%)`;
+    kids[2].style.transform=`translateY(${(1-E.out4(P(t,st+0.12,st+0.57)))*105}%)`;
+    kids[0].style.opacity=P(t,st,st+0.3);
+    catTitles[i].style.opacity=1-out;
+    // panel: slides + 3D tilt
+    const px=L(dirIn*900,0,e)+L(0,-dirIn*900,out);
+    const ry=L(dirIn*-28,0,e)+L(0,dirIn*28,out)+Math.sin((t-st)*1.2)*2;
+    S(panels[i],{x:px,y:-960+985,z:L(-300,0,e)-out*300,ry:ry,rx:4,o:1-out*0.6});
+    panelState(i,t);
+  }
+  // tracker
+  S(tracker,{y:-960+1415,o:1});
+  trk.forEach((d,i)=>{ d.firstChild.style.width=(100*clamp((t-catStart[i])/catDur))+'%'; });
+  // wipes between categories
+  let wp=0,wx=-1400;
+  for(let i=1;i<4;i++){ const a=catStart[i]-0.28, b=catStart[i]+0.14; if(t>=a&&t<=b){ wp=1; wx=L(-900,900,E.io2(P(t,a,b))); } }
+  S(wipe,{x:wx,o:wp*0.55});
+  // intro wipe from scene 4 -> 5
+  if(t<12.35){ wp=1; wx=L(-900,900,E.io2(P(t,11.9,12.35))); S(wipe,{x:wx,o:0.6}); }
+  // fade out into scene 6 (wipe)
+  if(t>16.85){ S(wipe,{x:L(-900,900,E.io2(P(t,16.85,17.3))),o:0.6}); }
+  L5.style.opacity=1;
+}
+
+/* ============ Scene 6 ============ */
+function updS6(t){
+  const vis=t>=16.9; show(L6,vis); if(!vis) return;
+  const lt=t-17.0;
+  const rv=E.expo(P(t,17.05,17.7));
+  const dr=P(t,17.0,20.0);
+  const ry=L(-8,3,E.out2(dr)); const sc=L(0.96,1.03,dr);
+  S(logo6,{y:-960+560,z:L(-150,70,E.out3(dr)),ry:ry,s:sc,clip:`inset(0 ${(1-rv)*50}% 0 ${(1-rv)*50}% round 30px)`,o:t>17.0?1:0});
+  const img=logo6.querySelector('img'); img.style.transform=`scale(${L(1.2,1,E.out4(P(t,17.1,18.0)))})`;
+  const sw=logo6.querySelector('.lsweep6'); const swp=E.io2(P(t,17.5,18.2));
+  sw.style.opacity=(t>17.5&&t<18.2)?1:0; sw.style.transform=`translateX(${L(-300,1250,swp)}px) skewX(-20deg)`;
+  S(s6ring,{y:-960+560,z:L(-150,70,E.out3(dr)),ry:ry,s:sc*L(1.1,1.0,E.out3(P(t,17.2,18.2))),o:rv*0.9});
+  // headline
+  h6.forEach((w,i)=>{
+    const st=17.3+i*0.15; const p=E.out4(P(t,st,st+0.5));
+    S(w,{y:-960+875+i*(parseFloat(w.style.height)*0.86),o:t>=st?1:0});
+    w.inner.style.transform=`translateY(${(1-p)*115}%)`;
+  });
+  const c1=E.back(P(t,17.95,18.4)); S(cta1,{y:-960+1245,s:c1,o:t>=17.95?1:0});
+  const c2=E.out4(P(t,18.25,18.7)); S(cta2,{y:-960+1385,s:1,x:L(120,0,c2),o:c2});
+  // subtle CTA pulse + shimmer on gold button after it lands
+  const pul=t>18.6?1+0.012*Math.sin((t-18.6)*7):1;
+  S(cta1,{y:-960+1245,s:c1*pul,o:t>=17.95?1:0});
+  cta1.style.backgroundPosition=`${L(0,100,E.io2(P(t,18.4,19.2)))}% 50%`;
+}
+
+/* ============ FX update ============ */
+function updFX(t){
+  // flash at scene 3 organize (6.0), brand reveal (9.0)
+  let f=0;
+  f=Math.max(f,0.55*(1-P(t,6.0,6.35))*(t>=6.0?1:0));
+  f=Math.max(f,0.85*(1-P(t,8.95,9.3))*(t>=8.95?1:0));
+  f=Math.max(f,0.35*(1-P(t,1.00,1.25))*(t>=1.00?1:0));
+  f=Math.max(f,0.28*(1-P(t,0,0.22)));
+  S(flash,{o:f});
+  // sweep lines
+  let lo=0,ly=0;
+  if(t>=2.7&&t<3.2){ lo=1-P(t,3.0,3.2); ly=L(-960,960,E.io2(P(t,2.7,3.1))); }
+  if(t>=5.85&&t<6.3){ lo=1-P(t,6.0,6.3); ly=L(-960,960,E.out3(P(t,5.85,6.2))); }
+  S(fxline,{y:ly,o:lo});
+  // fade-in from black at t=0 first 3 frames: none (full impact from frame 0)
+}
+
+/* ============ Master ============ */
+window.seek=function(t){
+  t=Math.max(0,Math.min(19.999,t));
+  bgUpdate(t); updS1(t); updS2(t); updS4(t); updS5(t); updS6(t); updFX(t);
+};
+['L_s1','L_s2','L_s4','L_s5','L_s6'].forEach(id=>$(id).style.display='none');
+window.DBG={cards,w1,g1,h3,h4,h6,panels};
+window.seek(0);
+}
+window.ready=main();
+</script>
+</body>
+</html>
