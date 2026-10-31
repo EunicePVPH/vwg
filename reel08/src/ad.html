@@ -1,0 +1,92 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>ProVirtual PH — Reel 08</title>
+<style>
+@font-face{font-family:Montserrat;font-weight:700;src:url(fonts/montserrat-latin-700-normal.woff2)}
+@font-face{font-family:Montserrat;font-weight:800;src:url(fonts/montserrat-latin-800-normal.woff2)}
+@font-face{font-family:Montserrat;font-weight:900;src:url(fonts/montserrat-latin-900-normal.woff2)}
+@font-face{font-family:Inter;font-weight:400;src:url(fonts/inter-latin-400-normal.woff2)}
+@font-face{font-family:Inter;font-weight:500;src:url(fonts/inter-latin-500-normal.woff2)}
+@font-face{font-family:Inter;font-weight:600;src:url(fonts/inter-latin-600-normal.woff2)}
+@font-face{font-family:Inter;font-weight:700;src:url(fonts/inter-latin-700-normal.woff2)}
+:root{--navy:#0A2350;--deep:#06142E;--ink:#040D20;--gold:#D6A84F;--gold2:#F1D58B;--gold3:#A8772A;--blue:#3E6AA8;--mute:#8FA3C4;--char:#2A3140;--paper:#F5F7FB;--line:#E3E8F1;--txt:#16213A;--sub:#6A768E}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#000}
+body{width:1080px;height:1920px;overflow:hidden;font-family:Inter,sans-serif}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:var(--deep)}
+.scene{position:absolute;left:0;top:0;width:1080px;height:1920px;overflow:hidden}
+.abs{position:absolute}
+.mask{position:absolute;overflow:hidden}
+.mt{position:absolute;left:0;right:0;white-space:nowrap;font-family:Montserrat,sans-serif;font-weight:900;color:#fff;text-align:center}
+.gold{background:linear-gradient(180deg,#FBE9B2 0%,#E3B95C 50%,#B58430 100%);-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent}
+.gshine{background-image:linear-gradient(100deg,#A8772A 0%,#E3B95C 22%,#FFF1C4 36%,#D6A84F 50%,#F5DC94 66%,#A8772A 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text;color:transparent!important;-webkit-text-fill-color:transparent}
+.drop{filter:drop-shadow(0 8px 26px rgba(0,0,0,.5))}
+
+/* ---- scene 1 calendar ---- */
+.calhd{position:absolute;display:flex;align-items:center;justify-content:center;font:800 30px Montserrat;letter-spacing:.18em;color:var(--mute);border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03)}
+.calcell{position:absolute;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035)}
+.calcell span{position:absolute;left:14px;top:10px;font:600 28px Inter;color:rgba(143,163,196,.75)}
+.chip{position:absolute;border-radius:12px;padding:0 14px;display:flex;align-items:center;font:700 25px Inter;white-space:nowrap;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.chip.k0{background:linear-gradient(180deg,#F1D58B,#D6A84F);color:#1B1405}
+.chip.k1{background:#F5F7FB;color:#0A2350}
+.chip.k2{background:#3E6AA8;color:#fff}
+.chip.k3{background:#46536F;color:#fff}
+.chip.k4{background:#1A3566;color:#F1D58B;border:2px solid #D6A84F}
+
+/* ---- generic window UI ---- */
+.win{position:absolute;background:var(--paper);border-radius:30px;overflow:hidden;box-shadow:0 50px 100px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.10);color:var(--txt);font-family:Inter}
+.winhd{position:absolute;left:0;top:0;right:0;height:76px;background:linear-gradient(180deg,#0E2B5E,#0A2350);display:flex;align-items:center;padding:0 26px;gap:16px;color:#fff}
+.hdt{font:600 28px Inter;color:#C9D6EE;white-space:nowrap}
+.pill{display:inline-flex;align-items:center;height:42px;padding:0 20px;border-radius:21px;font:800 24px Montserrat;letter-spacing:.07em;white-space:nowrap}
+.pill.gold2{background:linear-gradient(180deg,#F1D58B,#D6A84F);color:#2A1D05}
+.pill.blu{background:#3E6AA8;color:#fff}
+.pill.red{background:#E5584B;color:#fff}
+.pill.ghost{background:rgba(255,255,255,.12);color:#fff}
+.badge{margin-left:auto;min-width:56px;height:44px;border-radius:22px;background:#E5584B;color:#fff;font:800 27px Inter;display:flex;align-items:center;justify-content:center;padding:0 14px}
+.row{position:absolute;left:0;width:1000px;height:92px;border-bottom:2px solid var(--line);display:flex;align-items:center;padding:0 26px;gap:20px;background:#fff}
+.av{width:58px;height:58px;border-radius:50%;color:#fff;font:800 22px Inter;display:flex;align-items:center;justify-content:center;flex:none}
+.rt{flex:1;min-width:0}
+.rs{font:700 29px Inter;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rj{font:500 25px Inter;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.rtm{font:600 23px Inter;color:#98A3B8;flex:none}
+.dot{width:16px;height:16px;border-radius:50%;background:var(--blue);flex:none}
+.hour{position:absolute;left:0;width:100%;height:1px;background:var(--line)}
+.hlab{position:absolute;left:12px;font:600 19px Inter;color:#98A3B8}
+.ev{position:absolute;border-radius:12px;padding:6px 10px;font:700 20px Inter;color:#fff;overflow:hidden;line-height:1.15;box-shadow:0 6px 16px rgba(10,35,80,.25)}
+.mini{position:absolute;background:#fff;border-radius:26px;box-shadow:0 30px 60px rgba(0,0,0,.45),0 0 0 2px rgba(255,255,255,.10);padding:16px 22px;color:var(--txt)}
+.mini .ml{font:800 24px Montserrat;letter-spacing:.06em;color:var(--navy)}
+.mini .mn{position:absolute;right:22px;top:10px;font:900 58px Montserrat;color:var(--navy)}
+.mini .ms{position:absolute;left:22px;bottom:14px;font:700 22px Inter;color:#E5584B}
+.toast{position:absolute;width:640px;height:104px;border-radius:24px;background:rgba(255,255,255,.96);box-shadow:0 30px 70px rgba(0,0,0,.55);display:flex;align-items:center;gap:18px;padding:0 24px;color:var(--txt);border-left:12px solid #E5584B}
+.toast b{font:800 27px Inter;display:block}
+.toast i{font:500 23px Inter;color:var(--sub);font-style:normal;display:block;margin-top:2px}
+
+/* ---- scene 3 board ---- */
+.lane{position:absolute;border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.05));border:2px solid rgba(255,255,255,.14);box-shadow:0 30px 70px rgba(0,0,0,.35)}
+.lanehd{position:absolute;left:24px;top:0;right:24px;height:64px;display:flex;align-items:center;justify-content:space-between}
+.lanehd b{font:800 27px Montserrat;letter-spacing:.07em;color:#fff}
+.lanehd span{font:800 19px Montserrat;letter-spacing:.06em;padding:6px 14px;border-radius:14px}
+.card{position:absolute;height:68px;border-radius:18px;background:#fff;display:flex;align-items:center;gap:14px;padding:0 16px;font:700 24px Inter;color:var(--txt);box-shadow:0 14px 30px rgba(0,0,0,.35);white-space:nowrap}
+.card .st{width:30px;height:30px;border-radius:50%;border:3px solid #B9C3D6;flex:none;display:flex;align-items:center;justify-content:center;font:900 19px Inter;color:#fff}
+.card .ini{margin-left:auto;width:38px;height:38px;border-radius:50%;background:var(--navy);color:var(--gold2);font:800 15px Inter;display:flex;align-items:center;justify-content:center;flex:none}
+
+/* ---- scene 4 ---- */
+.slabel{position:absolute;left:0;top:250px;width:960px;display:flex;align-items:center;justify-content:center;gap:18px;font:800 40px Montserrat;letter-spacing:.07em}
+.slabel i{font:900 26px Montserrat;width:52px;height:52px;border-radius:50%;border:3px solid var(--gold);color:var(--gold2);display:flex;align-items:center;justify-content:center;font-style:normal;letter-spacing:0}
+.skel{position:absolute;height:16px;border-radius:8px;background:#DCE3EF}
+.chk{width:34px;height:34px;border-radius:10px;border:3px solid #B9C3D6;flex:none;display:flex;align-items:center;justify-content:center;color:#fff;font:900 22px Inter;background:#fff}
+.tag{display:inline-flex;align-items:center;height:36px;padding:0 14px;border-radius:18px;font:800 19px Montserrat;letter-spacing:.05em;white-space:nowrap}
+.tbl{position:absolute;left:40px;right:40px;display:flex;align-items:center;height:60px;border-bottom:2px solid var(--line);font:600 25px Inter;color:var(--txt)}
+.tbl span{flex:1;white-space:nowrap}
+.tbl span:first-child{font-weight:700}
+
+/* ---- scene 5 ---- */
+.tile{position:absolute;border-radius:24px;background:#fff;color:var(--txt);font:800 33px Montserrat;display:flex;align-items:center;padding:0 26px;gap:16px;box-shadow:0 20px 44px rgba(0,0,0,.4);letter-spacing:-.01em}
+.tile .tc{margin-left:auto;width:44px;height:44px;border-radius:50%;border:3px solid #B9C3D6;display:flex;align-items:center;justify-content:center;font:900 26px Inter;color:#fff;flex:none}
+.tile.f{background:linear-gradient(180deg,#F8E4A8,#D6A84F);color:#1E1604}
+
+/* ---- scene 6 ---- */
+.cta{position:absolute;border-radius:90px;background:linear-gradient(180deg,#F8E4A8 0%,#E0B258 45%,#B8862F 100%);display:flex;align-items:center;justify-content:center;font:900 52px Montserrat;color:#0A1A3D;letter-spacing:-.005em;overflow:hidden;box-shadow:0 30px 80px rgba(214,168,79,.35)}
+</style></head>
+<body><div id="stage"></div>
+<script src="ad.js"></script>
+</body></html>
