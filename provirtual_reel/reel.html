@@ -1,0 +1,65 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<title>ProVirtual PH — Reel</title>
+<link rel="stylesheet" href="fonts/fonts-local.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#000;width:1080px;height:1920px;overflow:hidden}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#061030;font-family:Montserrat,sans-serif;color:#fff}
+.abs{position:absolute}
+.hid{display:none!important}
+.pf{font-family:'Playfair Display',serif}
+.mo{font-family:Montserrat,sans-serif}
+.in{font-family:Inter,sans-serif}
+svg.ic{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;display:block}
+.gold-t{background:linear-gradient(180deg,#FFF0C2 0%,#F0C866 38%,#C48B25 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+#bg{position:absolute;inset:0;background:linear-gradient(180deg,#07122F 0%,#081838 55%,#050D24 100%)}
+#bg div{position:absolute;border-radius:50%}
+#g1{width:1500px;height:1500px;left:-100px;top:-500px;background:radial-gradient(circle,rgba(38,86,190,.55) 0%,rgba(38,86,190,0) 62%)}
+#g2{width:1300px;height:1300px;left:-500px;top:1000px;background:radial-gradient(circle,rgba(217,168,60,.20) 0%,rgba(217,168,60,0) 62%)}
+#g3{width:1600px;height:1600px;left:-260px;top:160px;background:radial-gradient(circle,rgba(255,206,100,.0) 0%,rgba(255,206,100,0) 60%)}
+#cam{position:absolute;inset:0;perspective:1700px;perspective-origin:540px 960px}
+.obj{position:absolute;transform-origin:50% 50%;will-change:transform}
+#br{left:-180px;top:316px;width:1440px;height:1288px}
+#ph{left:331px;top:524px;width:418px;height:872px}
+#fgrp{left:90px;top:470px;width:900px;height:968px}
+#txt,#fx,#tags{position:absolute;inset:0;pointer-events:none}
+#vig{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 46%,rgba(0,0,0,0) 52%,rgba(2,6,18,.55) 100%);pointer-events:none}
+#grain{position:absolute;inset:-100px;background-image:url(grain.png);opacity:.075;mix-blend-mode:overlay;pointer-events:none}
+#flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 55%,#FFF3CF 0%,#F4CC6E 45%,#D9A23A 100%);opacity:0;mix-blend-mode:screen}
+.mline{position:absolute;left:0;width:1080px;overflow:hidden;text-align:center;white-space:nowrap;font-family:Montserrat;font-weight:900;line-height:1.14;letter-spacing:-.012em}
+.mline span.in2{display:block;text-shadow:0 6px 30px rgba(0,0,0,.35)}
+.tag{position:absolute;height:54px;padding:0 28px;border-radius:30px;background:linear-gradient(180deg,#FBE7A6,#E3B04B 55%,#C28A24);color:#07122F;font:800 25px/54px Montserrat;letter-spacing:.09em;white-space:nowrap;box-shadow:0 14px 36px rgba(0,0,0,.45),0 0 0 2px rgba(255,255,255,.18) inset;transform-origin:50% 50%}
+</style></head>
+<body>
+<div id="stage">
+  <div id="bg"><div id="g1"></div><div id="g2"></div><div id="g3"></div></div>
+  <div id="cam">
+    <div id="br" class="obj"></div>
+    <div id="fgrp" class="obj"></div>
+    <div id="ph" class="obj"></div>
+  </div>
+  <div id="scrim5" class="abs" style="inset:0;background:radial-gradient(ellipse 80% 38% at 50% 52%,rgba(5,12,34,.92) 0%,rgba(5,12,34,.75) 55%,rgba(5,12,34,0) 100%);opacity:0"></div>
+  <div id="tags"></div>
+  <div id="txt">
+    <div id="s1" class="abs" style="inset:0"><div id="s1cam" class="abs" style="inset:0;transform-origin:540px 1140px"></div></div>
+    <div id="s2" class="abs" style="inset:0"></div>
+    <div id="s3" class="abs" style="inset:0"></div>
+    <div id="s4" class="abs" style="inset:0"></div>
+    <div id="s5" class="abs" style="inset:0"></div>
+    <div id="s6" class="abs" style="inset:0"></div>
+  </div>
+  <div id="fx"><div id="flash"></div></div>
+  <div id="vig"></div>
+  <div id="grain"></div>
+</div>
+<script src="js/helpers.js"></script>
+<script src="js/builders.js"></script>
+<script src="js/scenes.js"></script>
+<script>
+window.fontsReady = document.fonts.ready.then(()=>Promise.all([
+  document.fonts.load('900 40px Montserrat'),document.fonts.load('800 40px Montserrat'),document.fonts.load('700 40px Montserrat'),
+  document.fonts.load('800 40px "Playfair Display"'),document.fonts.load('700 40px "Playfair Display"'),
+  document.fonts.load('500 20px Inter'),document.fonts.load('700 20px Inter')])).then(()=>{buildAll();renderFrame(0);return true});
+</script>
+</body></html>
