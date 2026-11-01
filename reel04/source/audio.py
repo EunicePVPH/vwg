@@ -186,22 +186,25 @@ for i in range(10): sfxR.add(bell(mf(PENTA[i%11]+12),0.8,0.1),19.2+0.045*i)
 sfx.add(whoosh(0.5,0.6),20.7)
 # ------------- voice -------------
 def loadv(n):
-    x,sr=sf.read(f"{S}/build/vo/{n}.wav"); x=x if x.ndim==1 else x[:,0]
+    x,sr=sf.read(f"{S}/build/vo2/{n}.wav"); x=x if x.ndim==1 else x[:,0]
     return resample_poly(x,SR//sr if SR%sr==0 else 2,1) if sr!=SR else x
-VO=[('v1',0.30),('w1',4.15),('w2',4.80),('w3',5.50),('w4',6.10),('w5',7.05),('v3',10.20),('v4',14.20),('v5a',19.45),('v5b',20.75),('v5c',22.35)]
+VO=[('v1a',0.28),('v1b',1.62),('w1',4.10),('w2',4.78),('w3',5.48),('w4',6.08),('w5',7.05),('v3',10.20),('v4',14.20),('v5a',19.45),('v5b',20.75),('v5c',22.35)]
 vo=np.zeros(N)
 for n,tm in VO:
     x=loadv(n); x=hp(x,90,2); x=x/np.abs(x).max()*0.9; i=T(tm); vo[i:i+len(x)]+=x[:N-i]
 # light presence + gentle compression
-vo=vo+0.15*hp(vo,3000)
+vo=vo+0.22*hp(vo,2500)+0.10*bp(vo,180,320)
 def comp(x,th=0.35,ratio=3):
     env=lfilter([0.002],[1,-0.998],np.abs(x)); g=np.where(env>th,(th+(env-th)/ratio)/np.maximum(env,1e-6),1.0); return x*g
-vo=comp(vo); vo=vo/np.abs(vo).max()*0.85
+vo=comp(vo,0.25,3.5); vo=comp(vo,0.5,2.0); vo=vo/np.abs(vo).max()*0.85
 voR=np.vstack([vo,vo])
 # ------------- mix -------------
-envv=lfilter([0.0006],[1,-0.9994],np.abs(vo))  # slow follower
-envv=np.clip(envv/ (envv.max()*0.5),0,1)
-duck=1-0.5*envv; duckS=1-0.25*envv
+from scipy.ndimage import maximum_filter1d
+envv=lfilter([0.0006],[1,-0.9994],np.abs(vo))
+envv=maximum_filter1d(envv,int(SR*0.16))
+envv=lfilter([0.0015],[1,-0.9985],envv)
+envv=np.clip(envv/(envv.max()*0.45),0,1)
+duck=1-0.42*envv; duckS=1-0.68*envv
 musrev=reverb(musR.b,0.6); sfxrev=reverb(sfxR.b,0.9)
 cut=np.ones(N); cut[T(8.93):T(8.96)]=np.linspace(1,0,T(8.96)-T(8.93)); cut[T(8.96):T(10.0)]=0.0
 w0,w1=T(8.98),T(10.0)
@@ -213,7 +216,7 @@ def rms(x,thr=1e-4):
 rm,rsf,rv=rms(musbus),rms(sfxbus),rms(voR)
 print("raw rms music %.4f sfx %.4f vo %.4f"%(rm,rsf,rv))
 # targets (linear rms): voice 0.14 (-17dB), music 0.05 (-26), sfx 0.035 (-29)
-gm=0.055/rm; gs=0.04/rsf; gv=0.15/rv
+gm=0.062/rm; gs=0.026/rsf; gv=0.16/rv
 mg=np.ones(N); mg[T(14.2):T(19.2)]=0.88; mg[T(19.2):]=0.78
 mix=musbus*gm*duck*mg+sfxbus*gs*duckS+voR*gv
 print("gains",gm,gs,gv)
