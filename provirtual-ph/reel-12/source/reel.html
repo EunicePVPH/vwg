@@ -1,0 +1,420 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#000;width:1080px;height:1920px;overflow:hidden}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;font-family:'Inter',sans-serif;color:#fff;background:#050d20}
+.a{position:absolute}
+.nw{white-space:nowrap}
+.panel{position:absolute;background:linear-gradient(180deg,#ffffff 0%,#f0f3f9 100%);border-radius:44px;box-shadow:0 90px 150px -30px rgba(0,0,0,.7),0 0 0 2px rgba(255,255,255,.5);overflow:hidden;color:#0a1e47}
+.over{font-weight:800;font-size:22px;letter-spacing:.22em;color:#b8862f;white-space:nowrap}
+.ttl{font-weight:800;font-size:46px;letter-spacing:-.01em;color:#0a1e47;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:9px 20px;border-radius:999px;font-weight:800;font-size:20px;letter-spacing:.08em;white-space:nowrap}
+.gold{background:linear-gradient(180deg,#f6dc98,#d9a94c);color:#0a1e47}
+.navy{background:#0c2352;color:#fff}
+.slate{background:#e3e9f3;color:#43557a}
+.ghost{border:2.5px solid #d9ae5a;color:#9a6f1f;background:#fff8e6}
+.av{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;font-size:20px;border:3px solid #fff}
+.gt{background:linear-gradient(180deg,#fbe9b4 0%,#e0b660 46%,#b98a33 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.card{background:#fff;border:2px solid #e4eaf4;border-radius:26px;box-shadow:0 10px 24px -12px rgba(10,30,71,.25)}
+.ic{display:flex;align-items:center;justify-content:center;border-radius:50%}
+.ic svg{width:60%;height:60%}
+.lbl{font-weight:700;font-size:21px;letter-spacing:.14em;color:#5e6e8f;white-space:nowrap}
+.pill{border-radius:20px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:26px;letter-spacing:.14em;border:2px solid rgba(255,255,255,.28);overflow:hidden;background:rgba(6,18,46,.82)}
+</style></head>
+<body><svg width="0" height="0" style="position:absolute"><defs><filter id="mbA" x="-35%" y="-10%" width="170%" height="120%" color-interpolation-filters="sRGB"><feGaussianBlur id="mbAg" stdDeviation="0 0"/></filter><filter id="mbB" x="-35%" y="-10%" width="170%" height="120%" color-interpolation-filters="sRGB"><feGaussianBlur id="mbBg" stdDeviation="0 0"/></filter></defs></svg><div id="stage"></div>
+<script>
+// ───────────────────────── helpers
+const W=1080,H=1920;
+const stage=document.getElementById('stage');
+const clamp=(v,a=0,b=1)=>v<a?a:v>b?b:v;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const eo2=t=>1-(1-t)*(1-t),eo3=t=>1-Math.pow(1-t,3),eo4=t=>1-Math.pow(1-t,4),eo5=t=>1-Math.pow(1-t,5);
+const eio=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+const eio2=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const eob=t=>{const c1=1.5,c3=c1+1;return 1+c3*Math.pow(t-1,3)+c1*Math.pow(t-1,2)};
+const P=(t,a,d,f=eo3)=>f(clamp((t-a)/d));
+const lin=(t,a,d)=>clamp((t-a)/d);
+function mk(parent,cls,html,st){const d=document.createElement('div');if(cls)d.className=cls;if(html!=null&&html!=='')d.innerHTML=html;if(st)Object.assign(d.style,st);parent.appendChild(d);return d}
+function box(parent,x,y,w,h,cls,html,st){return mk(parent,'a '+(cls||''),html,Object.assign({left:x+'px',top:y+'px',width:w+'px',height:h+'px'},st||{}))}
+function T(e,o){const x=o.x||0,y=o.y||0,s=o.s==null?1:o.s,r=o.r||0,rx=o.rx||0,ry=o.ry||0,op=o.o==null?1:o.o,b=o.b||0,sx=o.sx==null?s:o.sx,sy=o.sy==null?s:o.sy;
+ e.style.transform=(rx||ry?'perspective(1800px) ':'')+`translate(${x}px,${y}px) `+(rx?`rotateX(${rx}deg) `:'')+(ry?`rotateY(${ry}deg) `:'')+(r?`rotate(${r}deg) `:'')+`scale(${sx},${sy})`;
+ e.style.opacity=op;e.style.visibility=op<.003?'hidden':'visible';let fl='';if(b>.3)fl+=`blur(${b.toFixed(1)}px) `;if(o.bx>.4){document.getElementById('mb'+o.bf+'g').setAttribute('stdDeviation',o.bx.toFixed(1)+' 0');fl+=`url(#mb${o.bf})`}e.style.filter=fl.trim()}
+const vx=(f,t)=>Math.min(45,Math.abs(f(t+.004)-f(t-.004))/.008*.0017);
+function show(e,on){e.style.display=on?'block':'none'}
+// icons
+const IC={
+ check:c=>`<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="${c}" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ clock:c=>`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="${c}" stroke-width="2.6"/><path d="M12 7v5.3l3.4 2" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ arrow:c=>`<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="${c}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ prog:c=>`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="${c}" stroke-width="2.6"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17z" fill="${c}"/></svg>`,
+ cal:c=>`<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3" fill="none" stroke="${c}" stroke-width="2.4"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+ doc:c=>`<svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/><path d="M9 12h6M9 16h6" stroke="${c}" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+ list:c=>`<svg viewBox="0 0 24 24"><path d="M9 7h11M9 12h11M9 17h11" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/><path d="M3.5 7l1.3 1.3L7 6M3.5 12l1.3 1.3L7 11M3.5 17l1.3 1.3L7 16" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ flag:c=>`<svg viewBox="0 0 24 24"><path d="M6 21V4M6 5h12l-2.5 4L18 13H6" fill="none" stroke="${c}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ search:c=>`<svg viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="${c}" stroke-width="2.6"/><path d="M15.5 15.5L21 21" stroke="${c}" stroke-width="2.8" stroke-linecap="round"/></svg>`,
+ chat:c=>`<svg viewBox="0 0 24 24"><path d="M4 5h16v11H10l-4.5 4v-4H4z" fill="none" stroke="${c}" stroke-width="2.4" stroke-linejoin="round"/></svg>`,
+ layers:c=>`<svg viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z M3 12.5l9 5 9-5 M3 17l9 5 9-5" fill="none" stroke="${c}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>`,
+ flow:c=>`<svg viewBox="0 0 24 24"><circle cx="5" cy="6" r="2.6" fill="${c}"/><circle cx="19" cy="6" r="2.6" fill="${c}"/><circle cx="12" cy="19" r="2.6" fill="${c}"/><path d="M5 6h14M5 6l7 13M19 6l-7 13" stroke="${c}" stroke-width="1.8" fill="none"/></svg>`,
+ chk2:c=>`<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4" fill="none" stroke="${c}" stroke-width="2.4"/><path d="M8 12.2l3 3 5-6" fill="none" stroke="${c}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+ report:c=>`<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="3" fill="none" stroke="${c}" stroke-width="2.3"/><path d="M8 16v-4M12 16V8M16 16v-6" stroke="${c}" stroke-width="2.6" stroke-linecap="round"/></svg>`,
+};
+function fitText(el,w){const sp=el.firstElementChild||el;el.style.fontSize='100px';const r=sp.getBoundingClientRect().width;el.style.fontSize=(100*w/r)+'px';return 100*w/r}
+function bigLine(parent,text,cls,fitW,cy,extra){const wrap=box(parent,0,cy,W,0,'',null,{display:'flex',justifyContent:'center',alignItems:'center'});
+ const sp=mk(wrap,'nw '+cls,text,Object.assign({fontWeight:900,lineHeight:1,letterSpacing:'-.02em',display:'inline-block'},extra||{}));
+ wrap.style.fontSize='100px';const r=sp.getBoundingClientRect().width;sp.style.fontSize=(100*fitW/r)+'px';return wrap}
+
+// ───────────────────────── persistent background
+const bg=box(stage,0,0,W,H,'',null,{background:'radial-gradient(130% 75% at 50% 28%,#10295c 0%,#091a3d 45%,#040b1c 100%)'});
+const floor=box(bg,-1200,1060,3480,3400,'',null,{backgroundImage:'linear-gradient(rgba(150,175,230,.10) 2px,transparent 2px),linear-gradient(90deg,rgba(150,175,230,.10) 2px,transparent 2px)',backgroundSize:'120px 120px',transform:'perspective(900px) rotateX(72deg)',transformOrigin:'50% 0%',WebkitMaskImage:'linear-gradient(to bottom,transparent 0%,#000 45%,#000 100%)'});
+const glowG=box(bg,0,0,1500,1500,'',null,{background:'radial-gradient(circle,rgba(217,174,90,.30) 0%,rgba(217,174,90,.08) 40%,transparent 68%)'});
+const glowB=box(bg,0,0,1700,1700,'',null,{background:'radial-gradient(circle,rgba(60,100,190,.30) 0%,rgba(40,70,150,.08) 45%,transparent 70%)'});
+const vig=box(stage,0,0,W,H,'',null,{background:'radial-gradient(120% 90% at 50% 50%,transparent 55%,rgba(2,6,16,.65) 100%)',pointerEvents:'none'});
+function updBG(t){floor.style.backgroundPosition=`0px ${(t*90)%120}px`;
+ T(glowG,{x:lerp(280,640,t/25)-250,y:lerp(-420,-120,Math.sin(t*.35)*.5+.5)-250,o:.9});
+ T(glowB,{x:lerp(-700,-380,t/25)+0,y:lerp(900,1150,Math.cos(t*.3)*.5+.5)-300,o:1})}
+
+// ───────────────────────── weekday strip
+let stripRoot;const strip=(()=>{const root=box(stage,90,238,900,96,'');stripRoot=root;const names=['MON','TUE','WED','THU','FRI'];const ps=[];
+ names.forEach((d,i)=>{const p=box(root,i*183,0,168,64,'pill');const g=box(p,0,0,168,64,'',null,{background:'linear-gradient(180deg,#f8e3a6,#d9a94c)',opacity:0});const tx=mk(p,'nw',d,{position:'relative'});const ck=box(p,138,22,20,20,'ic',IC.check('#d9ae5a'),{opacity:0});ps.push({p,g,tx,ck})});
+ const track=box(root,0,82,900,6,'',null,{background:'rgba(255,255,255,.14)',borderRadius:'3px'});
+ const fill=box(track,0,0,900,6,'',null,{background:'linear-gradient(90deg,#b98a33,#f6dc98)',borderRadius:'3px',transformOrigin:'0 50%'});
+ const B=[3.0,5.5,8.0,11.0,14.0,17.4];
+ return t=>{const inn=P(t,2.9,.45,eo3),out=P(t,19.3,.45,eio);T(root,{y:(1-inn)*-60-out*40,o:inn*(1-out)});
+  let tot=0;
+  ps.forEach((q,i)=>{const cur=P(t,B[i]-.12,.3,eio)*(1-P(t,B[i+1]-.12,.3,eio)),done=P(t,B[i+1]-.12,.3,eio);
+   q.g.style.opacity=cur;q.p.style.borderColor=`rgba(255,255,255,${.22+.2*done})`;q.p.style.transform=`scale(${1+.07*cur})`;
+   q.tx.style.color=cur>.5?'#0a1e47':'#fff';q.tx.style.opacity=.38+.62*Math.max(cur,done);q.ck.style.opacity=done*.95;
+   tot+=clamp((t-B[i])/(B[i+1]-B[i]))});
+  fill.style.transform=`scaleX(${clamp(tot/5)})`}})();
+
+// ───────────────────────── sweeps / flash / grain
+const SW=[2.8,5.35,7.9,10.95,13.85,19.55,21.3];
+const sweeps=SW.map(t0=>({t0,e:box(stage,0,-300,340,2600,'',null,{background:'linear-gradient(90deg,transparent 0%,rgba(255,224,150,.0) 15%,rgba(255,229,160,.55) 50%,rgba(255,224,150,.0) 85%,transparent 100%)',mixBlendMode:'screen',transform:'rotate(16deg)',visibility:'hidden',opacity:.6})}));
+const flash=box(stage,0,0,W,H,'',null,{background:'#fff',opacity:0,pointerEvents:'none'});
+const flashG=box(stage,0,0,W,H,'',null,{background:'radial-gradient(ellipse 75% 55% at 50% 48%,rgba(255,243,207,.95) 0%,rgba(240,207,132,.75) 32%,rgba(217,174,90,.28) 62%,transparent 85%)',opacity:0,pointerEvents:'none'});
+const grain=box(stage,0,0,W,H,'',null,{opacity:.07,mixBlendMode:'overlay',pointerEvents:'none'});
+(function(){const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');const d=x.createImageData(256,256);let s=12345;for(let i=0;i<d.data.length;i+=4){s=(s*1664525+1013904223)>>>0;const v=(s>>>24);d.data[i]=d.data[i+1]=d.data[i+2]=v;d.data[i+3]=255}x.putImageData(d,0,0);grain.style.backgroundImage=`url(${c.toDataURL()})`})();
+function updFX(t){t=Math.max(t,0);
+ sweeps.forEach(s=>{const p=lin(t,s.t0,.65);const v=p>0&&p<1;s.e.style.visibility=v?'visible':'hidden';if(v)s.e.style.transform=`translateX(${lerp(-700,1500,eio2(p))}px) rotate(16deg)`});
+ let f=.5*Math.exp(-t*13);if(t>1.18)f+=.5*Math.exp(-(t-1.18)*14);if(t>1.42)f+=.22*Math.exp(-(t-1.42)*14);if(t>3.0)f+=.28*Math.exp(-(t-3.0)*10);if(t>20.0)f+=.35*Math.exp(-(t-20.0)*9);
+ if(t>12.9&&t<13.4)f+=.12*Math.exp(-(t-12.9)*12);
+ flash.style.opacity=clamp(f,0,1);
+ flashG.style.opacity=P(t,19.55,.2,eo2)*(1-P(t,19.95,.3,eo2));
+ const fr=Math.floor(t*30+.001);grain.style.backgroundPosition=`${(fr*97)%256}px ${(fr*61)%256}px`}
+
+// ───────────────────────── kinetic word stack
+function wordStack(root,words,x,y0,fs,lh,times,tEnd){
+ const els=words.map((w,i)=>{const wrap=box(root,x,y0+i*lh,990-x+90,lh,'',null,{overflow:'hidden'});const inner=mk(wrap,'nw',`${w}<span class="gt">.</span>`,{fontWeight:900,fontSize:fs+'px',lineHeight:lh+'px',letterSpacing:'-.02em',textShadow:'0 8px 30px rgba(0,0,0,.45)'});
+  const bar=box(root,x-34,y0+i*lh+lh*.22,10,lh*.56,'',null,{background:'linear-gradient(180deg,#f6dc98,#b98a33)',borderRadius:'5px',opacity:0});
+  return {wrap,inner,bar}});
+ return t=>{els.forEach((e,i)=>{const p=P(t,times[i],.5,eo4);const nxt=i<times.length-1?P(t,times[i+1],.35,eo2):0;const out=P(t,tEnd,.35,eio);
+   T(e.inner,{y:(1-p)*lh*1.05+out*-lh*.9,o:Math.min(1,p*3)*(1-.62*nxt)*(1-out)});e.bar.style.opacity=(p>0?1:0)*(1-nxt)*(1-out);e.bar.style.transform=`scaleY(${p})`})}}
+
+// ───────────────────────── day title slam
+function dayTitle(root,label,cy){const band=box(root,0,cy-190,W,380,'',null,{background:'linear-gradient(180deg,transparent,rgba(4,11,28,.9) 28%,rgba(4,11,28,.9) 72%,transparent)'});const wrap=bigLine(root,label,'',900,cy,{color:'#fff',textShadow:'0 14px 60px rgba(0,0,0,.6)'});const ln=box(root,90,cy+120,900,10,'',null,{background:'linear-gradient(90deg,#b98a33,#f6dc98,#b98a33)',borderRadius:'5px',transformOrigin:'0 50%'});
+ const sp=wrap.firstElementChild;sp.style.letterSpacing='.01em';
+ const fn=(t,t0)=>{const p=P(t,t0,.38,eo5),out=P(t,t0+.58,.32,eio);T(band,{o:p*(1-out)});T(wrap,{s:lerp(1.35,1,p)*(1+out*.12),y:out*-90,o:Math.min(1,p*4)*(1-out),b:(1-p)*22+out*8});
+  T(ln,{sx:p*(1-out*0),y:out*-90,o:p*(1-out)})};fn.els=[band,wrap,ln];return fn}
+
+// ───────────────────────── S1  HOOK  (0–3.2)
+const S1=(()=>{const root=box(stage,0,0,W,H);
+ const wsp=box(root,70,250,940,1500,'',null,{background:'linear-gradient(180deg,#16356f,#0d2553)',borderRadius:'50px',opacity:.8,filter:'blur(9px)'});
+ box(wsp,0,0,250,1500,'',null,{background:'rgba(255,255,255,.07)',borderRadius:'50px 0 0 50px'});
+ for(let i=0;i<10;i++){const r=box(wsp,290,50+i*140,600,100,'',null,{background:'rgba(255,255,255,.1)',borderRadius:'20px'});box(r,24,24,52,52,'',null,{background:'rgba(255,255,255,.25)',borderRadius:'50%'});box(r,100,26,300,18,'',null,{background:'rgba(255,255,255,.3)',borderRadius:'9px'});box(r,100,58,420,14,'',null,{background:'rgba(255,255,255,.18)',borderRadius:'7px'});
+  if(i<5)box(wsp,40,60+i*70,170,24,'',null,{background:'rgba(255,255,255,.18)',borderRadius:'10px'})}
+ const N=[{n:'Maya R. · Client',i:'M',tx:'Any update?',c:'#12336f',t0:.06,x:-14,y:370,r:-2.2},
+ {n:'Jon D. · Client',i:'J',tx:'Is this finished?',c:'#b8862f',t0:.36,x:26,y:520,r:1.8},
+ {n:'Ana L. · Partner',i:'A',tx:"What's the status?",c:'#5e6e8f',t0:.64,x:-20,y:670,r:-1.5},
+ {n:'Maya R. · Client',i:'M',tx:'Any update?',c:'#12336f',t0:.9,x:22,y:820,r:2.6},
+ {n:'Sam K. · Team',i:'S',tx:'Status check?',c:'#b8862f',t0:1.04,x:-8,y:970,r:-2.4}];
+ const ne=N.map(n=>{const e=box(root,100,0,880,142,'',null,{background:'rgba(255,255,255,.97)',borderRadius:'38px',boxShadow:'0 30px 60px -10px rgba(0,0,0,.55)'});
+  box(e,26,26,90,90,'ic',`<span style="font-weight:800;font-size:40px;color:#fff">${n.i}</span>`,{background:n.c});
+  box(e,142,24,500,30,'',`<span class="nw" style="font-weight:700;font-size:25px;color:#6a7a9b">${n.n}</span>`);
+  box(e,142,60,700,64,'',`<span class="nw" style="font-weight:800;font-size:46px;color:#0a1e47;letter-spacing:-.01em">${n.tx}</span>`);
+  box(e,740,26,110,30,'',`<span class="nw" style="font-weight:600;font-size:22px;color:#8794b0;display:block;text-align:right">now</span>`);
+  box(e,830,56,26,26,'',null,{background:'#d9ae5a',borderRadius:'50%'});return e});
+ const lock=box(root,0,0,W,H);
+ const L1=bigLine(lock,'STOP','',940,690,{color:'#fff',textShadow:'0 20px 80px rgba(0,0,0,.65)'});
+ const L2=bigLine(lock,'CHASING','',940,945,{color:'#fff',textShadow:'0 16px 60px rgba(0,0,0,.65)'});
+ const L3=bigLine(lock,'UPDATES.','gt',940,1128,{});
+ const U=box(lock,70,1218,940,12,'',null,{background:'linear-gradient(90deg,#b98a33,#f6dc98,#b98a33)',borderRadius:'6px',transformOrigin:'0 50%'});
+ const shk=(t)=>{let s=0;[[0,16],[1.18,20],[1.42,12]].forEach(([t0,A])=>{if(t>t0){const d=t-t0;s+=A*Math.exp(-d*9)*Math.sin(d*75)}});return s};
+ return t=>{show(root,t<3.3);if(t>=3.3)return;const s=shk(t);T(root,{x:s*.9,y:s*.6,s:1+.022*(t/3)});
+  N.forEach((n,i)=>{const p=P(t,n.t0,.4,eob),out=P(t,1.12,.4,eio);T(ne[i],{x:n.x,y:n.y+(1-p)*150-out*70-i*0,s:lerp(.84,1,p)*(1-out*.2),r:n.r,o:clamp(p*2.5)*(1-out*.72),b:out*9})});
+  const p1=P(t,1.18,.3,eo5),p2=P(t,1.42,.34,eo5),p3=P(t,1.92,.38,eo3),ex=P(t,2.8,.35,eio);
+  T(L1,{s:lerp(2.5,1,p1),o:clamp(p1*4),b:(1-p1)*26});
+  T(L2,{x:(1-p2)*320,s:lerp(1.22,1,p2),o:clamp(p2*4),b:(1-p2)*20});
+  L3.firstElementChild.style.clipPath=`inset(-20% ${(1-p3)*101}% -20% -2%)`;T(L3,{o:p3>0?1:0,s:lerp(1.04,1,p3)});
+  T(U,{sx:P(t,2.12,.5,eo4),o:t>2.12?1:0});
+  T(lock,{s:1+ex*.55,o:1-ex,b:ex*18,y:ex*-60})}})();
+
+// ───────────────────────── panel header helper
+function pHead(p,over,title,chipHtml){box(p,36,30,500,30,'',`<div class="over">${over}</div>`);box(p,36,62,700,64,'',`<div class="ttl">${title}</div>`);if(chipHtml)box(p,0,40,864,50,'',chipHtml,{display:'flex',justifyContent:'flex-end'})}
+function pFoot(p,y,txt){box(p,36,y,820,40,'',`<div class="nw" style="font-weight:700;font-size:22px;color:#6a7a9b;display:flex;align-items:center;gap:12px"><span style="width:14px;height:14px;border-radius:50%;background:#d9ae5a;display:inline-block"></span>${txt}</div>`)}
+
+// ───────────────────────── S2  MONDAY + TUESDAY  (3.0–8.3)
+const S2=(()=>{const root=box(stage,0,0,W,H);
+ const dMon=dayTitle(root,'MONDAY',760),dTue=dayTitle(root,'TUESDAY',760);
+ // Monday panel
+ const pM=box(root,90,340,900,800,'panel');pHead(pM,'MONDAY','Weekly plan','<span class="chip slate">WEEK START</span>');
+ const mrows=[{t:'Map out onboarding steps',m:'TASK PLANNING',ic:'list'},{t:'Prepare vendor comparison',m:'PRIORITY ASSIGNMENT',ic:'flag'},{t:'Confirm client meeting',m:'DEADLINE COORDINATION',ic:'cal'},{t:'Process documentation',m:'DOCUMENTATION',ic:'doc'}];
+ const mr=mrows.map((r,i)=>{const e=box(pM,28,142+i*140,844,126,'card');
+  const ico=box(e,26,30,66,66,'ic',IC[r.ic]('#0a1e47'),{background:'linear-gradient(180deg,#f8e3a6,#e2b85e)'});
+  box(e,116,24,560,48,'',`<div class="nw" style="font-weight:800;font-size:33px;color:#0a1e47;letter-spacing:-.01em">${r.t}</div>`);
+  box(e,116,76,560,30,'',`<div class="lbl">${r.m}</div>`);
+  const bar=box(e,0,18,8,90,'',null,{background:'linear-gradient(180deg,#f6dc98,#b98a33)',borderRadius:'4px',transformOrigin:'50% 0%'});
+  let extra={};
+  if(i===0){const w=box(e,690,38,140,50,'');extra.a1=box(w,0,0,46,46,'av','A',{background:'#12336f'});extra.a2=box(w,34,0,46,46,'av','J',{background:'#b8862f'});extra.a3=box(w,68,0,46,46,'av','R',{background:'#5e6e8f'})}
+  if(i===1){extra.u=box(e,650,36,180,52,'',`<span class="chip slate" style="width:100%;justify-content:center">UNSET</span>`);extra.g=box(e,650,36,180,52,'',`<span class="chip gold" style="width:100%;justify-content:center">● HIGH</span>`)}
+  if(i===2){extra.c=box(e,660,36,170,52,'',`<span class="chip ghost" style="width:100%;justify-content:center;gap:8px"><span style="width:22px;height:22px;display:inline-block">${IC.cal('#9a6f1f')}</span>Due Wed</span>`)}
+  if(i===3){extra.d=box(e,640,28,190,70,'',`<span class="chip navy" style="margin-right:10px">DRAFT</span>`,{display:'flex',alignItems:'center',justifyContent:'flex-end'});
+   extra.l=[0,1,2].map(k=>box(e,566,38+k*16,50,7,'',null,{background:'#c4cfe3',borderRadius:'4px',transformOrigin:'0 50%'}))}
+  return {e,bar,extra,t0:3.92+i*.36}});
+ pFoot(pM,730,'Planned &amp; coordinated by your ProVirtual PH team');
+ // Tuesday panel
+ const pT=box(root,90,340,900,800,'panel');pHead(pT,'TUESDAY','Research &amp; follow-ups','<span class="chip slate">IN MOTION</span>');
+ const modPos=[[30,126],[460,126],[30,430],[460,430]];
+ const mod=(i,label,ic)=>{const m=box(pT,modPos[i][0],modPos[i][1],410,288,'card');box(m,20,18,46,46,'ic',IC[ic]('#0a1e47'),{background:'linear-gradient(180deg,#f8e3a6,#e2b85e)'});box(m,80,28,320,28,'',`<div class="lbl nw" style="font-size:20px">${label}</div>`);return m};
+ const m0=mod(0,'RESEARCH','search'),m1=mod(1,'CLIENT FOLLOW-UP','chat'),m2=mod(2,'SCHEDULE','cal'),m3=mod(3,'STATUS UPDATES','list');
+ box(m0,24,84,360,36,'',`<div class="nw" style="font-weight:800;font-size:28px;color:#0a1e47">Vendor research</div>`);
+ const rs=['Pricing overview','Service comparison','Key notes &amp; risks'].map((s,k)=>{const y=134+k*40;const d=box(m0,24,y,26,26,'',null,{border:'3px solid #c4cfe3',borderRadius:'50%'});const g=box(m0,24,y,26,26,'ic',IC.check('#0a1e47'),{background:'linear-gradient(180deg,#f6dc98,#d9a94c)',opacity:0});box(m0,64,y-2,320,30,'',`<div class="nw" style="font-weight:600;font-size:23px;color:#33466e">${s}</div>`);return g});
+ const rbar=box(m0,24,258,362,12,'',null,{background:'#e3e9f3',borderRadius:'6px'});const rfill=box(rbar,0,0,362,12,'',null,{background:'linear-gradient(90deg,#b98a33,#f6dc98)',borderRadius:'6px',transformOrigin:'0 50%'});
+ const bub=box(m1,22,84,366,118,'',null,{background:'#edf1f8',borderRadius:'22px 22px 22px 6px'});
+ const btxt=box(bub,18,14,332,90,'',`<div style="font-weight:600;font-size:23px;line-height:1.3;color:#1d315c">Hi Maya! Following up on the proposal we sent. Any questions?</div>`,{overflow:'hidden'});
+ const sent=box(m1,22,222,366,48,'',`<div style="display:flex;justify-content:flex-end;align-items:center;gap:12px"><span class="chip gold" style="padding:7px 16px;font-size:18px">SENT ✓</span></div>`);
+ box(m2,24,82,60,190,'',['9 AM','11 AM','1 PM','3 PM'].map((h,k)=>`<div class="nw" style="position:absolute;top:${k*52}px;font-weight:700;font-size:19px;color:#8794b0">${h}</div>`).join(''));
+ [0,1,2,3].forEach(k=>box(m2,92,94+k*52,296,2,'',null,{background:'#e3e9f3'}));
+ const blk=[{x:100,y:98,h:46,c:'linear-gradient(180deg,#f6dc98,#d9a94c)',tc:'#0a1e47',tx:'Client call'},{x:100,y:150,h:46,c:'#0c2352',tc:'#fff',tx:'Team sync'},{x:100,y:202,h:46,c:'#5e6e8f',tc:'#fff',tx:'Review'}].map(b=>box(m2,b.x,b.y,284,b.h,'',`<div class="nw" style="font-weight:800;font-size:21px;color:${b.tc};line-height:${b.h}px;padding-left:18px">${b.tx}</div>`,{background:b.c,borderRadius:'12px'}));
+ const st=[['Research',1],['Meeting notes',1],['Task tracker',2]].map((s,k)=>{const y=86+k*62;box(m3,22,y+9,200,32,'',`<div class="nw" style="font-weight:700;font-size:21px;color:#1d315c">${s[0]}</div>`);
+  const a=box(m3,226,y,164,46,'',`<span class="chip slate" style="width:100%;justify-content:center;font-size:17px;padding:8px 6px">${s[1]===2?'WAITING':'NOT STARTED'}</span>`);
+  const b=box(m3,226,y,164,46,'',`<span class="chip ${s[1]===2?'ghost':'gold'}" style="width:100%;justify-content:center;font-size:17px;padding:8px 6px">${s[1]===2?'WAITING':'IN PROGRESS'}</span>`,{opacity:0});return {a,b,flip:s[1]===1}});
+ pFoot(pT,740,'Coordinated by your ProVirtual PH team');
+ const wA=wordStack(root,['PLAN','COORDINATE','TRACK'],128,1200,104,114,[3.3,3.95,4.95],7.85);
+ const tM=3.0,tT=5.5;[dMon,dTue].forEach(f=>f.els.forEach(e=>root.appendChild(e)));
+ return t=>{show(root,t>=2.9&&t<8.4);if(t<2.9||t>=8.4)return;
+  const drift=lin(t,3,5.3);
+  // Monday
+  const inM=P(t,tM+.4,.55,eo4),outM=P(t,tT-.05,.45,eio);
+  const xM=tt=>-P(tt,tT-.05,.45,eio)*1250;T(pM,{x:xM(t),y:(1-inM)*120-drift*14,s:lerp(.9,1,inM)*(1+drift*.02),ry:-outM*18,rx:(1-inM)*14,o:inM*(1-P(t,tT+.35,.1,eo2)),b:(1-inM)*10,bx:vx(xM,t),bf:'A'});
+  mr.forEach((r,i)=>{const p=P(t,r.t0,.45,eo4);const px=P(t,r.t0+.35,.35,eob);
+   T(r.e,{x:(1-p)*70,o:p});T(r.bar,{sy:P(t,r.t0+.1,.4,eo3)});
+   const ex=r.extra;
+   if(i===0){[ex.a1,ex.a2,ex.a3].forEach((a,k)=>T(a,{s:P(t,r.t0+.3+k*.08,.3,eob),o:P(t,r.t0+.3+k*.08,.1,eo2)}))}
+   if(i===1){const f=P(t,r.t0+.5,.25,eio);T(ex.u,{o:1-f,sy:1-f*.5,s:1});T(ex.g,{s:lerp(.4,1,P(t,r.t0+.5,.4,eob)),o:f})}
+   if(i===2){T(ex.c,{s:lerp(.4,1,px),o:px>0?1:0})}
+   if(i===3){T(ex.d,{o:P(t,r.t0+.2,.3,eo2)});ex.l.forEach((l,k)=>T(l,{sx:P(t,r.t0+.15+k*.14,.3,eo3)*(k===2?.6:1)}))}});
+  // Tuesday
+  const inT=P(t,tT+.0,.5,eo4);const driftT=lin(t,tT,2.8);
+  const outT=P(t,7.95,.45,eio);const xT=tt=>(1-P(tt,tT,.5,eo4))*1250-P(tt,7.95,.45,eio)*1250;T(pT,{x:xT(t),y:-driftT*14,s:1+driftT*.02,ry:(1-inT)*16-outT*16,o:inT>0?1:0,bx:vx(xT,t),bf:'B'});
+  const k0=6.05;
+  [m0,m1,m2,m3].forEach((m,i)=>{const p=P(t,k0+i*.28,.4,eob);T(m,{y:(1-p)*50,s:lerp(.9,1,p),o:clamp(p*3)})});
+  rs.forEach((g,k)=>T(g,{s:P(t,6.5+k*.38,.3,eob),o:P(t,6.5+k*.38,.1,eo2)}));T(rfill,{sx:P(t,6.4,1.3,eio)*.72});
+  T(btxt,{o:1});btxt.style.clipPath=`inset(0 ${(1-lin(t,6.65,1.0))*100}% 0 0)`;
+  T(sent,{o:P(t,7.4,.2,eo2),s:lerp(.8,1,P(t,7.4,.3,eob))});
+  blk.forEach((b,i)=>{const p=P(t,6.75+i*.3,.45,eo4);T(b,{x:(1-p)*260,o:p})});
+  st.forEach((s,k)=>{if(s.flip){const f=P(t,7.0+k*.35,.28,eio);T(s.a,{o:1-f,sy:1-f*.3});T(s.b,{o:f,sy:.7+.3*f})}else{T(s.a,{o:0});T(s.b,{o:P(t,7.4,.3,eo2)})}});
+  dMon(t,3.0);dTue(t,5.5);wA(t)}})();
+
+// ───────────────────────── S3  WEDNESDAY + THURSDAY  (8.0–14.3)
+const S3=(()=>{const root=box(stage,0,0,W,H);
+ const dWed=dayTitle(root,'WEDNESDAY',760),dThu=dayTitle(root,'THURSDAY',760);
+ const BX=60,BY=340;const board=box(root,BX,BY,960,800,'panel');
+ pHead(board,'WEDNESDAY','Project workflow','<span class="chip slate" style="margin-right:0">TEAM BOARD</span>');const overT=box(board,36,30,500,30,'',`<div class="over">THURSDAY</div>`,{opacity:0});const overW=board.children[0];
+ const cols=[{n:'TO DO',c:'#43557a'},{n:'IN PROGRESS',c:'#9a6f1f'},{n:'READY FOR REVIEW',c:'#0c2352'}];
+ const cx=c=>24+c*312,cw=288;
+ const colEls=cols.map((c,i)=>{const bgc=box(board,cx(i),136,cw,640,'',null,{background:'#e9eef6',borderRadius:'26px'});
+  box(board,cx(i)+16,150,cw-32,36,'',`<div class="nw" style="font-weight:800;font-size:16px;letter-spacing:.06em;color:${c.c};display:flex;align-items:center;gap:10px"><span style="width:12px;height:12px;border-radius:50%;background:${i===1?'#d9ae5a':i===2?'#0c2352':'#8da0c4'};display:inline-block"></span>${c.n}</div>`);return bgc});
+ const cnt=cols.map((c,i)=>box(board,cx(i)+cw-52,151,36,30,'',`<div style="font-weight:800;font-size:17px;color:#43557a;background:#fff;border-radius:10px;text-align:center;line-height:30px">0</div>`));
+ const CY=196,CS=112,CH=102;
+ const defs=[{k:'A',t:'Vendor research summary',tag:'RESEARCH',av:'A',ac:'#12336f',kf:[[8.65,9.05,1,0],[9.65,10.05,2,0]],s0:0},
+  {k:'B',t:'Client call notes',tag:'NOTES',av:'J',ac:'#b8862f',kf:[[8.80,9.15,0,0],[9.20,9.60,1,1],[9.85,10.2,1,0]],s0:1},
+  {k:'C',t:'Process documentation',tag:'DOCS',av:'R',ac:'#5e6e8f',kf:[[8.80,9.15,0,1],[9.35,9.70,0,0]],s0:2},
+  {k:'D',t:'Onboarding workflow draft',tag:'APPROVAL',av:'A',ac:'#12336f',kf:[[8.80,9.15,0,2],[9.35,9.70,0,1],[10.0,10.3,0,0],[10.4,10.85,2,1]],s0:3},
+  {k:'E',t:'Next-step checklist',tag:'PLANNING',av:'S',ac:'#b8862f',kf:[[8.80,9.15,0,3],[9.35,9.70,0,2],[10.0,10.3,0,1],[10.4,10.7,0,1]],s0:4}];
+ // fix E: after D leaves slot0, E to slot0
+ defs[4].kf=[[8.80,9.15,0,3],[9.35,9.70,0,2],[10.0,10.3,0,1],[10.5,10.85,0,0]];
+ const cards=defs.map(d=>{const e=box(board,0,0,cw-24,CH,'',null,{background:'#fff',borderRadius:'20px',boxShadow:'0 8px 18px -8px rgba(10,30,71,.35)',border:'2px solid #e4eaf4',left:'0',top:'0'});
+  box(e,16,12,cw-60,56,'',`<div style="font-weight:800;font-size:22px;line-height:1.2;color:#0a1e47;letter-spacing:-.005em">${d.t}</div>`);
+  box(e,16,72,150,22,'',`<span class="nw" style="font-weight:800;font-size:14px;letter-spacing:.12em;color:#5e6e8f;background:#eef2f9;border-radius:8px;padding:4px 9px">${d.tag}</span>`);
+  box(e,cw-24-52,66,34,34,'',`<div style="width:34px;height:34px;border-radius:50%;background:${d.ac};color:#fff;font-weight:800;font-size:15px;text-align:center;line-height:34px">${d.av}</div>`);
+  const ring=box(e,-6,-6,cw-24+12,CH+12,'',null,{border:'4px solid #e7bf6a',borderRadius:'26px',opacity:0,boxShadow:'0 0 40px 6px rgba(231,191,106,.8)'});
+  const aw=box(e,16,72,cw-60,26,'',`<span class="nw" style="font-weight:800;font-size:12px;letter-spacing:.07em;color:#0a1e47;background:linear-gradient(180deg,#f6dc98,#d9a94c);border-radius:8px;padding:5px 9px">AWAITING APPROVAL</span>`,{opacity:0});
+  const ap=box(e,16,72,cw-60,26,'',`<span class="nw" style="font-weight:800;font-size:13px;letter-spacing:.08em;color:#fff;background:#0c2352;border-radius:8px;padding:5px 10px">APPROVED ✓</span>`,{opacity:0});
+  return {d,e,ring,aw,ap}});
+ const pos=(d,t)=>{let prev={c:0,s:d.s0,mv:0,lift:0};for(const k of d.kf){const [a,b,c,s]=k;if(t<a)return prev;if(t<b){const p=eio((t-a)/(b-a));return {c:lerp(prev.c,c,p),s:lerp(prev.s,s,p),mv:p,lift:Math.sin(Math.PI*p)*(c!==prev.c?1:.3)}}prev={c,s,mv:0,lift:0}}return prev};
+ // popups
+ const pop1=box(root,0,0,520,300,'card',null,{left:'110px',top:'868px',borderRadius:'30px',boxShadow:'0 50px 90px -20px rgba(0,0,0,.65)'});
+ box(pop1,26,22,300,26,'',`<div class="over" style="font-size:18px">RESEARCH DOCUMENT</div>`);box(pop1,26,54,470,40,'',`<div class="nw" style="font-weight:800;font-size:30px;color:#0a1e47">Vendor research summary</div>`);
+ [['Key findings',1],['Pricing comparison',0],['Recommended next step',2]].forEach((r,k)=>{const y=116+k*54;box(pop1,26,y+4,16,16,'',null,{background:r[1]===2?'#d9ae5a':'#9aa8c4',borderRadius:'50%'});box(pop1,56,y,430,40,'',`<div class="nw" style="font-weight:700;font-size:25px;color:#1d315c;${r[1]===2?'background:linear-gradient(transparent 55%,#f6dc98 55%);display:inline-block':''}">${r[0]}</div>`)});
+ box(pop1,26,262,470,10,'',null,{background:'#e3e9f3',borderRadius:'5px'});
+ const pop2=box(root,0,0,480,300,'card',null,{left:'470px',top:'908px',borderRadius:'30px',boxShadow:'0 50px 90px -20px rgba(0,0,0,.65)'});
+ box(pop2,26,22,300,26,'',`<div class="over" style="font-size:18px">PROJECT NOTES</div>`);box(pop2,26,54,420,40,'',`<div class="nw" style="font-weight:800;font-size:30px;color:#0a1e47">Next-step updates</div>`);
+ ['Confirm shortlist with client','Schedule review call','Update task tracker'].forEach((s,k)=>{const y=116+k*54;box(pop2,26,y+2,32,32,'ic',IC.chk2(k===0?'#b8862f':'#8da0c4'));box(pop2,72,y,390,40,'',`<div class="nw" style="font-weight:700;font-size:25px;color:#1d315c">${s}</div>`)});
+ // approval dialog
+ const dlg=box(root,120,778,840,410,'card',null,{borderRadius:'38px',boxShadow:'0 70px 120px -20px rgba(0,0,0,.7)',background:'linear-gradient(180deg,#fff,#f4f6fb)'});
+ box(dlg,32,26,70,70,'ic',IC.clock('#0a1e47'),{background:'linear-gradient(180deg,#f8e3a6,#e2b85e)'});
+ box(dlg,124,24,600,28,'',`<div class="over" style="font-size:20px">APPROVAL REQUEST</div>`);box(dlg,124,52,690,48,'',`<div class="nw" style="font-weight:800;font-size:36px;color:#0a1e47">Onboarding workflow draft</div>`);
+ box(dlg,34,114,780,36,'',`<div class="nw" style="font-weight:600;font-size:24px;color:#5e6e8f">Requested by your ProVirtual PH team · Client review</div>`);
+ const stAw=box(dlg,34,160,300,46,'',`<span class="chip ghost">AWAITING DECISION</span>`);
+ const stAp=box(dlg,34,160,300,46,'',`<span class="chip gold">APPROVED ✓</span>`,{opacity:0});
+ const bApprove=box(dlg,34,226,386,84,'',`<div style="width:100%;height:100%;border-radius:26px;background:linear-gradient(180deg,#f8e3a6,#d9a94c);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:32px;letter-spacing:.04em;color:#0a1e47">Approve</div>`,{boxShadow:'0 14px 30px -10px rgba(217,174,90,.8)'});
+ const bChg=box(dlg,438,226,368,84,'',`<div style="width:100%;height:100%;border-radius:26px;border:3px solid #cfd8e8;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:28px;color:#43557a">Request changes</div>`);
+ const bring=box(dlg,22,214,410,108,'',null,{border:'5px solid #0c2352',borderRadius:'34px',opacity:0});
+ const logl=box(dlg,34,324,780,36,'',`<div class="nw" style="font-weight:700;font-size:23px;color:#43557a;display:flex;align-items:center;gap:12px"><span style="width:24px;height:24px;display:inline-block">${IC.check('#b8862f')}</span>Client decision recorded · logged by your coordinator</div>`,{opacity:0});
+ const nxt=box(dlg,34,362,780,36,'',`<div class="nw" style="font-weight:800;font-size:23px;color:#0a1e47;display:flex;align-items:center;gap:12px"><span style="width:24px;height:24px;display:inline-block">${IC.arrow('#b8862f')}</span>Next step added: schedule kickoff</div>`,{opacity:0});
+ const wB=wordStack(root,['PROGRESS','CLARITY','NEXT STEPS'],128,1200,104,114,[8.5,9.8,10.5],14.0);[dWed,dThu].forEach(f=>f.els.forEach(e=>root.appendChild(e)));
+ return t=>{show(root,t>=7.9&&t<14.5);if(t<7.9||t>=14.5)return;
+  const inB=P(t,8.0,.55,eo4);const drift=lin(t,8,3);
+  const dolly=P(t,11.0,.75,eio);
+  const S=lerp(1,1.08,dolly),tx=lerp(0,25,dolly),ty=0;
+  const exitB=P(t,13.75,.5,eio);
+  board.style.transformOrigin=`${24+2*312+144}px 354px`;
+  const xB=tt=>(1-P(tt,8.0,.55,eo4))*1250;T(board,{x:xB(t)+tx,y:ty-drift*10,s:S*(1+drift*.015)*(1-exitB*.45),ry:(1-inB)*-16,o:inB>0?1-exitB:0,b:exitB*12,bx:vx(xB,t),bf:'A'});
+  // dim board during dolly
+  const hdrDim=dolly;
+  // counts
+  const count=[0,0,0];cards.forEach(c=>{const p=pos(c.d,t);count[Math.round(p.c)]++});
+  T(overT,{o:P(t,11.0,.3,eo2)});T(overW,{o:1-P(t,11.0,.3,eo2)});
+  cnt.forEach((e,i)=>e.firstElementChild.textContent=count[i]);
+  cards.forEach(c=>{const p=pos(c.d,t);T(c.e,{x:cx(p.c)+12,y:CY+p.s*CS-p.lift*34,s:1+p.lift*.07,r:p.lift*3.2});c.e.style.zIndex=p.lift>0?5:1;
+   c.e.style.boxShadow=p.lift>0?`0 ${14+p.lift*40}px ${30+p.lift*40}px -10px rgba(10,30,71,${.35+p.lift*.2})`:'0 8px 18px -8px rgba(10,30,71,.35)';
+   if(c.d.k==='D'){const awp=P(t,11.5,.3,eo3),app=P(t,13.0,.25,eo3);const gl=awp*(1-app*.0);T(c.ring,{o:awp*(.55+.45*Math.sin(t*9))*(1-app*.6)});T(c.aw,{o:awp*(1-app)});T(c.ap,{o:app});c.e.style.zIndex=6}});
+  // popups
+  const pp1=P(t,9.78,.45,eob),pp2=P(t,10.1,.45,eob),ppo=P(t,10.85,.3,eio);
+  T(pop1,{x:(1-pp1)*-60,y:(1-pp1)*60-ppo*40,s:lerp(.7,1,pp1),r:-4*pp1,o:clamp(pp1*3)*(1-ppo),b:ppo*8});
+  T(pop2,{x:(1-pp2)*60,y:(1-pp2)*70-ppo*40,s:lerp(.7,1,pp2),r:3.5*pp2,o:clamp(pp2*3)*(1-ppo),b:ppo*8});
+  // dialog
+  const dg=P(t,11.85,.5,eob),dgx=P(t,13.75,.45,eio);T(dlg,{y:(1-dg)*140,s:lerp(.92,1,dg)*(1-dgx*.5),o:clamp(dg*2.5)*(1-dgx),b:dgx*10});
+  const hi=P(t,12.45,.3,eo3)*(1-P(t,12.95,.1,eo3)),pr=P(t,12.9,.14,eio)*(1-P(t,13.04,.14,eio)),app=P(t,13.0,.25,eo3);
+  bApprove.style.transform=`scale(${1-.05*pr})`;T(bring,{o:hi*(.6+.4*Math.sin(t*14)),s:1+.03*Math.sin(t*10)});
+  T(stAw,{o:1-app});T(stAp,{o:app,s:lerp(.8,1,P(t,13.0,.3,eob))});T(logl,{o:P(t,13.15,.3,eo3),y:(1-P(t,13.15,.3,eo3))*14});
+  const nx=P(t,13.35,.35,eo3);T(nxt,{o:nx,y:(1-nx)*14});
+  dWed(t,8.0);dThu(t,11.0);wB(t)}})();
+
+// ───────────────────────── S4  FRIDAY REPORT  (13.7–20.4)
+const S4=(()=>{const root=box(stage,0,0,W,H);
+ const days=[['MON','Plan & prioritise'],['TUE','Research & follow-up'],['WED','Workflow progress'],['THU','Approval recorded'],['FRI','Weekly update']];
+ const FX=540,FY=800;
+ const tiles=days.map((d,k)=>{const wrap=box(root,FX-150,FY-230,300,460,'');
+  const card=box(wrap,0,0,300,460,'',null,{background:'linear-gradient(180deg,#fff,#eef2f9)',borderRadius:'32px',boxShadow:'0 40px 80px -20px rgba(0,0,0,.75)',overflow:'hidden',border:'2px solid rgba(255,255,255,.7)'});
+  const isF=k===4;
+  box(card,0,0,300,100,'',`<div style="font-weight:900;font-size:52px;letter-spacing:.02em;line-height:100px;padding-left:28px;color:${isF?'#0a1e47':'#fff'}">${d[0]}</div>`,{background:isF?'linear-gradient(180deg,#f8e3a6,#d9a94c)':'linear-gradient(180deg,#12336f,#0c2352)'});
+  box(card,28,118,250,34,'',`<div class="nw" style="font-weight:800;font-size:21px;color:#43557a">${d[1]}</div>`);
+  for(let r=0;r<4;r++){box(card,28,172+r*62,36,36,'',null,{background:r<(isF?4:3)?'linear-gradient(180deg,#f6dc98,#d9a94c)':'#dbe3f0',borderRadius:'50%'});box(card,80,178+r*62,180-(r%2)*50,14,'',null,{background:'#c9d4e8',borderRadius:'7px'});box(card,80,201+r*62,130-(r%2)*30,10,'',null,{background:'#e1e8f3',borderRadius:'5px'})}
+  return wrap});
+ const tAt=[14.25,14.12,13.99,13.9,14.42];
+ const fromO=[[-1000,260,-34],[-760,420,-26],[0,900,0],[0,0,0],[1000,-120,34]];
+ // paper
+ const PX=100,PY=322,PW=880,PH=1030;
+ const paperWrap=box(root,PX,PY,PW,PH,'');
+ const paper=box(paperWrap,0,0,PW,PH,'',null,{background:'linear-gradient(180deg,#ffffff,#f3f6fb)',borderRadius:'38px',boxShadow:'0 90px 150px -30px rgba(0,0,0,.75),0 0 0 2px rgba(255,255,255,.6)',overflow:'hidden'});
+ const head=box(paper,0,0,PW,158,'',null,{background:'linear-gradient(180deg,#12336f,#0a1e47)'});box(head,0,155,PW,5,'',null,{background:'linear-gradient(90deg,#b98a33,#f6dc98,#b98a33)'});
+ box(head,44,34,520,34,'',`<div class="nw" style="font-weight:900;font-size:29px;letter-spacing:.13em;color:#fff">WEEKLY PROGRESS REPORT</div>`);
+ box(head,44,82,520,34,'',`<div class="nw" style="font-weight:600;font-size:25px;color:#a9b8d8">Friday update · week in review</div>`);
+ const pst=(txt,cls)=>box(head,PW-44-250,40,250,52,'',`<span class="chip ${cls}" style="width:100%;justify-content:center">${txt}</span>`,{opacity:0});
+ const stP=pst('<span style="width:12px;height:12px;border-radius:50%;background:#0a1e47;display:inline-block"></span>PREPARING','gold'),stR=pst('IN REVIEW','ghost'),stD=pst('REVIEWED ✓','gold');
+ const SECS=[{title:'COMPLETED THIS WEEK',color:'#d9ae5a',icon:'check',tag:'DONE',rows:['Onboarding workflow draft','Vendor research summary','Client onboarding checklist']},
+  {title:'CURRENTLY IN PROGRESS',color:'#5e6e8f',icon:'prog',tag:'IN PROGRESS',rows:['Process documentation','Meeting notes organization','Follow-up scheduling']},
+  {title:'WAITING ON APPROVAL',color:'#b8862f',icon:'clock',tag:'PENDING',rows:['Vendor shortlist','Service agreement edits','Newsletter draft']},
+  {title:"NEXT WEEK'S PRIORITIES",color:'#12336f',icon:'arrow',tag:'NEXT',rows:['Begin onboarding steps','Schedule client check-in','Review next-step checklist']}];
+ const SY=178,SH=190,RS=45;let rowEls=[],secEls=[];
+ SECS.forEach((s,i)=>{const y=SY+i*SH;
+  const bar=box(paper,40,y+6,8,32,'',null,{background:s.color,borderRadius:'4px',transformOrigin:'50% 0%'});
+  const tt=box(paper,64,y+4,560,36,'',`<div class="nw" style="font-weight:900;font-size:25px;letter-spacing:.15em;color:#0a1e47">${s.title}</div>`);
+  const cn=box(paper,PW-40-120,y+6,120,32,'',`<div class="nw" style="font-weight:700;font-size:21px;color:#8794b0;text-align:right">3 items</div>`);
+  secEls.push({bar,tt,cn,y,i});
+  s.rows.forEach((r,k)=>{const ry=y+52+k*RS;
+   const e=box(paperWrap,36,ry,PW-72,40,'',null,{background:'#f1f5fb',borderRadius:'13px'});
+   box(e,0,6,5,28,'',null,{background:s.color,borderRadius:'3px'});
+   box(e,18,7,26,26,'',IC[s.icon](s.color==='#d9ae5a'?'#b8862f':s.color));
+   box(e,60,4,520,32,'',`<div class="nw" style="font-weight:700;font-size:26px;line-height:32px;color:#0a1e47;letter-spacing:-.005em">${r}</div>`);
+   box(e,PW-72-250,6,150,28,'',`<div class="nw" style="font-weight:800;font-size:17px;letter-spacing:.13em;color:#7886a6;text-align:right;line-height:28px">${s.tag}</div>`);
+   const tk=box(e,PW-72-88,7,26,26,'ic',IC.check('#0a1e47'),{background:'linear-gradient(180deg,#f6dc98,#d9a94c)',opacity:0});
+   rowEls.push({e,tk,sec:i,k,y:ry,idx:rowEls.length})})});
+ box(paper,36,PH-70,520,40,'',`<div class="nw" style="font-weight:700;font-size:22px;color:#6a7a9b;display:flex;align-items:center;gap:12px"><span style="width:14px;height:14px;border-radius:50%;background:#d9ae5a;display:inline-block"></span>Prepared by your ProVirtual PH team</div>`);
+ const stamp=box(paperWrap,PW-40-250,PH-82,250,56,'',`<span class="chip gold" style="width:100%;justify-content:center;font-size:21px"><span style="width:24px;height:24px;display:inline-block">${IC.check('#0a1e47')}</span>REVIEWED</span>`,{opacity:0});
+ const scanClip=box(paperWrap,0,SY-14,PW,SH*4-10,'',null,{overflow:'hidden'});
+ const scan=box(scanClip,0,0,PW,120,'',null,{background:'linear-gradient(180deg,transparent,rgba(240,205,120,.5) 62%,rgba(255,236,170,.95) 97%,rgba(255,240,190,0) 100%)',opacity:0});
+ // headline
+ const hl1=bigLine(root,'ONE CLEAR','',640,1442,{color:'#fff',textShadow:'0 10px 40px rgba(0,0,0,.6)'});
+ const hl2=bigLine(root,'WEEKLY UPDATE.','gt',900,1544,{});
+ hl1.firstElementChild.style.fontSize=hl2.firstElementChild.style.fontSize;
+ const note=box(root,0,1628,W,30,'',`<div style="text-align:center;font-weight:600;font-size:18px;letter-spacing:.16em;color:rgba(190,205,235,.55)">ILLUSTRATIVE WORKFLOW EXAMPLE</div>`);
+ return t=>{show(root,t>=13.7&&t<20.4);if(t<13.7||t>=20.4)return;
+  // fan of five weekdays
+  const co=P(t,15.0,.5,eio);
+  tiles.forEach((w,k)=>{const f=fromO[k];const c=k-2;const tx=c*190,ty=c*c*20,rot=c*8;
+   const pos=tt=>{const p=P(tt,tAt[k],.7,eo4),co2=P(tt,15.0,.5,eio);return [lerp(f[0],tx,p)*(1-co2*.7),lerp(f[1],ty,p)*(1-co2)+co2*-20]};
+   const p=P(t,tAt[k],.7,eo4);const a=pos(t-.004),b2=pos(t+.004);const spd=Math.hypot(b2[0]-a[0],b2[1]-a[1])/.008*.0017;
+   const pull=k===3?lerp(2.1,1,P(t,13.9,.95,eo4)):1;
+   const sc=(k===3?pull:lerp(.8,1,p))*(1-co*.45);const q=pos(t);
+   T(w,{x:q[0],y:q[1],s:sc,r:lerp(f[2]*.5,rot,p)*(1-co),ry:lerp(f[2]*1.4,0,p),o:(k===3?clamp((t-13.9)*8):clamp(p*3))*(1-co),b:Math.min(30,spd)});w.style.zIndex=k})
+  // paper
+  const pin=P(t,14.85,.6,eo4),q=P(t,14.85,2.6,eo3),drift=lin(t,14.8,5);
+  const thr=P(t,19.0,1.0,eio),thrO=P(t,19.45,.35,eio);
+  T(paperWrap,{y:(1-pin)*90,s:lerp(.9,1,pin)*(1+drift*.03)*(1+thr*1.5),rx:(1-q)*9,ry:(1-q)*-13,o:pin*(1-thrO),b:thr*16});
+  paper.style.opacity=pin;
+  stP.style.opacity=(1-P(t,17.2,.2,eo2))*P(t,14.95,.2,eo2);stR.style.opacity=P(t,17.25,.2,eo2)*(1-P(t,18.6,.15,eo2));stD.style.opacity=P(t,18.65,.2,eo2);
+  stD.style.transform=`scale(${lerp(1.25,1,P(t,18.65,.3,eob))})`;
+  const sT=[15.0,15.45,15.95,16.4];
+  secEls.forEach(s=>{const p=P(t,sT[s.i],.35,eob);T(s.bar,{sy:p});T(s.tt,{x:(1-p)*-40,o:clamp(p*3)});T(s.cn,{o:clamp(p*3)})});
+  rowEls.forEach(r=>{const t0=sT[r.sec]+.1+r.k*.13;const fl=P(t,t0,.62,eio2);
+   const k=r.idx%5,c=k-2;const stx=FX+c*105,sty=FY+c*c*14;
+   const sx=stx-(PX+PW/2),sy=sty-(PY+r.y+20);
+   const arch=Math.sin(Math.PI*fl);
+   const land=P(t,t0+.5,.2,eo2);
+   T(r.e,{x:(1-fl)*sx,y:(1-fl)*sy-arch*110,s:lerp(.5,1,fl),r:(1-fl)*(r.idx%2?-22:20),o:clamp(fl*5)});
+   r.e.style.boxShadow=`0 ${24*(1-land)}px ${50*(1-land)}px -6px rgba(10,30,71,${.5*(1-land)})`;
+   r.e.style.background=land>.5?'#f1f5fb':'#ffffff';
+   const tm=17.3+((r.y-SY)/(SH*4))*1.35;T(r.tk,{s:lerp(.3,1,P(t,tm,.25,eob)),o:lin(t,tm,.12)})});
+  const sp=lin(t,17.3,1.4);T(scan,{y:lerp(-110,SH*4-10,eio2(sp)),o:sp>0&&sp<1?1:0});
+  T(stamp,{s:lerp(1.6,1,P(t,18.7,.3,eob)),o:clamp((t-18.7)*8),r:lerp(-8,0,P(t,18.7,.3,eob))});
+  const h1=P(t,16.55,.45,eo5),h2=P(t,16.7,.45,eo5),ho=P(t,19.0,.3,eio);
+  T(hl1,{y:(1-h1)*70-ho*60,o:clamp(h1*3)*(1-ho),s:lerp(1.1,1,h1),b:(1-h1)*10});T(hl2,{y:(1-h2)*70-ho*60,o:clamp(h2*3)*(1-ho),s:lerp(1.1,1,h2),b:(1-h2)*10});
+  T(note,{o:P(t,15.2,.4,eo2)*(1-ho)*.9})}})();
+
+// ───────────────────────── S5/S6  SOLUTION + CTA  (19.7–25)
+const S5=(()=>{const root=box(stage,0,0,W,H);
+ const card=(i,title,sub,ic,vis)=>{const e=box(root,90,545+i*260,900,220,'',null,{background:'linear-gradient(180deg,rgba(22,52,110,.94),rgba(10,28,68,.96))',borderRadius:'42px',boxShadow:'0 50px 90px -20px rgba(0,0,0,.65),inset 0 0 0 2px rgba(217,174,90,.55)'});
+  box(e,36,50,120,120,'ic',IC[ic]('#0a1e47'),{background:'linear-gradient(180deg,#f8e3a6,#d9a94c)',boxShadow:'0 14px 30px -8px rgba(217,174,90,.6)'});
+  box(e,186,52,700,60,'',`<div class="nw" style="font-weight:900;font-size:44px;letter-spacing:.03em;color:#fff">${title}</div>`);
+  box(e,186,118,700,40,'',`<div class="nw" style="font-weight:600;font-size:28px;color:#a9b8d8">${sub}</div>`);
+  box(e,186,170,220,5,'',null,{background:'linear-gradient(90deg,#f6dc98,transparent)',borderRadius:'3px'});
+  box(e,730,150,140,50,'',vis,{opacity:.95});return e};
+ const v1=`<svg viewBox="0 0 140 50" width="140" height="50"><path d="M14 25h42M84 12l-28 13 28 13M84 12h42M84 38h42" stroke="#d9ae5a" stroke-width="3" fill="none" opacity=".7"/><circle cx="14" cy="25" r="9" fill="#d9ae5a"/><circle cx="56" cy="25" r="7" fill="#fff" opacity=".85"/><circle cx="84" cy="12" r="7" fill="#fff" opacity=".85"/><circle cx="84" cy="38" r="7" fill="#fff" opacity=".85"/><circle cx="126" cy="12" r="7" fill="#d9ae5a"/><circle cx="126" cy="38" r="7" fill="#d9ae5a"/></svg>`;
+ const v2=`<svg viewBox="0 0 140 50" width="140" height="50">${[0,1,2].map(k=>`<rect x="6" y="${6+k*15}" width="11" height="11" rx="3" fill="${k<2?'#d9ae5a':'none'}" stroke="#d9ae5a" stroke-width="2"/><rect x="26" y="${9+k*15}" width="${100-k*22}" height="6" rx="3" fill="#fff" opacity=".6"/>`).join('')}</svg>`;
+ const v3=`<svg viewBox="0 0 140 50" width="140" height="50"><rect x="52" y="2" width="44" height="46" rx="6" fill="#fff" opacity=".9"/><rect x="60" y="11" width="28" height="4" rx="2" fill="#0a1e47" opacity=".5"/><rect x="60" y="20" width="28" height="4" rx="2" fill="#0a1e47" opacity=".3"/><rect x="60" y="29" width="18" height="4" rx="2" fill="#d9ae5a"/><rect x="104" y="14" width="26" height="34" rx="5" fill="#d9ae5a" opacity=".8"/><rect x="18" y="24" width="26" height="24" rx="5" fill="#d9ae5a" opacity=".5"/></svg>`;
+ const cs=[card(0,'BUSINESS OPERATIONS','Organized, documented workflows','layers',v1),card(1,'TASK COORDINATION','Clear owners and next steps','list',v2),card(2,'WEEKLY UPDATES','Clear progress reports','report',v3)];
+ const wm=box(root,0,0,W,0,'',null,{display:'flex',justifyContent:'center',alignItems:'center'});
+ const wmi=mk(wm,'nw',`PROVIRTUAL <span class="gt">PH</span>`,{fontWeight:900,lineHeight:1,letterSpacing:'.14em',display:'inline-block',textShadow:'0 14px 50px rgba(0,0,0,.6)'});
+ wm.style.fontSize='100px';{const r=wmi.getBoundingClientRect().width;wmi.style.fontSize=(100*880/r)+'px'}
+ const wl=box(root,150,0,780,6,'',null,{background:'linear-gradient(90deg,transparent,#d9ae5a,transparent)',borderRadius:'3px'});
+ const h1=bigLine(root,'LESS CHASING.','',900,800,{color:'#fff',textShadow:'0 14px 50px rgba(0,0,0,.6)'});
+ const h2=bigLine(root,'MORE CLARITY.','gt',900,944,{});
+ h2.firstElementChild.style.fontSize=h1.firstElementChild.style.fontSize;
+ const sub=box(root,0,1044,W,40,'',`<div style="text-align:center;font-weight:600;font-size:29px;letter-spacing:.04em;color:#a9b8d8">Human-led business operations support.</div>`);
+ const cta=box(root,70,1160,940,170,'',null,{background:'linear-gradient(180deg,#f9e6ae 0%,#e2b85e 55%,#c8963a 100%)',borderRadius:'90px',boxShadow:'0 40px 90px -10px rgba(217,174,90,.55),0 0 0 6px rgba(255,255,255,.12)',overflow:'hidden'});
+ box(cta,0,0,940,170,'',`<div style="height:100%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:56px;letter-spacing:.01em;color:#0a1e47;white-space:nowrap">DM “OPS” TO GET STARTED.</div>`);
+ const ctaS=box(cta,0,0,940,170,'',null,{background:'linear-gradient(100deg,transparent 38%,rgba(255,255,255,.4) 50%,transparent 62%)'});
+ return t=>{show(root,t>=19.6);if(t<19.6)return;
+  const inn=P(t,19.7,.4,eo2);
+  cs.forEach((c,i)=>{const t0=20.0+i*.3;const p=P(t,t0,.5,eo4);const rec=P(t,21.1,.4,eio);
+   const xc=tt=>(1-P(tt,t0,.5,eo4))*700;
+   T(c,{x:xc(t),y:rec*-20,s:lerp(.9,1,p)*(1-rec*.16),ry:(1-p)*-28,o:clamp(p*3)*(1-rec),b:rec*12,bx:vx(xc,t),bf:i===1?'B':'A'})});
+  const w1=P(t,21.4,.55,eo5),w2=P(t,21.95,.6,eio);
+  const wy=lerp(915,500,w2),ws=lerp(1.0,.86,w2);
+  wm.style.top=wy+'px';T(wm,{s:lerp(1.35,1,w1)*ws,o:clamp(w1*3),b:(1-w1)*18});
+  wl.style.top=(wy+70)+'px';T(wl,{sx:P(t,21.95,.7,eo4),o:P(t,21.95,.3,eo2)});
+  const hh1=P(t,22.35,.5,eo5),hh2=P(t,22.62,.5,eo5);
+  T(h1,{y:(1-hh1)*80,s:lerp(1.12,1,hh1),o:clamp(hh1*3),b:(1-hh1)*12});T(h2,{y:(1-hh2)*80,s:lerp(1.12,1,hh2),o:clamp(hh2*3),b:(1-hh2)*12});
+  T(sub,{o:P(t,23.0,.5,eo2),y:(1-P(t,23.0,.5,eo3))*20});
+  const cp=P(t,23.1,.55,eob);T(cta,{y:(1-cp)*90,s:lerp(.88,1,cp),o:clamp(cp*3)});
+  if(t>23.7){const pulse=1+.012*Math.sin((t-23.7)*5);cta.style.transform+=` scale(${pulse})`}
+  ctaS.style.transform=`translateX(${lerp(-100,100,lin(t,23.7,.9))}%)`;
+  T(root,{s:lerp(1.12,1,P(t,19.75,.6,eo4))*(1+.03*lin(t,21.9,3.1)),o:inn})}})();
+
+function render(t){updBG(t);S1(t);S2(t);S3(t);S4(t);S5(t);
+ [vig,stripRoot,...sweeps.map(s=>s.e),flash,flashG,grain].forEach(e=>stage.appendChild(e));strip(t);updFX(t)}
+window.render=render;render(0);
+</script></body></html>
