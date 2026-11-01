@@ -191,13 +191,13 @@ mel = [(19.0, 79, .5), (19.5, 76, .5), (20.0, 74, .5), (20.5, 76, .5), (21.0, 79
 for t0, n, d in mel: M.add(t0, bell(mid(n), 1.0), .38, .1)
 M.add(21.0, riser(.95), .45)
 # 22: brand hit
-M.add(22.0, impact(1.2, 3.0), 1.0)
+M.add(22.0, impact(1.0, 3.0), .75)
 fc = C(48, 55, 60, 64, 67, 74)
-M.add(22.0, pad(fc, 3.0, att=.05, rel=.5, cut=3600, vol=1.0), .75)
-M.add(22.0, pad([x * 2 for x in C(60, 64, 67)], 3.0, att=.05, rel=.5, cut=4500, vol=.6), .35)
-for k, n in enumerate([72, 76, 79, 84, 88, 91]): M.add(22.05 + k * .13, bell(mid(n), 1.6), .3, -.5 + k * .2)
-M.add(22.0, sub(mid(36), 2.5, 1.0), .8); M.add(23.0, kick(.9), .55); M.add(23.5, kick(.9), .55); M.add(24.0, kick(.8), .5)
-M.add(23.0, bell(mid(96), 1.5), .2)
+M.add(22.0, pad(fc, 3.0, att=.05, rel=.5, cut=3000, vol=1.0), .38)
+M.add(22.0, pad([x * 2 for x in C(60, 64, 67)], 3.0, att=.05, rel=.5, cut=3800, vol=.6), .16)
+for k, n in enumerate([72, 76, 79, 84, 88, 91]): M.add(22.05 + k * .13, bell(mid(n), 1.6), .16, -.5 + k * .2)
+M.add(22.0, sub(mid(36), 2.5, 1.0), .55); M.add(23.0, kick(.9), .38); M.add(23.5, kick(.9), .38); M.add(24.0, kick(.8), .34)
+M.add(23.0, bell(mid(96), 1.5), .1)
 
 # ================= SFX =================
 # Scene 1
@@ -269,7 +269,7 @@ for t0, key in lines:
     # gentle compression
     e = np.convolve(np.abs(x), np.ones(480) / 480, 'same')
     g = 1 / np.maximum(1, (e / .18) ** .45); x = x * g
-    x = x / (np.abs(x).max() + 1e-9) * .85
+    x = x / (np.abs(x).max() + 1e-9) * .85 * {'l6': 1.22, 'l4': 1.08}.get(key, 1.0)
     i = int(t0 * SR); n = min(len(x), N - i)
     fade = np.minimum(1, np.arange(n) / 200.); x = x[:n] * fade
     voice[i:i+n] += x
@@ -280,19 +280,42 @@ vl, vr = reverb(vb, .10)
 vL = vl; vR = vr
 
 # ================= MIX =================
-mL, mR = reverb(M, .30); sL, sR = reverb(S, .22)
-# ducking from voice envelope
-env = np.abs(voice); env = sg.sosfilt(sg.butter(1, 6, 'low', fs=SR, output='sos'), env)
-env = np.clip(env / (env.max() + 1e-9) * 3.0, 0, 1)
-duck_m = 1 - .50 * env; duck_s = 1 - .25 * env
-L = mL * duck_m * .62 + sL * duck_s * .75 + vL * 1.0
-R = mR * duck_m * .62 + sR * duck_s * .75 + vR * 1.0
-# soft limiter + final fade
+from scipy.ndimage import maximum_filter1d
+mL, mR = reverb(M, .26); sL, sR = reverb(S, .18)
+# voice presence: parallel boost of 2-4.5 kHz so words cut through
+pres = bp(voice, 2000, 4500, 1) * .55
+voice_p = voice + pres
+vb = Bus(); vb.L = voice_p.copy(); vb.R = voice_p.copy()
+vL, vR = reverb(vb, .08)
+# smooth, held ducking envelope (no pumping between words)
+env = maximum_filter1d(np.abs(voice), int(.28 * SR))
+env = sg.sosfilt(sg.butter(2, 9, 'low', fs=SR, output='sos'), env)
+env = np.clip(env / (np.percentile(env[env > 0], 60) + 1e-9), 0, 1)
+def split(x): lo = lp(x, 160, 2); return lo, x - lo
+def duck_bus(xl, xr, d_lo, d_hi):
+    out = []
+    for x in (xl, xr):
+        lo, hi = split(x); out.append(lo * (1 - d_lo * env) + hi * (1 - d_hi * env))
+    return out
+mL, mR = duck_bus(mL, mR, .45, .78)
+sL, sR = duck_bus(sL, sR, .55, .82)
+MG, SG, VG = .58, .50, 1.55
+L = mL * MG + sL * SG + vL * VG
+R = mR * MG + sR * SG + vR * VG
 mix = np.stack([L, R], 1)
-mix = np.tanh(mix * .95) / np.tanh(.95)
+# transparent peak limiter
+mix = np.tanh(mix * .8) / np.tanh(.8)
 fo = np.ones(N); k = int(.45 * SR); fo[-k:] = np.linspace(1, 0, k) ** 1.5
 mix *= fo[:, None]
 mix /= max(1e-9, np.abs(mix).max()) / .89
 sf.write(OUT + "mix.wav", mix.astype(np.float32), SR, subtype='PCM_24')
-sf.write(OUT + "voice_only.wav", np.stack([voice, voice], 1).astype(np.float32), SR)
-print("peak", np.abs(mix).max(), "rms", np.sqrt((mix ** 2).mean()))
+# --- measurement: voice vs everything-else, speech band, inside spoken windows ---
+bedL = (mL * MG + sL * SG); vc = vL * VG
+bed_b = bp(bedL, 200, 4000, 2); vc_b = bp(vc, 200, 4000, 2)
+print("voice-vs-bed (dB) per line, 200Hz-4kHz:")
+for t0, key in lines:
+    d = len(sf.read(VO_DIR + f'af_heart_{key}.wav')[0]) / 24000
+    a, b = int(t0 * SR), int((t0 + d) * SR)
+    rv = np.sqrt((vc_b[a:b] ** 2).mean()); rb = np.sqrt((bed_b[a:b] ** 2).mean())
+    print(f"  {key} {t0:5.2f}-{t0+d:5.2f}s  voice {20*np.log10(rv+1e-9):6.1f}  bed {20*np.log10(rb+1e-9):6.1f}  margin {20*np.log10((rv+1e-9)/(rb+1e-9)):5.1f} dB")
+print("peak", np.abs(mix).max())
