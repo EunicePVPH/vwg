@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>ProVirtual PH — Reel 08</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#04102a}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:#06142f;font-family:'Inter',sans-serif;color:#fff;-webkit-font-smoothing:antialiased}
+#bg{position:absolute;inset:0;background:
+  radial-gradient(900px 700px at 90% 8%,rgba(217,169,63,.16),transparent 60%),
+  radial-gradient(1000px 900px at 5% 95%,rgba(61,111,209,.30),transparent 60%),
+  linear-gradient(180deg,#040e26 0%,#0a1f48 55%,#07173a 100%)}
+.g{position:absolute;left:0;top:0;width:1080px;height:1920px;perspective:1800px;perspective-origin:540px 860px;display:none}
+.rig{position:absolute;left:0;top:0;width:1080px;height:1920px;transform-style:preserve-3d;transform-origin:540px 960px}
+.card{position:absolute;background:#f4f7fc;border-radius:36px;box-shadow:0 50px 100px rgba(0,0,0,.5);overflow:hidden}
+.win{position:absolute;background:#f7f9fd;border-radius:30px;overflow:hidden;box-shadow:0 40px 90px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.35) inset}
+.abs{position:absolute}
+/* kinetic text */
+.tl{position:absolute;left:0;width:1080px;text-align:center;line-height:.92;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;font-family:'Inter Display','Inter',sans-serif;display:none}
+.tl.left{text-align:left;left:60px;width:960px}
+.tl .line{display:block;white-space:nowrap}
+.tl .line.mask{overflow:hidden;padding:.05em 0 .09em}
+.tl .ch{display:inline-block}
+.gold{background:linear-gradient(180deg,#fdeeb4 0%,#e8bd55 45%,#b98529 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+/* email rows */
+.mrow{position:absolute;left:0;width:800px;height:104px;background:#fff;border-bottom:1px solid #e3e8f1}
+.mrow .av{position:absolute;left:24px;top:24px;width:56px;height:56px;border-radius:16px;color:#fff;font:800 26px Inter;display:flex;align-items:center;justify-content:center}
+.mrow .rt{position:absolute;left:100px;top:14px;right:24px}
+.mrow .rs{display:flex;justify-content:space-between;font:800 24px Inter;color:#13224a}
+.mrow .rs span{font:600 19px Inter;color:#7c8aa3}
+.mrow .rj{font:700 22px Inter;color:#26334f;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .rp{font:500 19px Inter;color:#8793aa;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mrow .ud{position:absolute;left:8px;top:46px;width:12px;height:12px;border-radius:6px;background:#3d6fd1}
+/* task card */
+.tcard{position:absolute;left:0;top:0;background:#fff;border-radius:22px;box-shadow:0 22px 50px rgba(0,0,0,.42);overflow:hidden;display:none;padding-left:34px;flex-direction:column;justify-content:center}
+.tcard .bar{position:absolute;left:0;top:0;bottom:0;width:12px}
+.tcard .tag{font:800 17px Inter;letter-spacing:.14em;overflow:hidden;white-space:nowrap}
+.tcard .ttl{font:800 33px Inter;color:#13224a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:44px;letter-spacing:-.01em}
+.tcard .meta{font:700 21px Inter;color:#8290a8;white-space:nowrap;margin-top:3px}
+.tcard .stat{position:absolute;right:14px;top:14px;width:28px;height:28px;border-radius:14px;display:none;font:900 17px/28px Inter;text-align:center;color:#fff}
+.lane{position:absolute;left:40px;width:1000px;height:108px;border-radius:28px;background:rgba(255,255,255,.075);border:1.5px solid rgba(255,255,255,.14)}
+.lane .lb{position:absolute;left:22px;top:0;height:108px;display:flex;align-items:center;gap:12px;font:800 19px Inter;letter-spacing:.07em;color:#fff}
+.lane .dot{width:14px;height:14px;border-radius:7px}
+#wm{position:absolute;left:0;width:1080px;top:1492px;text-align:center;font:800 26px 'Inter Display',Inter;letter-spacing:.42em;color:#fff;opacity:0;display:none}
+#wm b{color:#e0b24f;font-weight:800}
+#g6{position:absolute;left:0;top:0;width:1080px;height:1920px;display:none;overflow:hidden;background:#06142f}
+.pill{display:inline-block;padding:0 14px;height:34px;line-height:34px;border-radius:17px;font:800 15px Inter;letter-spacing:.08em}
+</style></head>
+<body>
+<div id="stage">
+  <div id="bg"></div>
+  <div class="g" id="g1"><div class="rig" id="r1"></div></div>
+  <div class="g" id="gA"><div class="rig" id="rA"></div></div>
+  <div class="g" id="g4"><div class="rig" id="r4"></div></div>
+  <div class="g" id="g5"><div class="rig" id="r5"></div></div>
+  <div id="scrim1" class="abs" style="inset:0;display:none;background:linear-gradient(180deg,rgba(4,14,38,.85) 0%,rgba(4,14,38,.5) 45%,rgba(4,14,38,.85) 100%)"></div>
+  <div id="scrimTop" class="abs" style="left:0;top:0;width:1080px;height:1050px;display:none;background:linear-gradient(180deg,rgba(4,14,38,.97) 0%,rgba(4,14,38,.9) 28%,rgba(4,14,38,.55) 55%,rgba(4,14,38,0) 100%)"></div>
+  <div id="txt" class="abs" style="inset:0"></div>
+  <div id="wm">PROVIRTUAL <b>PH</b></div>
+  <div id="g6"></div>
+  <div id="vig" class="abs" style="inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,0) 45%,rgba(120,20,20,.55) 100%);opacity:0"></div>
+  <div id="scan" class="abs" style="left:0;top:0;width:1080px;height:8px;display:none;background:linear-gradient(90deg,transparent,#fff3c4 20%,#fff3c4 80%,transparent);box-shadow:0 0 70px 26px rgba(232,189,85,.65)"></div>
+  <div id="wipe" class="abs" style="left:0;top:-300px;width:400px;height:2520px;display:none;background:linear-gradient(90deg,rgba(232,189,85,0),#f6d98a 18%,#e3b04a 60%,#b98529 100%);box-shadow:0 0 90px 30px rgba(232,189,85,.5);transform-origin:50% 50%"></div>
+  <div id="flash" class="abs" style="inset:0;background:#fff4d2;opacity:0"></div>
+  <canvas id="noise" class="abs" width="1080" height="1920" style="left:0;top:0;opacity:.05"></canvas>
+</div>
+<script src="reel.js"></script>
+<script src="reel2.js"></script>
+</body></html>
