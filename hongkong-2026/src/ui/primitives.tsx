@@ -52,19 +52,30 @@ export function PageHeader({ title, back, right, sub }: { title: string; back?: 
   );
 }
 
-// Android Back closes the top sheet. Programmatic closes call history.back(); the global listener below
-// marks that resulting event as "ours" so a newly opened sheet never mistakes it for a real Back press.
-let ignorePops = 0; let skipPop = false;
-if (typeof window !== 'undefined') window.addEventListener('popstate', () => { if (ignorePops > 0) { ignorePops--; skipPop = true; } else skipPop = false; });
+// Android Back closes the top dialog. All open dialogs share ONE history entry, so opening one dialog from
+// another (menu → dialog) can never confuse the Back button or leave the page.
+interface Overlay { close: () => void }
+const overlays: Overlay[] = []; let entryActive = false; let suppress = 0;
+function ensureEntry() { if (!entryActive) { history.pushState({ sheet: 1 }, ''); entryActive = true; } }
+if (typeof window !== 'undefined') window.addEventListener('popstate', () => {
+  if (suppress > 0) { suppress--; return; }
+  if (!entryActive) return;
+  entryActive = false;
+  const top = overlays[overlays.length - 1];
+  if (top) { top.close(); if (overlays.length > 1) ensureEntry(); }
+});
+function registerOverlay(o: Overlay) { overlays.push(o); ensureEntry(); }
+function unregisterOverlay(o: Overlay) {
+  const k = overlays.indexOf(o); if (k >= 0) overlays.splice(k, 1);
+  setTimeout(() => { if (overlays.length === 0 && entryActive) { entryActive = false; suppress++; history.back(); } }, 0);
+}
 export function useBackClose(open: boolean, onClose: () => void) {
   const closeRef = useRef(onClose); closeRef.current = onClose;
   useEffect(() => {
     if (!open) return;
-    history.pushState({ sheet: 1 }, '');
-    let popped = false;
-    const onPop = () => { if (skipPop) return; popped = true; closeRef.current(); };
-    window.addEventListener('popstate', onPop);
-    return () => { window.removeEventListener('popstate', onPop); if (!popped && history.state?.sheet) { ignorePops++; history.back(); } };
+    const o: Overlay = { close: () => closeRef.current() };
+    registerOverlay(o);
+    return () => unregisterOverlay(o);
   }, [open]);
 }
 

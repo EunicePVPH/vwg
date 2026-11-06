@@ -1,11 +1,13 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Copy, Eye, MoreVertical, Plus, Search, SlidersHorizontal, Trash2, Undo2, X } from 'lucide-react';
+import { Camera, ChevronDown, Copy, Eye, MoreVertical, Plus, Search, SlidersHorizontal, Trash2, Undo2, X } from 'lucide-react';
 import { DAYS, EXPENSES } from '../data/seed';
 import { BAGS, DAYBAG, DEFAULT_CATS, FINALS, INV } from '../data/pack';
 import { DEFAULT_UI, PEOPLE, SHOP_STATUSES, type Bag, type DayItem, type FinalItem, type FinalList, type Inv, type PackUI, type Person, type Place, type ShopStatus } from '../lib/packTypes';
 import { countsFor, isNN, itemDone, packedQty, placeDone, shopReady, tally, type Tally } from '../lib/pack';
 import { useAppState, useChecks, useCollection } from '../state/store';
+import { useVault } from '../state/vault';
+import { readOriginal } from '../lib/vault';
 import { dateLabel } from '../lib/time';
 import { fmtNative } from '../lib/money';
 import { Btn, Sheet, Toggle, cx } from '../ui/primitives';
@@ -23,7 +25,7 @@ const SHOP_DOT: Record<string, string> = { 'Not Reviewed': 'bg-navy/20', 'Alread
 const dayPill = (d: number) => `Day ${d} (${dateLabel(DAYS[d - 1].date, { day: 'numeric', month: 'short' })})`;
 
 interface Menu { kind: 'inv' | 'day' | 'final'; id: string; ctx: 'shop' | 'clothes' | 'bags' | 'other'; place?: number; dayCtx?: number }
-type Dlg = null | { type: 'edit' | 'qty' | 'person' | 'days' | 'status' | 'expense' | 'cats' | 'bags' | 'weights' | 'view' | 'add' | 'editLite'; id?: string };
+type Dlg = null | { type: 'photo' | 'edit' | 'qty' | 'person' | 'days' | 'status' | 'expense' | 'cats' | 'bags' | 'weights' | 'view' | 'add' | 'editLite'; id?: string };
 
 
 type Coll<T extends { id: string }> = ReturnType<typeof useCollection<T>>;
@@ -32,6 +34,7 @@ interface PackApi {
   bags: Bag[]; bagName: (id: string) => string; ui: PackUI; setUI: (p: Partial<PackUI>) => void;
   say: (m: string, undo?: () => void) => void; setToast: (t: null) => void; dlg: Dlg; setDlg: (d: Dlg) => void; setMenu: (m: Menu | null) => void;
   getInv: (id?: string) => Inv | undefined; upd: (id: string, p: Partial<Inv>) => void; changeShop: (i: Inv, s: ShopStatus) => void; expCat: (i: Inv) => string;
+  vault: ReturnType<typeof useVault>;
   visibleCats: string[]; cats: string[]; dayItems: DayItem[]; finalItems: FinalItem[]; addDefaultsTitle: string;
 }
 const PackCtx = createContext<PackApi | null>(null);
@@ -43,6 +46,7 @@ export function Packing({ param }: { param: string[] }) {
   const dayC = useCollection<DayItem>('daybag', DAYBAG);
   const finC = useCollection<FinalItem>('finals', FINALS);
   const exps = useCollection<Expense>('expenses', EXPENSES);
+  const vault = useVault();
   const { checks, toggle } = useChecks();
   const { state, setState } = useAppState(); const r = state.settings.rates;
   const ui: PackUI = { ...DEFAULT_UI, ...state.packUI };
@@ -54,16 +58,33 @@ export function Packing({ param }: { param: string[] }) {
   const toastT = useRef<number | undefined>(undefined);
   const say = (msg: string, undo?: () => void) => { setToast({ msg, undo }); window.clearTimeout(toastT.current); toastT.current = window.setTimeout(() => setToast(null), 7000); };
 
+  // remember scroll position per list (so coming back lands where you left off)
+  const scrollKey = ['pk', ui.tab, ui.tab === 'clothes' ? ui.person : ui.tab === 'bags' ? ui.bag : ui.tab === 'days' ? ui.day : ui.tab === 'final' ? ui.fList + ui.fDay : ui.shopFilter].join('|');
+  const keyRef = useRef(scrollKey); keyRef.current = scrollKey;
+  useEffect(() => {
+    const y = readScroll(scrollKey); const go = () => window.scrollTo(0, y);
+    go(); const t1 = setTimeout(go, 120), t2 = setTimeout(go, 450);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [scrollKey]);
+  useEffect(() => {
+    let t: number | undefined;
+    const on = () => { window.clearTimeout(t); t = window.setTimeout(() => { if (location.hash.startsWith('#/more/packing')) writeScroll(keyRef.current, window.scrollY); }, 120); };
+    window.addEventListener('scroll', on, { passive: true });
+    return () => { window.removeEventListener('scroll', on); window.clearTimeout(t); };
+  }, []);
+
   // deep link: #/more/packing/day/2
-  useEffect(() => { if (param[0] === 'day' && Number(param[1]) >= 1 && Number(param[1]) <= 5) setUI({ tab: 'days', day: Number(param[1]) }); }, [param.join('/')]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { if (param[0] === 'day' && Number(param[1]) >= 1 && Number(param[1]) <= 5) { writeScroll('pk|days|' + Number(param[1]), 0); setUI({ tab: 'days', day: Number(param[1]) }); } }, [param.join('/')]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const bags = [...bagsC.items].sort((a, b) => a.order - b.order);
   const bagName = (id: string) => bags.find((b) => b.id === id)?.name ?? 'Unassigned';
   const cats = useMemo(() => {
     const seen = new Set<string>([...DEFAULT_CATS, ...(ui.extraCats ?? [])]);
     inv.items.filter((i) => i.group === 'general' || i.shopListed).forEach((i) => seen.add(i.cat));
-    return [...seen];
-  }, [inv.items, ui.extraCats]); // eslint-disable-line react-hooks/exhaustive-deps
+    const base = [...seen]; const order = ui.catOrder ?? [];
+    const pos = (c: string) => { const k = order.indexOf(c); return k < 0 ? 1000 + base.indexOf(c) : k; };
+    return base.sort((a, b) => pos(a) - pos(b));
+  }, [inv.items, ui.extraCats, ui.catOrder]); // eslint-disable-line react-hooks/exhaustive-deps
   const visibleCats = cats.filter((c) => !(ui.hiddenCats ?? []).includes(c));
 
   // ------------ item operations ------------
@@ -154,7 +175,7 @@ export function Packing({ param }: { param: string[] }) {
     const show = (i: Inv) => !isNN(i) && (f === 'packed' ? done(i) : f === 'unpacked' ? !done(i) : true) && visible(done(i), false);
     const act = rows.filter(show); const nn = rows.filter((i) => isNN(i) && !ui.hideNN);
     const row = (i: Inv, dayCtx?: number, muted = false) => (
-      <Rowx key={i.id + (dayCtx ?? '')} muted={muted} checked={done(i)} onCheck={() => toggleItem(i)} title={i.name} onMenu={() => setMenu({ kind: 'inv', id: i.id, ctx: 'clothes', dayCtx })}
+      <Rowx key={i.id + (dayCtx ?? '')} muted={muted} checked={done(i)} onCheck={() => toggleItem(i)} title={i.name} thumb={vault.outfitDocs.some((d) => d.outfitId === i.id) ? <OutfitThumb docId={vault.outfitDocs.find((d) => d.outfitId === i.id)!.id} onOpen={() => setDlg({ type: 'photo', id: i.id })} /> : undefined} onMenu={() => setMenu({ kind: 'inv', id: i.id, ctx: 'clothes', dayCtx })}
         sub={<>{i.worn ? 'Worn during travel' : i.places.length ? `${packedQty(i)}/${i.qty} packed · ${i.places.map((p) => `${p.qty}× ${bagName(p.bag)}`).join(', ')}` : `×${i.qty} · no bag yet`}{i.required ? '' : ' · optional'}{i.notes ? ` · ${i.notes}` : ''}</>} />
     );
     const dayGroups: [string, Inv[]][] = [1, 2, 3, 4, 5].map((d) => [dayPill(d), act.filter((i) => i.days?.includes(d))] as [string, Inv[]]).filter(([, l]) => l.length);
@@ -239,7 +260,7 @@ export function Packing({ param }: { param: string[] }) {
   const menuFin = menu?.kind === 'final' ? finC.items.find((f) => f.id === menu.id) : undefined;
   const addDefaultsTitle = ui.tab === 'shop' ? 'Add item' : ui.tab === 'clothes' ? `Add to ${ui.person}’s clothes` : ui.tab === 'bags' ? `Add to ${bagName(ui.bag)}` : ui.tab === 'days' ? `Add to Day ${ui.day}` : 'Add check';
 
-  const P: PackApi = { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, setMenu, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle };
+  const P: PackApi = { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, setMenu, getInv, upd, changeShop, expCat, vault, visibleCats, cats, dayItems, finalItems, addDefaultsTitle };
 
   return (
     <PackCtx.Provider value={P}>
@@ -289,6 +310,7 @@ export function Packing({ param }: { param: string[] }) {
           <div className="pb-2">
             <A icon="✏️" label="Edit" onClick={() => setDlg({ type: 'edit', id: i.id })} />
             <A icon="🔢" label="Change Qty" onClick={() => setDlg({ type: 'qty', id: i.id })} />
+            {i.group === 'clothes' && <A icon={<Camera size={18} />} label={vault.outfitDocs.some((d) => d.outfitId === i.id) ? 'Outfit photo' : 'Add outfit photo'} onClick={() => setDlg({ type: 'photo', id: i.id })} />}
             <A icon="🙋" label="Assign Person" onClick={() => setDlg({ type: 'person', id: i.id })} />
             <A icon="🧳" label="Move Bag" onClick={() => setDlg({ type: 'qty', id: i.id })} />
             <A icon="📅" label="Change Day" onClick={() => setDlg({ type: 'days', id: i.id })} />
@@ -356,9 +378,10 @@ function fromValues(v: Record<string, string | number | null | undefined>, i: In
 }
 void go;
 
-const Rowx = ({ checked, onCheck, title, sub, right, muted, onMenu, checkLabel, lead }: { checked?: boolean; onCheck?: () => void; title: string; sub?: ReactNode; right?: ReactNode; muted?: boolean; onMenu: () => void; checkLabel?: string; lead?: ReactNode }) => (
+const Rowx = ({ checked, onCheck, title, sub, right, muted, onMenu, checkLabel, lead, thumb }: { checked?: boolean; onCheck?: () => void; title: string; sub?: ReactNode; right?: ReactNode; muted?: boolean; onMenu: () => void; checkLabel?: string; lead?: ReactNode; thumb?: ReactNode }) => (
   <div className={cx('flex items-center gap-2 px-3 py-1.5', muted && 'opacity-60')}>
     {lead ?? <button aria-label={checkLabel ?? title} aria-pressed={!!checked} onClick={onCheck} className="tap grid place-items-center"><span className={cx('grid h-7 w-7 place-items-center rounded-lg border-2 transition-colors', checked ? 'border-turq bg-turq text-white' : 'border-navy/30 bg-white')}>{checked && <svg viewBox="0 0 16 16" className="h-4 w-4"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" /></svg>}</span></button>}
+    {thumb}
     <div className="min-w-0 flex-1 py-1"><div className={cx('text-[15px] font-bold leading-snug text-navy', checked && 'text-muted line-through')}>{title}</div>{sub && <div className="text-[12px] leading-snug text-muted">{sub}</div>}</div>
     {right}
     <button aria-label={`Options for ${title}`} onClick={onMenu} className="tap grid place-items-center text-muted"><MoreVertical size={20} /></button>
@@ -391,7 +414,7 @@ const A = ({ icon, label, onClick, danger }: { icon: ReactNode; label: string; o
 };
 
 function Dialogs() {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle, vault } = usePack();
   const it = getInv(dlg?.id);
   const close = () => setDlg(null);
   return (
@@ -414,12 +437,13 @@ function Dialogs() {
         <p className="flex gap-2 text-[12px] text-muted"><Eye size={14} className="mt-0.5 shrink-0" />Filters change what you see, never the totals.</p></div></Sheet>
       <BagsDialog open={dlg?.type === 'bags' || ui.bag === '__manage'} onClose={() => { close(); if (ui.bag === '__manage') setUI({ bag: bags[0]?.id ?? 'main' }); }} />
       <WeightsDialog open={dlg?.type === 'weights'} onClose={close} />
+      <PhotoDialog open={dlg?.type === 'photo' && !!it} onClose={close} item={it} />
     </>
   );
 }
 
 function AddDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle, vault } = usePack();
   const isInv = ui.tab === 'shop' || ui.tab === 'clothes' || ui.tab === 'bags';
   const fields: Field[] = isInv
     ? [{ key: 'name', label: 'Item', type: 'text' }, { key: 'qty', label: 'Quantity', type: 'number' }, ...(ui.tab === 'shop' ? [{ key: 'cat', label: 'Category', type: 'select' as const, options: visibleCats.map((c) => ({ value: c, label: c })) }, { key: 'person', label: 'For', type: 'select' as const, options: PEOPLE.map((p) => ({ value: p, label: p })) }] : [])]
@@ -441,7 +465,7 @@ function AddDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
 }
 
 function QtyDialog({ open, onClose, item }: { open: boolean; onClose: () => void; item?: Inv }) {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle, vault } = usePack();
   const [rows, setRows] = useState<Place[]>([]); const [total, setTotal] = useState(1);
   useEffect(() => { if (open && item) { setRows(item.places.map((p) => ({ ...p }))); setTotal(item.qty); } }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
   const sum = rows.reduce((n, p) => n + (Number(p.qty) || 0), 0);
@@ -467,7 +491,7 @@ function QtyDialog({ open, onClose, item }: { open: boolean; onClose: () => void
 }
 
 function DaysDialog({ open, onClose, item }: { open: boolean; onClose: () => void; item?: Inv }) {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle, vault } = usePack();
   const [d, setD] = useState<number[]>([]);
   useEffect(() => { if (open && item) setD(item.days ?? []); }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
@@ -482,7 +506,7 @@ function DaysDialog({ open, onClose, item }: { open: boolean; onClose: () => voi
 }
 
 function ExpenseDialog({ open, onClose, item }: { open: boolean; onClose: () => void; item?: Inv }) {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle, vault } = usePack();
   const [amt, setAmt] = useState(''); const [cur, setCur] = useState<'PHP' | 'HKD'>('PHP'); const [link, setLink] = useState('');
   useEffect(() => { if (open && item) { setAmt(item.actualCost ? String(item.actualCost) : ''); setCur(item.currency); setLink(''); } }, [open]); // eslint-disable-line react-hooks/exhaustive-deps
   const spendable = exps.items.filter((e) => e.kind === 'spend');
@@ -500,14 +524,16 @@ function ExpenseDialog({ open, onClose, item }: { open: boolean; onClose: () => 
 }
 
 function CatsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, ui, setUI, cats, upd } = usePack();
+  const moveCat = (c: string, dir: -1 | 1) => { const order = [...cats]; const k = order.indexOf(c); const j = k + dir; if (j < 0 || j >= order.length) return; [order[k], order[j]] = [order[j], order[k]]; setUI({ catOrder: order }); };
   return (
     <Sheet open={open} onClose={onClose} title="Categories">
       <div className="space-y-2 pb-2 pt-1">
-        {cats.map((c) => { const n = inv.items.filter((i) => i.cat === c).length; const hidden = (ui.hiddenCats ?? []).includes(c); return (
+        {cats.map((c, k) => { const n = inv.items.filter((i) => i.cat === c).length; const hidden = (ui.hiddenCats ?? []).includes(c); return (
           <div key={c} className={cx('flex items-center gap-2 rounded-2xl bg-paper px-3 py-2', hidden && 'opacity-60')}>
             <span className="min-w-0 flex-1 text-[14px] font-bold text-navy">{c} <span className="font-normal text-muted">({n})</span></span>
-            <button className="tap px-2 text-[13px] font-bold text-sky" onClick={() => { const nn = prompt('Rename category', c)?.trim(); if (nn && nn !== c) { inv.items.filter((i) => i.cat === c).forEach((i) => upd(i.id, { cat: nn })); setUI({ extraCats: [...(ui.extraCats ?? []).filter((x) => x !== c), nn], hiddenCats: (ui.hiddenCats ?? []).map((h) => (h === c ? nn : h)), cat: ui.cat === c ? 'all' : ui.cat }); } }}>Rename</button>
+            <button aria-label={`Move ${c} up`} disabled={k === 0} onClick={() => moveCat(c, -1)} className="tap px-1 text-muted disabled:opacity-30">↑</button><button aria-label={`Move ${c} down`} disabled={k === cats.length - 1} onClick={() => moveCat(c, 1)} className="tap px-1 text-muted disabled:opacity-30">↓</button>
+            <button className="tap px-2 text-[13px] font-bold text-sky" onClick={() => { const nn = prompt('Rename category', c)?.trim(); if (nn && nn !== c) { inv.items.filter((i) => i.cat === c).forEach((i) => upd(i.id, { cat: nn })); setUI({ catOrder: (ui.catOrder ?? []).map((x) => (x === c ? nn : x)), extraCats: [...(ui.extraCats ?? []).filter((x) => x !== c), nn], hiddenCats: (ui.hiddenCats ?? []).map((h) => (h === c ? nn : h)), cat: ui.cat === c ? 'all' : ui.cat }); } }}>Rename</button>
             <button className="tap px-2 text-[13px] font-bold text-sky" onClick={() => setUI({ hiddenCats: hidden ? (ui.hiddenCats ?? []).filter((h) => h !== c) : [...(ui.hiddenCats ?? []), c] })}>{hidden ? 'Show' : 'Hide'}</button>
             {n === 0 && <button aria-label={`Delete ${c}`} className="tap text-coral" onClick={() => setUI({ extraCats: (ui.extraCats ?? []).filter((x) => x !== c), hiddenCats: [...(ui.hiddenCats ?? []), c] })}><Trash2 size={16} /></button>}
           </div>); })}
@@ -519,7 +545,7 @@ function CatsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
 }
 
 function BagsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle, vault } = usePack();
   const [removing, setRemoving] = useState<string | null>(null); const [target, setTarget] = useState('');
   const count = (id: string) => inv.items.reduce((n, i) => n + i.places.filter((p) => p.bag === id).length, 0);
   const move = (b: Bag, dir: -1 | 1) => { const s = [...bags]; const k = s.findIndex((x) => x.id === b.id); const o = s[k + dir]; if (!o) return; bagsC.update(b.id, { order: o.order }); bagsC.update(o.id, { order: b.order }); };
@@ -546,10 +572,54 @@ function BagsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
 }
 
 function WeightsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle } = usePack();
+  const { inv, bagsC, dayC, finC, exps, bags, bagName, ui, setUI, say, setToast, dlg, setDlg, getInv, upd, changeShop, expCat, visibleCats, cats, dayItems, finalItems, addDefaultsTitle, vault } = usePack();
   const b = bags.find((x) => x.id === ui.bag);
   return (
     <EditSheet open={open} onClose={onClose} title={b ? `${b.name} — weight` : 'Weight'} fields={[{ key: 'maxWeight', label: 'Weight limit (kg) — from your airline rules', type: 'number' }, { key: 'actualWeight', label: 'Weighed at home (kg)', type: 'number', hint: 'Leave empty until you weigh it. Nothing is guessed.' }]}
       values={b ? { maxWeight: b.maxWeight, actualWeight: b.actualWeight } : {}} onSave={(v) => b && bagsC.update(b.id, { maxWeight: v.maxWeight as number | null, actualWeight: v.actualWeight as number | null })} />
+  );
+}
+
+// ---------- remembered scroll position ----------
+const SCROLL_KEY = 'hk26.packscroll';
+function readScroll(key: string): number { try { return Number(JSON.parse(localStorage.getItem(SCROLL_KEY) || '{}')[key]) || 0; } catch { return 0; } }
+function writeScroll(key: string, y: number) { try { const m = JSON.parse(localStorage.getItem(SCROLL_KEY) || '{}'); m[key] = Math.round(y); localStorage.setItem(SCROLL_KEY, JSON.stringify(m)); } catch { /* ignore */ } }
+
+// ---------- outfit photos (kept encrypted in your private document vault, included in backups) ----------
+function useOutfitUrl(docId?: string) {
+  const { vault } = usePack();
+  const [url, setUrl] = useState<string | null>(null);
+  useEffect(() => {
+    if (!docId) { setUrl(null); return; }
+    let live = true; let u: string | null = null;
+    readOriginal(vault.key, docId).then(({ bytes, meta }) => { if (live) { u = URL.createObjectURL(new Blob([bytes], { type: meta.mime })); setUrl(u); } }).catch(() => live && setUrl(null));
+    return () => { live = false; if (u) URL.revokeObjectURL(u); };
+  }, [docId, vault.key]);
+  return url;
+}
+function OutfitThumb({ docId, onOpen }: { docId: string; onOpen: () => void }) {
+  const url = useOutfitUrl(docId);
+  return <button aria-label="View outfit photo" onClick={onOpen} className="h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-sky-soft">{url && <img src={url} alt="" className="h-full w-full object-cover" />}</button>;
+}
+function PhotoDialog({ open, onClose, item }: { open: boolean; onClose: () => void; item?: Inv }) {
+  const { vault, say } = usePack();
+  const doc = vault.outfitDocs.find((d) => d.outfitId === item?.id);
+  const url = useOutfitUrl(open ? doc?.id : undefined);
+  const [busy, setBusy] = useState(false);
+  async function pick(files: FileList | null) {
+    const f = files?.[0]; if (!f || !item) return;
+    setBusy(true);
+    try { const old = doc; await vault.add([f], { folder: '06 - Itinerary & Maps', outfitId: item.id }); if (old) await vault.remove(old.id); say('Outfit photo saved'); } finally { setBusy(false); }
+  }
+  return (
+    <Sheet open={open} onClose={onClose} title={item ? `Outfit · ${item.name}` : 'Outfit photo'}>
+      <div className="space-y-3 pb-2 pt-1">
+        {url ? <img src={url} alt="Outfit" className="max-h-[50dvh] w-full rounded-2xl object-contain bg-paper" /> : <div className="grid h-32 place-items-center rounded-2xl bg-paper text-[14px] text-muted">{busy ? 'Saving…' : 'No photo yet'}</div>}
+        <input id="outfit-photo-input" type="file" accept="image/*" className="sr-only" onChange={(e) => { void pick(e.target.files); e.target.value = ''; }} />
+        <label htmlFor="outfit-photo-input" className="tap flex w-full cursor-pointer items-center justify-center gap-2 rounded-2xl bg-navy px-4 py-3 font-bold text-white"><Camera size={18} />{doc ? 'Replace photo' : 'Choose or take a photo'}</label>
+        {doc && <Btn variant="danger" className="w-full" onClick={async () => { await vault.remove(doc.id); say('Photo removed'); }}>Remove photo</Btn>}
+        <p className="text-[12px] text-muted">Optional. Saved encrypted on this phone only and included in your encrypted backup.</p>
+      </div>
+    </Sheet>
   );
 }

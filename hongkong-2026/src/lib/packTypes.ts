@@ -27,7 +27,7 @@ export interface PackUI {
   bag: string; day: number; fList: FinalList; fDay: number;
   showPacked: boolean; hideNN: boolean; missingOnly: boolean;
   open: Record<string, boolean>;
-  extraCats?: string[]; hiddenCats?: string[];
+  extraCats?: string[]; hiddenCats?: string[]; catOrder?: string[];
 }
 export const DEFAULT_UI: PackUI = {
   tab: 'shop', shopFilter: 'all', cat: 'all', person: 'Keren', clothesFilter: 'all', bag: 'main', day: 1, fList: 'leave', fDay: 2,

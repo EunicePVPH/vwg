@@ -153,6 +153,7 @@ export interface DocMeta {
   ticketId?: string;
   flightId?: string;
   slot?: string;
+  outfitId?: string;
   note?: string;
 }
 export interface DocRecord extends DocMeta { id: string }

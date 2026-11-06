@@ -4,6 +4,7 @@ import { importFile, listDocs, removeDoc, updateMeta } from '../lib/vault';
 
 interface VaultCtx {
   docs: DocRecord[];
+  outfitDocs: DocRecord[];
   ready: boolean;
   key: CryptoKey;
   add: (files: File[], extra: Partial<DocMeta> & { folder: string }) => Promise<DocRecord[]>;
@@ -20,7 +21,7 @@ export function VaultProvider({ dataKey, children }: { dataKey: CryptoKey; child
   const refresh = useCallback(async () => { setDocs(await listDocs(dataKey)); setReady(true); }, [dataKey]);
   useEffect(() => { void refresh(); }, [refresh]);
   const value = useMemo<VaultCtx>(() => ({
-    docs, ready, key: dataKey, refresh,
+    docs: docs.filter((d) => !d.outfitId), outfitDocs: docs.filter((d) => !!d.outfitId), ready, key: dataKey, refresh,
     add: async (files, extra) => {
       const out: DocRecord[] = [];
       for (const f of files) out.push(await importFile(dataKey, f, extra));
