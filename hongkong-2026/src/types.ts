@@ -110,7 +110,7 @@ export interface Expense {
   category: string;
   amount: number | null; // null = price not yet known
   currency: Currency;
-  status: 'paid' | 'estimated' | 'actual';
+  status: 'paid' | 'estimated' | 'actual' | 'optional';
   kind: 'spend' | 'deposit' | 'cash';
   day?: number;
   note?: string;

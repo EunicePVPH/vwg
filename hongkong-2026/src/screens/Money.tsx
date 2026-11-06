@@ -17,7 +17,7 @@ const FIELDS: Field[] = [
   { key: 'amount', label: 'Amount (leave empty if not known yet)', type: 'number' },
   { key: 'currency', label: 'Currency', type: 'select', options: [{ value: 'HKD', label: 'HK$ (HKD)' }, { value: 'PHP', label: '₱ (PHP)' }, { value: 'USD', label: 'US$ (USD)' }] },
   { key: 'category', label: 'Category', type: 'select', options: EXPENSE_CATEGORIES.map((c) => ({ value: c, label: c })) },
-  { key: 'status', label: 'Status', type: 'select', options: [{ value: 'actual', label: 'Spent during the trip (counts in “Spent”)' }, { value: 'estimated', label: 'Planned — not paid yet' }, { value: 'paid', label: 'Paid before the trip' }] },
+  { key: 'status', label: 'Status', type: 'select', options: [{ value: 'actual', label: 'Spent during the trip (counts in “Spent”)' }, { value: 'estimated', label: 'Planned — not paid yet' }, { value: 'optional', label: 'Optional — only if we want' }, { value: 'paid', label: 'Paid before the trip' }] },
   { key: 'kind', label: 'Type', type: 'select', options: [{ value: 'spend', label: 'Spending' }, { value: 'deposit', label: 'Deposit (refundable, not spending)' }, { value: 'cash', label: 'Cash withdrawal (not spending)' }] },
   { key: 'day', label: 'Trip day (1–5, optional)', type: 'number' },
   { key: 'note', label: 'Note', type: 'text' },
@@ -45,11 +45,12 @@ export function Money() {
   // Still to spend: per category, planned minus what you already logged as spent (no double counting)
   const remaining = (() => {
     const est: Record<string, number> = {}; const act: Record<string, number> = {};
-    for (const a of acts) if (a.costHKD) est[catOf(a)] = (est[catOf(a)] ?? 0) + a.costHKD;
+    for (const a of acts) if (a.costHKD && a.priority !== 'optional') est[catOf(a)] = (est[catOf(a)] ?? 0) + a.costHKD;
     for (const i of shop) if (!checks['shop:' + i.id] && i.price) est['Shopping'] = (est['Shopping'] ?? 0) + toHKD(i.price, i.currency, r);
     for (const e of exps) if (e.kind === 'spend' && e.amount) { if (e.status === 'estimated') est[e.category] = (est[e.category] ?? 0) + hk(e); if (e.status === 'actual') act[e.category] = (act[e.category] ?? 0) + hk(e); }
     return Object.keys(est).reduce((n, c) => n + Math.max(0, est[c] - (act[c] ?? 0)), 0);
   })();
+  const optionalTotal = acts.filter((a) => a.priority === 'optional' && a.costHKD).reduce((n, a) => n + (a.costHKD ?? 0), 0) + exps.filter((e) => e.kind === 'spend' && e.status === 'optional').reduce((n, e) => n + hk(e), 0);
   const everything = paidTotal + remaining;
   const paidBreakdown = (() => {
     const m = new Map<string, { cur: Set<string>; native: number; hkd: number }>();
@@ -63,7 +64,7 @@ export function Money() {
 
   const cats = useMemo(() => {
     const m: Record<string, { est: number; act: number }> = {};
-    for (const a of acts) if (a.costHKD) { const c = catOf(a); (m[c] ??= { est: 0, act: 0 }).est += a.costHKD; }
+    for (const a of acts) if (a.costHKD && a.priority !== 'optional') { const c = catOf(a); (m[c] ??= { est: 0, act: 0 }).est += a.costHKD; }
     for (const i of shop) if (!checks['shop:' + i.id] && i.price) (m['Shopping'] ??= { est: 0, act: 0 }).est += toHKD(i.price, i.currency, r);
     for (const e of exps) if (e.kind === 'spend' && e.status === 'estimated' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).est += hk(e);
     for (const e of exps) if (e.kind === 'spend' && e.status === 'actual' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).act += hk(e);
@@ -78,22 +79,20 @@ export function Money() {
         right={<Btn variant="soft" icon={<Plus size={18} />} className="!px-3 text-[14px]" onClick={() => setAdding(true)}>Add</Btn>} />
 
       <Card className="mb-3 overflow-hidden !bg-navy p-5 text-white">
-        <div className="text-[12px] font-bold uppercase tracking-wide text-white/65">Paid so far</div>
+        <div className="text-[12px] font-bold uppercase tracking-wide text-white/65">Spent so far</div>
         <div className="font-display text-[34px] font-bold leading-tight text-sun">{fmtBoth(paidTotal, r)}</div>
         <div className="mt-1 text-[14px] text-white/80">{paidBreakdown}</div>
       </Card>
 
-      <Card className="mb-3 flex items-center justify-between gap-3 p-4"><div><div className="text-[12px] font-bold uppercase text-muted">Everything so far</div><div className="text-[13px] text-muted">paid so far + still to spend</div></div><div className="text-right"><div className="font-display text-[22px] font-bold text-navy">{fmtHKD(everything)}</div><div className="text-[13px] text-muted">{fmtPHP(hkdToPhp(everything, r))}</div></div></Card>
+      <Card className="mb-3 flex items-center justify-between gap-3 p-4"><div><div className="text-[12px] font-bold uppercase text-muted">Spent + Planned</div><div className="text-[13px] text-muted">not counting optional</div></div><div className="text-right"><div className="font-display text-[22px] font-bold text-navy">{fmtHKD(everything)}</div><div className="text-[13px] text-muted">{fmtPHP(hkdToPhp(everything, r))}</div></div></Card>
 
       <div className="grid grid-cols-2 gap-3">
-        <Stat title="Paid before the trip" value={fmtHKD(prepaid)} sub={fmtPHP(hkdToPhp(prepaid, r))} tone="bg-turq-soft" />
-        <Stat title="Spent during the trip" value={fmtHKD(actual)} sub={fmtPHP(hkdToPhp(actual, r))} tone="bg-sky-soft" />
-        <Stat title="Still to spend (planned)" value={fmtHKD(remaining)} sub={fmtPHP(hkdToPhp(remaining, r))} tone="bg-sun-soft" />
-        <Stat title="Cash planned" value={fmtHKD(cash)} sub="Not an expense" tone="bg-lav-soft" />
+        <Stat title="Planned (still to spend)" value={fmtHKD(remaining)} sub={fmtPHP(hkdToPhp(remaining, r))} tone="bg-sun-soft" />
+        <Stat title="Optional (only if we want)" value={fmtHKD(optionalTotal)} sub={fmtPHP(hkdToPhp(optionalTotal, r))} tone="bg-lav-soft" />
       </div>
 
       <Card className="mt-3 p-4">
-        <div className="mb-1 flex justify-between text-[14px] font-bold text-navy"><span>Paid so far vs everything</span><span>{Math.round(budgetPct * 100)}%</span></div>
+        <div className="mb-1 flex justify-between text-[14px] font-bold text-navy"><span>Spent vs Spent + Planned</span><span>{Math.round(budgetPct * 100)}%</span></div>
         <div className="h-3 overflow-hidden rounded-full bg-sky-soft"><motion.div className={cx('h-full rounded-full', 'bg-turq')} initial={{ width: 0 }} animate={{ width: `${budgetPct * 100}%` }} transition={{ duration: 0.9 }} /></div>
         {unknown > 0 && <p className="mt-2 text-[13px] text-muted">{unknown} item{unknown > 1 ? 's' : ''} have no price yet (PhotoPass, PAL baggage, tickets…). Add them as you know them.</p>}
       </Card>
@@ -105,7 +104,7 @@ export function Money() {
             <div className="relative h-3 overflow-hidden rounded-full bg-paper"><motion.div className="absolute inset-y-0 left-0 rounded-full opacity-35" style={{ background: COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${(v.est / max) * 100}%` }} transition={{ duration: 0.8 }} />
               <motion.div className="absolute inset-y-0 left-0 rounded-full" style={{ background: COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${(v.act / max) * 100}%` }} transition={{ duration: 0.8, delay: 0.1 }} /></div></div>
         ))}
-        <p className="text-[12px] text-muted">Light bar = planned, solid = actual. Flights and hotel are in “Paid so far” above.</p>
+        <p className="text-[12px] text-muted">Light bar = planned, solid = actual. Flights and hotel are in “Spent so far” above.</p>
       </Card>
 
       <SectionTitle>By day</SectionTitle>
@@ -127,7 +126,7 @@ export function Money() {
               <span className="mt-1 h-3 w-3 shrink-0 rounded-full" style={{ background: COLORS[e.category] ?? '#3aa8f5' }} />
               <div className="min-w-0 flex-1"><div className="text-[15px] font-bold leading-snug text-navy">{e.label}</div>
                 <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]"><span className="text-muted">{e.category}{e.day ? ` · Day ${e.day}` : ''}</span>
-                  {e.status === 'paid' ? <StatusPill status="paid" /> : e.status === 'actual' ? <StatusPill status="confirmed" label="Spent" /> : <StatusPill status="estimated" label="Planned" />}
+                  {e.status === 'paid' ? <StatusPill status="paid" /> : e.status === 'actual' ? <StatusPill status="confirmed" label="Spent" /> : e.status === 'optional' ? <StatusPill status="optional" /> : <StatusPill status="estimated" label="Planned" />}
                   {e.kind === 'deposit' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Refundable</span>}{e.kind === 'cash' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Cash · not spending</span>}</div>
                 {e.note && <div className="mt-1 text-[12px] text-muted">{e.note}</div>}
                 {e.status === 'estimated' && e.kind === 'spend' && <button onClick={(ev) => { ev.stopPropagation(); update(e.id, { status: e.day ? 'actual' : 'paid' }); }} className="tap mt-2 rounded-xl bg-turq-soft px-3 text-[13px] font-bold text-[#0b6b61]">✓ Mark as {e.day ? 'spent' : 'paid'}</button>}</div>
