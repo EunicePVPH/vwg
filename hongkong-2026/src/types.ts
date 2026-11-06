@@ -157,4 +157,4 @@ export interface DocMeta {
 }
 export interface DocRecord extends DocMeta { id: string }
 
-export interface ShoppingItem { id: string; label: string; who: string; price: number | null; currency: Currency; note?: string }
+export interface ShoppingItem { id: string; label: string; when?: 'before' | 'hk'; who: string; price: number | null; currency: Currency; note?: string }
