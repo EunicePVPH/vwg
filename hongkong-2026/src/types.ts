@@ -156,3 +156,5 @@ export interface DocMeta {
   note?: string;
 }
 export interface DocRecord extends DocMeta { id: string }
+
+export interface ShoppingItem { id: string; label: string; who: string; price: number | null; currency: Currency; note?: string }

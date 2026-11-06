@@ -1,7 +1,7 @@
 // All trip content lives here, separate from the UI. Anything you can change in the
 // app is stored as an edit on top of this file, so you never need to rebuild to
 // update times, costs or booking details.
-import type { Activity, Day, EmergencyItem, Expense, Flight, HealthItem, Hotel, PackItem, Restaurant, Task, Ticket } from '../types';
+import type { ShoppingItem, Activity, Day, EmergencyItem, Expense, Flight, HealthItem, Hotel, PackItem, Restaurant, Task, Ticket } from '../types';
 
 export const SEED_VERSION = 1;
 
@@ -338,3 +338,7 @@ export const GUIDE: { title: string; items: string[] }[] = [
     'Keep original QR tickets in the app wallet and turn your screen brightness up before scanning.',
   ] },
 ];
+
+// Your own to-buy list lives in the app (More → Shopping). Starts empty on purpose.
+export const SHOPPING: ShoppingItem[] = [];
+export const SHOP_WHO = ['Family', 'Keren', 'Gilbert', 'Aya', 'Pasalubong / gifts'];

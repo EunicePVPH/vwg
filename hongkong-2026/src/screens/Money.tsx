@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Banknote, PiggyBank, Pencil, Plus, RefreshCw } from 'lucide-react';
-import { ACTIVITIES, DAYS, EXPENSES, EXPENSE_CATEGORIES } from '../data/seed';
-import { useAppState, useCollection, useSettings } from '../state/store';
+import { ACTIVITIES, DAYS, EXPENSES, EXPENSE_CATEGORIES, SHOPPING } from '../data/seed';
+import { useAppState, useChecks, useCollection, useSettings } from '../state/store';
 import { catOf, dayEstimate } from '../lib/trip';
 import { currentDayId } from '../lib/time';
 import { fetchRates, fmtBoth, fmtHKD, fmtNative, fmtPHP, hkdToPhp, toHKD, DEFAULT_RATES } from '../lib/money';
@@ -26,6 +26,7 @@ const FIELDS: Field[] = [
 export function Money() {
   const { items: exps, update, add, remove, restore, isEdited, isSeed } = useCollection<Expense>('expenses', EXPENSES);
   const acts = useCollection<Activity>('activities', ACTIVITIES).items;
+  const shop = useCollection('shopping', SHOPPING).items; const { checks } = useChecks();
   const { state } = useAppState(); const { setSettings } = useSettings(); const r = state.settings.rates;
   const [edit, setEdit] = useState<Expense | null>(null);
   const [adding, setAdding] = useState(false);
@@ -37,7 +38,8 @@ export function Money() {
   const upcoming = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0);
   const actual = exps.filter((e) => e.kind === 'spend' && e.status === 'actual').reduce((n, e) => n + hk(e), 0);
   const plannedEntries = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0);
-  const planned = acts.reduce((n, a) => n + (a.costHKD ?? 0), 0) + plannedEntries;
+  const shopPlanned = shop.filter((i) => !checks['shop:' + i.id] && i.price).reduce((n, i) => n + toHKD(i.price!, i.currency, r), 0);
+  const planned = acts.reduce((n, a) => n + (a.costHKD ?? 0), 0) + plannedEntries + shopPlanned;
   const everything = prepaid + upcoming + actual;
   const cash = exps.filter((e) => e.kind === 'cash').reduce((n, e) => n + hk(e), 0);
   const deposit = exps.filter((e) => e.kind === 'deposit').reduce((n, e) => n + hk(e), 0);
@@ -47,10 +49,11 @@ export function Money() {
   const cats = useMemo(() => {
     const m: Record<string, { est: number; act: number }> = {};
     for (const a of acts) if (a.costHKD) { const c = catOf(a); (m[c] ??= { est: 0, act: 0 }).est += a.costHKD; }
+    for (const i of shop) if (!checks['shop:' + i.id] && i.price) (m['Shopping'] ??= { est: 0, act: 0 }).est += toHKD(i.price, i.currency, r);
     for (const e of exps) if (e.kind === 'spend' && e.status === 'estimated' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).est += hk(e);
     for (const e of exps) if (e.kind === 'spend' && e.status === 'actual' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).act += hk(e);
     return Object.entries(m).filter(([c]) => c !== 'Flights' && c !== 'Other').sort((a, b) => b[1].est + b[1].act - (a[1].est + a[1].act));
-  }, [acts, exps, r]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [acts, exps, shop, checks, r]); // eslint-disable-line react-hooks/exhaustive-deps
   const max = Math.max(1, ...cats.map(([, v]) => Math.max(v.est, v.act)));
   const budgetPct = planned ? Math.min(1, actual / planned) : 0;
 
@@ -80,7 +83,7 @@ export function Money() {
         {unknown > 0 && <p className="mt-2 text-[13px] text-muted">{unknown} item{unknown > 1 ? 's' : ''} have no price yet (PhotoPass, PAL baggage, tickets…). Add them as you know them.</p>}
       </Card>
 
-      <SectionTitle>By category (planned vs actual)</SectionTitle>
+      <SectionTitle action={<a href="#/more/shopping" className="tap flex items-center text-[14px] font-bold text-sky">Shopping list</a>}>By category (planned vs actual)</SectionTitle>
       <Card className="space-y-3 p-4">
         {cats.map(([c, v]) => (
           <div key={c}><div className="mb-1 flex justify-between text-[13px]"><span className="font-bold text-navy">{c}</span><span className="text-muted">{fmtHKD(v.act)} / {fmtHKD(v.est)}</span></div>

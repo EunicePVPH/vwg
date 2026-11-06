@@ -1,4 +1,4 @@
-import { Backpack, BookOpen, ClipboardCheck, FolderOpen, HeartPulse, Plane, Receipt, Settings as SettingsIcon, Siren, Utensils, Lock } from 'lucide-react';
+import { ShoppingBag, Backpack, BookOpen, ClipboardCheck, FolderOpen, HeartPulse, Plane, Receipt, Settings as SettingsIcon, Siren, Utensils, Lock } from 'lucide-react';
 import { Card, PageHeader } from '../ui/primitives';
 import { go } from '../ui/router';
 
@@ -7,6 +7,7 @@ const ITEMS = [
   { to: 'more/expenses', icon: <Receipt />, title: 'Expenses', sub: 'HKD + PHP, paid vs planned', tone: 'bg-lav-soft text-[#5046b4]' },
   { to: 'more/ready', icon: <ClipboardCheck />, title: 'Travel Ready', sub: 'Tasks before we go', tone: 'bg-sun-soft text-[#8a5f00]' },
   { to: 'more/packing', icon: <Backpack />, title: 'Packing', sub: 'Check it off', tone: 'bg-turq-soft text-[#0b6b61]' },
+  { to: 'more/shopping', icon: <ShoppingBag />, title: 'Shopping list', sub: 'To buy in Hong Kong', tone: 'bg-pink-soft text-[#a1305a]' },
   { to: 'more/documents', icon: <FolderOpen />, title: 'Phone Documents', sub: 'Private encrypted wallet', tone: 'bg-coral-soft text-[#a63a2b]' },
   { to: 'more/food', icon: <Utensils />, title: 'Food Finder', sub: 'Meals near each stop', tone: 'bg-pink-soft text-[#a1305a]' },
   { to: 'more/guide', icon: <BookOpen />, title: 'Hong Kong Guide', sub: 'Weather, tips, plugs', tone: 'bg-sky-soft text-[#1d5f99]' },
