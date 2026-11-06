@@ -40,7 +40,22 @@ export function Money() {
   const plannedEntries = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0);
   const shopPlanned = shop.filter((i) => !checks['shop:' + i.id] && i.price).reduce((n, i) => n + toHKD(i.price!, i.currency, r), 0);
   const planned = acts.reduce((n, a) => n + (a.costHKD ?? 0), 0) + plannedEntries + shopPlanned;
-  const everything = prepaid + upcoming + actual;
+  // Money already paid = bought before the trip + spent during the trip
+  const paidTotal = prepaid + actual;
+  // Still to spend: per category, planned minus what you already logged as spent (no double counting)
+  const remaining = (() => {
+    const est: Record<string, number> = {}; const act: Record<string, number> = {};
+    for (const a of acts) if (a.costHKD) est[catOf(a)] = (est[catOf(a)] ?? 0) + a.costHKD;
+    for (const i of shop) if (!checks['shop:' + i.id] && i.price) est['Shopping'] = (est['Shopping'] ?? 0) + toHKD(i.price, i.currency, r);
+    for (const e of exps) if (e.kind === 'spend' && e.amount) { if (e.status === 'estimated') est[e.category] = (est[e.category] ?? 0) + hk(e); if (e.status === 'actual') act[e.category] = (act[e.category] ?? 0) + hk(e); }
+    return Object.keys(est).reduce((n, c) => n + Math.max(0, est[c] - (act[c] ?? 0)), 0);
+  })();
+  const everything = paidTotal + remaining;
+  const paidBreakdown = (() => {
+    const m = new Map<string, { cur: Set<string>; native: number; hkd: number }>();
+    for (const e of exps) if (e.kind === 'spend' && e.amount && (e.status === 'paid' || e.status === 'actual')) { const x = m.get(e.category) ?? { cur: new Set<string>(), native: 0, hkd: 0 }; x.cur.add(e.currency); x.native += e.amount; x.hkd += hk(e); m.set(e.category, x); }
+    return [...m.entries()].map(([c, x]) => `${c} ${x.cur.size === 1 ? fmtNative(x.native, [...x.cur][0] as Currency) : fmtHKD(x.hkd)}`).join(' · ');
+  })();
   const cash = exps.filter((e) => e.kind === 'cash').reduce((n, e) => n + hk(e), 0);
   const deposit = exps.filter((e) => e.kind === 'deposit').reduce((n, e) => n + hk(e), 0);
   const unknown = exps.filter((e) => e.amount === null).length;
@@ -55,7 +70,7 @@ export function Money() {
     return Object.entries(m).filter(([c]) => c !== 'Flights' && c !== 'Other').sort((a, b) => b[1].est + b[1].act - (a[1].est + a[1].act));
   }, [acts, exps, shop, checks, r]); // eslint-disable-line react-hooks/exhaustive-deps
   const max = Math.max(1, ...cats.map(([, v]) => Math.max(v.est, v.act)));
-  const budgetPct = planned ? Math.min(1, actual / planned) : 0;
+  const budgetPct = everything ? Math.min(1, paidTotal / everything) : 0;
 
   return (
     <div className="pb-4">
@@ -63,23 +78,23 @@ export function Money() {
         right={<Btn variant="soft" icon={<Plus size={18} />} className="!px-3 text-[14px]" onClick={() => setAdding(true)}>Add</Btn>} />
 
       <Card className="mb-3 overflow-hidden !bg-navy p-5 text-white">
-        <div className="text-[12px] font-bold uppercase tracking-wide text-white/65">Already paid — not a future expense</div>
-        <div className="font-display text-[34px] font-bold leading-tight text-sun">{fmtBoth(prepaid, r)}</div>
-        <div className="mt-1 text-[14px] text-white/80">Flights ₱{palPhp.toLocaleString('en-US', { maximumFractionDigits: 2 })} (PAL ₱14,784 + Cebu ₱40,815.93 = ₱55,599.93) · hotel US$264.44</div>
+        <div className="text-[12px] font-bold uppercase tracking-wide text-white/65">Paid so far</div>
+        <div className="font-display text-[34px] font-bold leading-tight text-sun">{fmtBoth(paidTotal, r)}</div>
+        <div className="mt-1 text-[14px] text-white/80">{paidBreakdown}</div>
       </Card>
 
-      <Card className="mb-3 flex items-center justify-between gap-3 p-4"><div><div className="text-[12px] font-bold uppercase text-muted">Everything so far</div><div className="text-[13px] text-muted">paid + still to pay + spent</div></div><div className="text-right"><div className="font-display text-[22px] font-bold text-navy">{fmtHKD(everything)}</div><div className="text-[13px] text-muted">{fmtPHP(hkdToPhp(everything, r))}</div></div></Card>
+      <Card className="mb-3 flex items-center justify-between gap-3 p-4"><div><div className="text-[12px] font-bold uppercase text-muted">Everything so far</div><div className="text-[13px] text-muted">paid so far + still to spend</div></div><div className="text-right"><div className="font-display text-[22px] font-bold text-navy">{fmtHKD(everything)}</div><div className="text-[13px] text-muted">{fmtPHP(hkdToPhp(everything, r))}</div></div></Card>
 
       <div className="grid grid-cols-2 gap-3">
-        <Stat title="Trip budget (planned)" value={fmtHKD(planned)} sub={fmtPHP(hkdToPhp(planned, r))} tone="bg-sky-soft" />
-        <Stat title="Spent on the trip so far" value={fmtHKD(actual)} sub={fmtPHP(hkdToPhp(actual, r))} tone="bg-turq-soft" />
-        <Stat title="Still to pay (known)" value={fmtHKD(upcoming)} sub="Planned, not yet paid" tone="bg-sun-soft" />
+        <Stat title="Paid before the trip" value={fmtHKD(prepaid)} sub={fmtPHP(hkdToPhp(prepaid, r))} tone="bg-turq-soft" />
+        <Stat title="Spent during the trip" value={fmtHKD(actual)} sub={fmtPHP(hkdToPhp(actual, r))} tone="bg-sky-soft" />
+        <Stat title="Still to spend (planned)" value={fmtHKD(remaining)} sub={fmtPHP(hkdToPhp(remaining, r))} tone="bg-sun-soft" />
         <Stat title="Cash planned" value={fmtHKD(cash)} sub="Not an expense" tone="bg-lav-soft" />
       </div>
 
       <Card className="mt-3 p-4">
-        <div className="mb-1 flex justify-between text-[14px] font-bold text-navy"><span>Spent vs planned</span><span>{Math.round(budgetPct * 100)}%</span></div>
-        <div className="h-3 overflow-hidden rounded-full bg-sky-soft"><motion.div className={cx('h-full rounded-full', actual > planned && planned ? 'bg-coral' : 'bg-turq')} initial={{ width: 0 }} animate={{ width: `${budgetPct * 100}%` }} transition={{ duration: 0.9 }} /></div>
+        <div className="mb-1 flex justify-between text-[14px] font-bold text-navy"><span>Paid so far vs everything</span><span>{Math.round(budgetPct * 100)}%</span></div>
+        <div className="h-3 overflow-hidden rounded-full bg-sky-soft"><motion.div className={cx('h-full rounded-full', 'bg-turq')} initial={{ width: 0 }} animate={{ width: `${budgetPct * 100}%` }} transition={{ duration: 0.9 }} /></div>
         {unknown > 0 && <p className="mt-2 text-[13px] text-muted">{unknown} item{unknown > 1 ? 's' : ''} have no price yet (PhotoPass, PAL baggage, tickets…). Add them as you know them.</p>}
       </Card>
 
@@ -90,7 +105,7 @@ export function Money() {
             <div className="relative h-3 overflow-hidden rounded-full bg-paper"><motion.div className="absolute inset-y-0 left-0 rounded-full opacity-35" style={{ background: COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${(v.est / max) * 100}%` }} transition={{ duration: 0.8 }} />
               <motion.div className="absolute inset-y-0 left-0 rounded-full" style={{ background: COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${(v.act / max) * 100}%` }} transition={{ duration: 0.8, delay: 0.1 }} /></div></div>
         ))}
-        <p className="text-[12px] text-muted">Light bar = planned, solid = actual. Flights and hotel are shown above as already paid.</p>
+        <p className="text-[12px] text-muted">Light bar = planned, solid = actual. Flights and hotel are in “Paid so far” above.</p>
       </Card>
 
       <SectionTitle>By day</SectionTitle>
