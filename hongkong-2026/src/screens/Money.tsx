@@ -36,7 +36,7 @@ export function Money() {
   const prepaid = exps.filter((e) => e.kind === 'spend' && e.status === 'paid').reduce((n, e) => n + hk(e), 0);
   const upcoming = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0);
   const actual = exps.filter((e) => e.kind === 'spend' && e.status === 'actual').reduce((n, e) => n + hk(e), 0);
-  const plannedEntries = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated' && e.day && e.category !== 'Hotel').reduce((n, e) => n + hk(e), 0);
+  const plannedEntries = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0);
   const planned = acts.reduce((n, a) => n + (a.costHKD ?? 0), 0) + plannedEntries;
   const everything = prepaid + upcoming + actual;
   const cash = exps.filter((e) => e.kind === 'cash').reduce((n, e) => n + hk(e), 0);
@@ -47,7 +47,7 @@ export function Money() {
   const cats = useMemo(() => {
     const m: Record<string, { est: number; act: number }> = {};
     for (const a of acts) if (a.costHKD) { const c = catOf(a); (m[c] ??= { est: 0, act: 0 }).est += a.costHKD; }
-    for (const e of exps) if (e.kind === 'spend' && e.status === 'estimated' && e.day && e.amount && e.category !== 'Hotel') (m[e.category] ??= { est: 0, act: 0 }).est += hk(e);
+    for (const e of exps) if (e.kind === 'spend' && e.status === 'estimated' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).est += hk(e);
     for (const e of exps) if (e.kind === 'spend' && e.status === 'actual' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).act += hk(e);
     return Object.entries(m).filter(([c]) => c !== 'Flights' && c !== 'Other').sort((a, b) => b[1].est + b[1].act - (a[1].est + a[1].act));
   }, [acts, exps, r]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -93,7 +93,7 @@ export function Money() {
       <SectionTitle>By day</SectionTitle>
       <Card className="divide-y divide-navy/5">
         {DAYS.map((d) => {
-          const est = dayEstimate(acts, d.id) + exps.filter((e) => e.day === d.id && e.kind === 'spend' && e.status === 'estimated' && e.category !== 'Hotel').reduce((n, e) => n + hk(e), 0); const act = exps.filter((e) => e.day === d.id && e.kind === 'spend' && e.status === 'actual').reduce((n, e) => n + hk(e), 0);
+          const est = dayEstimate(acts, d.id) + exps.filter((e) => e.day === d.id && e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0); const act = exps.filter((e) => e.day === d.id && e.kind === 'spend' && e.status === 'actual').reduce((n, e) => n + hk(e), 0);
           return <div key={d.id} className="flex items-center gap-3 px-4 py-3"><div className="w-12 text-[13px] font-bold text-navy">Day {d.id}</div><div className="min-w-0 flex-1 truncate text-[13px] text-muted">{d.title}</div><div className="text-right text-[13px]"><div className="font-bold text-navy">{fmtHKD(act)} <span className="font-normal text-muted">/ {fmtHKD(est)}</span></div></div></div>;
         })}
       </Card>
