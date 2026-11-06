@@ -97,14 +97,16 @@ export function Money() {
         {unknown > 0 && <p className="mt-2 text-[13px] text-muted">{unknown} item{unknown > 1 ? 's' : ''} have no price yet (PhotoPass, PAL baggage, tickets…). Add them as you know them.</p>}
       </Card>
 
-      <SectionTitle action={<a href="#/more/shopping" className="tap flex items-center text-[14px] font-bold text-sky">Shopping list</a>}>By category (planned vs actual)</SectionTitle>
+      <SectionTitle action={<a href="#/more/shopping" className="tap flex items-center text-[14px] font-bold text-sky">Shopping list</a>}>Spent by category</SectionTitle>
       <Card className="space-y-3 p-4">
-        {cats.map(([c, v]) => (
-          <div key={c}><div className="mb-1 flex justify-between text-[13px]"><span className="font-bold text-navy">{c}</span><span className="text-muted">{fmtHKD(v.act)} / {fmtHKD(v.est)}</span></div>
-            <div className="relative h-3 overflow-hidden rounded-full bg-paper"><motion.div className="absolute inset-y-0 left-0 rounded-full opacity-35" style={{ background: COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${(v.est / max) * 100}%` }} transition={{ duration: 0.8 }} />
-              <motion.div className="absolute inset-y-0 left-0 rounded-full" style={{ background: COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${(v.act / max) * 100}%` }} transition={{ duration: 0.8, delay: 0.1 }} /></div></div>
-        ))}
-        <p className="text-[12px] text-muted">Light bar = planned, solid = actual. Flights and hotel are in “Spent so far” above.</p>
+        {cats.map(([c, v]) => {
+          const pct = v.est ? Math.min(1, v.act / v.est) : v.act ? 1 : 0;
+          return (
+            <div key={c}><div className="mb-1 flex justify-between text-[13px]"><span className="font-bold text-navy">{c}</span><span className="text-muted">spent {fmtHKD(v.act)} of {fmtHKD(v.est)}</span></div>
+              <div className="h-3 overflow-hidden rounded-full bg-paper"><motion.div className={cx('h-full rounded-full', v.act > v.est ? 'bg-coral' : '')} style={{ background: v.act > v.est ? undefined : COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${pct * 100}%` }} transition={{ duration: 0.8 }} /></div></div>
+          );
+        })}
+        <p className="text-[12px] text-muted">Each bar fills as you spend against that category’s plan. An empty bar means nothing spent yet. Flights and hotel are in “Spent so far” above.</p>
       </Card>
 
       <SectionTitle>By day</SectionTitle>
