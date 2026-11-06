@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Banknote, PiggyBank, Pencil, Plus, RefreshCw } from 'lucide-react';
 import { ACTIVITIES, DAYS, EXPENSES, EXPENSE_CATEGORIES, SHOPPING } from '../data/seed';
 import { useAppState, useChecks, useCollection, useSettings } from '../state/store';
-import { catOf, dayEstimate } from '../lib/trip';
+import { CATEGORIES, catOf, dayEstimate, normCat } from '../lib/trip';
 import { computeBudget } from '../lib/budget';
 import { currentDayId } from '../lib/time';
 import { fetchRates, fmtBoth, fmtHKD, fmtNative, fmtPHP, fmtPHP2, hkdToPhp, toHKD, usdToPhp, DEFAULT_RATES } from '../lib/money';
@@ -11,7 +11,7 @@ import { Btn, Card, PageHeader, SectionTitle, StatusPill, cx } from '../ui/primi
 import { EditSheet, type Field } from '../ui/EditSheet';
 import type { Activity, Currency, Expense } from '../types';
 
-const COLORS: Record<string, string> = { Flights: '#3aa8f5', Hotel: '#8f84ee', Transport: '#14b8a6', Food: '#ff6b57', Attractions: '#ffc83d', 'Disney PhotoPass': '#ff9fbd', Shopping: '#12284c', Health: '#5fd3c5', 'SIM / eSIM': '#7cc4ff', Cash: '#a0aec0', Other: '#cbd5e1' };
+const COLORS: Record<string, string> = { Flights: '#3aa8f5', Hotel: '#8f84ee', Food: '#ff6b57', Transport: '#14b8a6', 'Activities & Attractions': '#ffc83d', 'Disney PhotoPass': '#ff9fbd', Shopping: '#12284c', Essentials: '#5fd3c5', OOTD: '#c084fc', Other: '#94a3b8' };
 
 const FIELDS: Field[] = [
   { key: 'label', label: 'What was it for?', type: 'text' },
@@ -39,22 +39,22 @@ export function Money() {
   const { prepaid, actual, paidTotal, remaining, optionalTotal, everything } = computeBudget(acts, exps, shop, checks, r);
   const paidBreakdown = (() => {
     const m = new Map<string, { cur: Set<string>; native: number; hkd: number }>();
-    for (const e of exps) if (e.kind === 'spend' && e.amount && (e.status === 'paid' || e.status === 'actual')) { const x = m.get(e.category) ?? { cur: new Set<string>(), native: 0, hkd: 0 }; x.cur.add(e.currency === 'USD' ? 'PHP' : e.currency); x.native += e.currency === 'USD' ? usdToPhp(e.amount, r) : e.amount; x.hkd += hk(e); m.set(e.category, x); }
+    for (const e of exps) if (e.kind === 'spend' && e.amount && (e.status === 'paid' || e.status === 'actual')) { const x = m.get(normCat(e.category)) ?? { cur: new Set<string>(), native: 0, hkd: 0 }; x.cur.add(e.currency === 'USD' ? 'PHP' : e.currency); x.native += e.currency === 'USD' ? usdToPhp(e.amount, r) : e.amount; x.hkd += hk(e); m.set(normCat(e.category), x); }
     return [...m.entries()].map(([c, x]) => `${c} ${x.cur.size === 1 ? fmtNative(x.native, [...x.cur][0] as Currency) : fmtHKD(x.hkd)}`).join(' · ');
   })();
   const cash = exps.filter((e) => e.kind === 'cash').reduce((n, e) => n + hk(e), 0);
   const deposit = exps.filter((e) => e.kind === 'deposit').reduce((n, e) => n + hk(e), 0);
   const unknown = exps.filter((e) => e.amount === null).length;
 
-  const cats = useMemo(() => {
-    const m: Record<string, { est: number; act: number }> = {};
-    for (const a of acts) if (a.costHKD && a.priority !== 'optional') { const c = catOf(a); (m[c] ??= { est: 0, act: 0 }).est += a.costHKD; }
-    for (const i of shop) if (!checks['shop:' + i.id] && i.price) (m['Shopping'] ??= { est: 0, act: 0 }).est += toHKD(i.price, i.currency, r);
-    for (const e of exps) if (e.kind === 'spend' && e.status === 'estimated' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).est += hk(e);
-    for (const e of exps) if (e.kind === 'spend' && e.status === 'actual' && e.amount) (m[e.category] ??= { est: 0, act: 0 }).act += hk(e);
-    return Object.entries(m).filter(([c]) => c !== 'Flights' && c !== 'Other').sort((a, b) => b[1].est + b[1].act - (a[1].est + a[1].act));
-  }, [acts, exps, shop, checks, r]); // eslint-disable-line react-hooks/exhaustive-deps
-  const max = Math.max(1, ...cats.map(([, v]) => Math.max(v.est, v.act)));
+  // Money spent so far (paid before the trip + spent during it), by kind of expense
+  const spentByCat = useMemo(() => {
+    const m: Record<string, number> = {};
+    for (const e of exps) if (e.kind === 'spend' && e.amount && (e.status === 'paid' || e.status === 'actual')) m[normCat(e.category)] = (m[normCat(e.category)] ?? 0) + hk(e);
+    const order = (c: string) => CATEGORIES.indexOf(c);
+    return Object.keys({ ...Object.fromEntries(CATEGORIES.map((c) => [c, 0])), ...m }).map((c) => [c, m[c] ?? 0] as [string, number])
+      .sort((x, y) => (y[1] > 0 ? 1 : 0) - (x[1] > 0 ? 1 : 0) || y[1] - x[1] || order(x[0]) - order(y[0]));
+  }, [exps, r]); // eslint-disable-line react-hooks/exhaustive-deps
+  const spentTotalCat = spentByCat.reduce((n, [, v]) => n + v, 0);
   const capPHP = state.settings.capPHP ?? 150000;
   const spentPhp = hkdToPhp(paidTotal, r), plannedPhp = hkdToPhp(remaining, r), optionalPhp = hkdToPhp(optionalTotal, r);
   const usedPhp = spentPhp + plannedPhp; const leftPhp = capPHP - usedPhp;
@@ -102,14 +102,11 @@ export function Money() {
 
       <SectionTitle action={<a href="#/more/shopping" className="tap flex items-center text-[14px] font-bold text-sky">Shopping list</a>}>Spent by category</SectionTitle>
       <Card className="space-y-3 p-4">
-        {cats.map(([c, v]) => {
-          const pct = v.est ? Math.min(1, v.act / v.est) : v.act ? 1 : 0;
-          return (
-            <div key={c}><div className="mb-1 flex justify-between text-[13px]"><span className="font-bold text-navy">{c}</span><span className="text-muted">spent {fmtHKD(v.act)} of {fmtHKD(v.est)}</span></div>
-              <div className="h-3 overflow-hidden rounded-full bg-paper"><motion.div className={cx('h-full rounded-full', v.act > v.est ? 'bg-coral' : '')} style={{ background: v.act > v.est ? undefined : COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${pct * 100}%` }} transition={{ duration: 0.8 }} /></div></div>
-          );
-        })}
-        <p className="text-[12px] text-muted">Each bar fills as you spend against that category’s plan. An empty bar means nothing spent yet. Flights and hotel are in “Spent so far” above.</p>
+        {spentByCat.map(([c, v]) => (
+          <div key={c}><div className="mb-1 flex items-baseline justify-between gap-2 text-[13px]"><span className="font-bold text-navy">{c}</span><span className="text-right text-muted"><b className="text-navy">{fmtPHP(hkdToPhp(v, r))}</b> · {fmtHKD(v)}</span></div>
+            <div className="h-3 overflow-hidden rounded-full bg-paper"><motion.div className="h-full rounded-full" style={{ background: COLORS[c] ?? '#3aa8f5' }} initial={{ width: 0 }} animate={{ width: `${spentTotalCat ? (v / spentTotalCat) * 100 : 0}%` }} transition={{ duration: 0.8 }} /></div></div>
+        ))}
+        <p className="text-[12px] text-muted">Everything you have paid or spent so far, by kind of expense. Each bar is that category’s share of your total spending.</p>
       </Card>
 
       <SectionTitle>By day</SectionTitle>
@@ -128,9 +125,9 @@ export function Money() {
         {exps.map((e) => (
           <Card key={e.id} className="p-3.5" onClick={() => setEdit(e)}>
             <div className="flex items-start gap-3">
-              <span className="mt-1 h-3 w-3 shrink-0 rounded-full" style={{ background: COLORS[e.category] ?? '#3aa8f5' }} />
+              <span className="mt-1 h-3 w-3 shrink-0 rounded-full" style={{ background: COLORS[normCat(e.category)] ?? '#3aa8f5' }} />
               <div className="min-w-0 flex-1"><div className="text-[15px] font-bold leading-snug text-navy">{e.label}</div>
-                <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]"><span className="text-muted">{e.category}{e.day ? ` · Day ${e.day}` : ''}</span>
+                <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]"><span className="text-muted">{normCat(e.category)}{e.day ? ` · Day ${e.day}` : ''}</span>
                   {e.status === 'paid' ? <StatusPill status="paid" /> : e.status === 'actual' ? <StatusPill status="confirmed" label="Spent" /> : e.status === 'optional' ? <StatusPill status="optional" /> : <StatusPill status="estimated" label="Planned" />}
                   {e.kind === 'deposit' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Refundable</span>}{e.kind === 'cash' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Cash · not spending</span>}</div>
                 {e.note && <div className="mt-1 text-[12px] text-muted">{e.note}</div>}
@@ -152,7 +149,7 @@ export function Money() {
       </Card>
 
       <EditSheet open={!!edit} onClose={() => setEdit(null)} title="Edit entry" fields={FIELDS}
-        values={edit ? { label: edit.label, amount: edit.currency === 'USD' && edit.amount ? Math.round(usdToPhp(edit.amount, r) * 100) / 100 : edit.amount, currency: edit.currency === 'USD' ? 'PHP' : edit.currency, category: edit.category, status: edit.status, kind: edit.kind, day: edit.day ?? '', note: edit.note ?? '' } : {}}
+        values={edit ? { label: edit.label, amount: edit.currency === 'USD' && edit.amount ? Math.round(usdToPhp(edit.amount, r) * 100) / 100 : edit.amount, currency: edit.currency === 'USD' ? 'PHP' : edit.currency, category: normCat(edit.category), status: edit.status, kind: edit.kind, day: edit.day ?? '', note: edit.note ?? '' } : {}}
         onSave={(v) => edit && update(edit.id, { label: String(v.label || edit.label), amount: v.amount as number | null, currency: v.currency as Currency, category: String(v.category), status: v.status as Expense['status'], kind: v.kind as Expense['kind'], day: v.day ? Number(v.day) : undefined, note: String(v.note ?? '') })}
         onDelete={edit ? () => remove(edit.id) : undefined} onRestore={edit && isSeed(edit.id) && isEdited(edit.id) ? () => restore(edit.id) : undefined} />
       <EditSheet open={adding} onClose={() => setAdding(false)} title="Add spending" saveLabel="Add" fields={FIELDS}

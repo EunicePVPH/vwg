@@ -233,12 +233,12 @@ export const EXPENSES: Expense[] = [
   { id: 'e-deposit', label: 'Hotel deposit (listed HK$500 per stay)', category: 'Hotel', amount: 500, currency: 'HKD', status: 'estimated', kind: 'deposit', day: 1, note: 'Potentially refundable — not spending. Record method + refund status in Hotel.' },
   { id: 'e-cash', label: 'Planned first ATM withdrawal (Wise)', category: 'Cash', amount: 1500, currency: 'HKD', status: 'estimated', kind: 'cash', day: 1, note: 'Cash in hand, not an expense. Depends on Wise balance, ATM fees and limits.' },
   { id: 'e-palbag', label: 'PAL checked-baggage allowance (to buy)', category: 'Flights', amount: null, currency: 'PHP', status: 'estimated', kind: 'spend', note: 'PENDING — add the price once decided' },
-  { id: 'e-ocean', label: 'Ocean Park tickets (2 adults, already bought)', category: 'Attractions', amount: null, currency: 'HKD', status: 'paid', kind: 'spend', day: 2, note: 'Already purchased — enter the amount from your receipt' },
-  { id: 'e-wheel', label: 'Observation Wheel (2 adults, Klook, already bought)', category: 'Attractions', amount: null, currency: 'HKD', status: 'paid', kind: 'spend', day: 2, note: 'Already purchased — enter the amount from your receipt' },
+  { id: 'e-ocean', label: 'Ocean Park tickets (2 adults, already bought)', category: 'Activities & Attractions', amount: null, currency: 'HKD', status: 'paid', kind: 'spend', day: 2, note: 'Already purchased — enter the amount from your receipt' },
+  { id: 'e-wheel', label: 'Observation Wheel (2 adults, Klook, already bought)', category: 'Activities & Attractions', amount: null, currency: 'HKD', status: 'paid', kind: 'spend', day: 2, note: 'Already purchased — enter the amount from your receipt' },
   { id: 'e-photopass', label: 'Disney PhotoPass package', category: 'Disney PhotoPass', amount: null, currency: 'HKD', status: 'estimated', kind: 'spend', day: 4, note: 'NOT yet purchased. Add the verified official price, then the actual amount.' },
 ];
 
-export const EXPENSE_CATEGORIES = ['Flights', 'Hotel', 'Transport', 'Food', 'Attractions', 'Disney PhotoPass', 'Shopping', 'Health', 'SIM / eSIM', 'Cash', 'Other'];
+export const EXPENSE_CATEGORIES = ['Flights', 'Hotel', 'Food', 'Transport', 'Activities & Attractions', 'Disney PhotoPass', 'Shopping', 'Essentials', 'OOTD', 'Other'];
 
 export const TASKS: Task[] = [
   { id: 'k-peak', title: 'Buy Peak Tram + Sky Terrace tickets and import them', group: 'Tickets', status: 'pending', due: '2026-12-06', critical: true, link: { label: 'Official site', url: LINKS.peak } },

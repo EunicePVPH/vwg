@@ -24,8 +24,11 @@ export function actState(a: Activity, all: Activity[], done: boolean, ms = nowMs
   return n >= w.e ? 'done' : n >= w.s ? 'current' : 'upcoming';
 }
 
-export const KIND_CAT: Record<Kind, string> = { travel: 'Transport', flight: 'Flights', meal: 'Food', sight: 'Attractions', show: 'Attractions', rest: 'Other', hotel: 'Hotel', task: 'Other' };
-export const catOf = (a: Activity) => a.cat ?? KIND_CAT[a.kind];
+export const KIND_CAT: Record<Kind, string> = { travel: 'Transport', flight: 'Flights', meal: 'Food', sight: 'Activities & Attractions', show: 'Activities & Attractions', rest: 'Other', hotel: 'Hotel', task: 'Other' };
+export const CATEGORIES = ['Flights', 'Hotel', 'Food', 'Transport', 'Activities & Attractions', 'Disney PhotoPass', 'Shopping', 'Essentials', 'OOTD', 'Other'];
+/** Old category names are folded into the current list so nothing you entered is lost. */
+export const normCat = (c: string) => ({ Attractions: 'Activities & Attractions', 'SIM / eSIM': 'Essentials', Health: 'Essentials', Cash: 'Other' } as Record<string, string>)[c] ?? c;
+export const catOf = (a: Activity) => normCat(a.cat ?? KIND_CAT[a.kind]);
 
 export const dayEstimate = (acts: Activity[], day: number) => acts.filter((a) => a.day === day && a.costHKD).reduce((n, a) => n + (a.costHKD ?? 0), 0);
 export const unpricedCount = (acts: Activity[], day: number) => acts.filter((a) => a.day === day && a.costHKD === null).length;
