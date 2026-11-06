@@ -11,7 +11,7 @@ import { Btn, Card, PageHeader, SectionTitle, StatusPill, cx } from '../ui/primi
 import { EditSheet, type Field } from '../ui/EditSheet';
 import type { Activity, Currency, Expense } from '../types';
 
-const COLORS: Record<string, string> = { Flights: '#3aa8f5', Hotel: '#8f84ee', Food: '#ff6b57', Transport: '#14b8a6', 'Activities & Attractions': '#ffc83d', 'Disney PhotoPass': '#ff9fbd', Shopping: '#12284c', Essentials: '#5fd3c5', OOTD: '#c084fc', Other: '#94a3b8' };
+const COLORS: Record<string, string> = { Flights: '#3aa8f5', Hotel: '#8f84ee', Food: '#ff6b57', Transport: '#14b8a6', 'Activities & Attractions': '#ffc83d', Shopping: '#12284c', Essentials: '#5fd3c5', OOTD: '#c084fc', Other: '#94a3b8' };
 
 const FIELDS: Field[] = [
   { key: 'label', label: 'What was it for?', type: 'text' },
