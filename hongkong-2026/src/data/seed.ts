@@ -228,7 +228,7 @@ export const HOTEL: Hotel = {
 export const EXPENSES: Expense[] = [
   { id: 'e-pal', label: 'PAL domestic family tickets + seat charges', category: 'Flights', amount: 14784, currency: 'PHP', status: 'paid', kind: 'spend', note: 'Already paid' },
   { id: 'e-5j', label: 'Cebu Pacific international flights + add-ons', category: 'Flights', amount: 40815.93, currency: 'PHP', status: 'paid', kind: 'spend', note: 'Already paid' },
-  { id: 'e-hotel', label: 'Rambler Oasis Hotel (paid via Expedia)', category: 'Hotel', amount: 264.44, currency: 'USD', status: 'paid', kind: 'spend', note: 'Already paid · US$271.65 total reservation' },
+  { id: 'e-hotel', label: 'Rambler Oasis Hotel (paid via Expedia)', category: 'Hotel', amount: 264.44, currency: 'USD', status: 'paid', kind: 'spend', note: 'Already paid. Shown in pesos (converted from US$264.44 on Expedia) — tap to enter the exact pesos you were charged.' },
   { id: 'e-tax', label: 'Hotel local tax due at property', category: 'Hotel', amount: 56.6, currency: 'HKD', status: 'estimated', kind: 'spend', day: 1, note: 'Payable at check-in or check-out' },
   { id: 'e-deposit', label: 'Hotel deposit (listed HK$500 per stay)', category: 'Hotel', amount: 500, currency: 'HKD', status: 'estimated', kind: 'deposit', day: 1, note: 'Potentially refundable — not spending. Record method + refund status in Hotel.' },
   { id: 'e-cash', label: 'Planned first ATM withdrawal (Wise)', category: 'Cash', amount: 1500, currency: 'HKD', status: 'estimated', kind: 'cash', day: 1, note: 'Cash in hand, not an expense. Depends on Wise balance, ATM fees and limits.' },

@@ -4,7 +4,7 @@ import { FLIGHTS, HOTEL } from '../data/seed';
 import { useAppState, useCollection } from '../state/store';
 import { useVault } from '../state/vault';
 import { dateLabel, fmt12, fmtDur, toMin } from '../lib/time';
-import { fmtPHP, fmtUSD, hkdToPhp } from '../lib/money';
+import { fmtHKD, fmtPHP, hkdToPhp, usdToPhp } from '../lib/money';
 import { mapDir, mapNearby, mapSearch, tel } from '../lib/maps';
 import { Btn, Card, PageHeader, SectionTitle, StatusPill } from '../ui/primitives';
 import { ImportSheet } from '../ui/ImportSheet';
@@ -91,7 +91,7 @@ export function FlightsHotel() {
 
       <SectionTitle>Hotel money</SectionTitle>
       <Card className="space-y-2 p-4 text-[14px]">
-        <Row k="Total reservation" v={`${fmtUSD(hotel.totalUSD)} (Expedia)`} /><Row k="Already paid" v={fmtUSD(hotel.paidUSD)} />
+        <Row k="Total reservation" v={`${fmtPHP(usdToPhp(hotel.totalUSD, r))} · ${fmtHKD(usdToPhp(hotel.totalUSD, r) / r.hkdToPhp)} (Expedia; converted)`} /><Row k="Already paid" v={`${fmtPHP(usdToPhp(hotel.paidUSD, r))} · ${fmtHKD(usdToPhp(hotel.paidUSD, r) / r.hkdToPhp)}`} />
         <Row k="Local tax due at property" v={`HK$${owed.toFixed(2)} · ${fmtPHP(hkdToPhp(owed, r))}`} />
         <Row k="Deposit (refundable?)" v={`HK$${dep} per stay — kept separate from spending`} />
         <label className="block pt-1 font-bold text-navy">How was the deposit handled?

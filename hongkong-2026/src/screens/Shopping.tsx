@@ -14,7 +14,7 @@ const FIELDS: Field[] = [
   { key: 'when', label: 'When', type: 'select', options: [{ value: 'before', label: 'Before the trip (at home)' }, { value: 'hk', label: 'In Hong Kong' }] },
   { key: 'who', label: 'For who', type: 'select', options: SHOP_WHO.map((w) => ({ value: w, label: w })) },
   { key: 'price', label: 'Planned price (optional)', type: 'number' },
-  { key: 'currency', label: 'Currency', type: 'select', options: [{ value: 'HKD', label: 'HK$ (HKD)' }, { value: 'PHP', label: '₱ (PHP)' }, { value: 'USD', label: 'US$ (USD)' }] },
+  { key: 'currency', label: 'Currency', type: 'select', options: [{ value: 'HKD', label: 'HK$ (HKD)' }, { value: 'PHP', label: '₱ (PHP)' }] },
   { key: 'note', label: 'Note (store, size, brand…)', type: 'text' },
 ];
 

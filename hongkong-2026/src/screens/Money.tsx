@@ -4,8 +4,9 @@ import { Banknote, PiggyBank, Pencil, Plus, RefreshCw } from 'lucide-react';
 import { ACTIVITIES, DAYS, EXPENSES, EXPENSE_CATEGORIES, SHOPPING } from '../data/seed';
 import { useAppState, useChecks, useCollection, useSettings } from '../state/store';
 import { catOf, dayEstimate } from '../lib/trip';
+import { computeBudget } from '../lib/budget';
 import { currentDayId } from '../lib/time';
-import { fetchRates, fmtBoth, fmtHKD, fmtNative, fmtPHP, hkdToPhp, toHKD, DEFAULT_RATES } from '../lib/money';
+import { fetchRates, fmtBoth, fmtHKD, fmtNative, fmtPHP, fmtPHP2, hkdToPhp, toHKD, usdToPhp, DEFAULT_RATES } from '../lib/money';
 import { Btn, Card, PageHeader, SectionTitle, StatusPill, cx } from '../ui/primitives';
 import { EditSheet, type Field } from '../ui/EditSheet';
 import type { Activity, Currency, Expense } from '../types';
@@ -15,7 +16,7 @@ const COLORS: Record<string, string> = { Flights: '#3aa8f5', Hotel: '#8f84ee', T
 const FIELDS: Field[] = [
   { key: 'label', label: 'What was it for?', type: 'text' },
   { key: 'amount', label: 'Amount (leave empty if not known yet)', type: 'number' },
-  { key: 'currency', label: 'Currency', type: 'select', options: [{ value: 'HKD', label: 'HK$ (HKD)' }, { value: 'PHP', label: '₱ (PHP)' }, { value: 'USD', label: 'US$ (USD)' }] },
+  { key: 'currency', label: 'Currency', type: 'select', options: [{ value: 'HKD', label: 'HK$ (HKD)' }, { value: 'PHP', label: '₱ (PHP)' }] },
   { key: 'category', label: 'Category', type: 'select', options: EXPENSE_CATEGORIES.map((c) => ({ value: c, label: c })) },
   { key: 'status', label: 'Status', type: 'select', options: [{ value: 'actual', label: 'Spent during the trip (counts in “Spent”)' }, { value: 'estimated', label: 'Planned — not paid yet' }, { value: 'optional', label: 'Optional — only if we want' }, { value: 'paid', label: 'Paid before the trip' }] },
   { key: 'kind', label: 'Type', type: 'select', options: [{ value: 'spend', label: 'Spending' }, { value: 'deposit', label: 'Deposit (refundable, not spending)' }, { value: 'cash', label: 'Cash withdrawal (not spending)' }] },
@@ -35,33 +36,15 @@ export function Money() {
   const [fetching, setFetching] = useState(false);
 
   const hk = (e: Expense) => (e.amount ? toHKD(e.amount, e.currency, r) : 0);
-  const prepaid = exps.filter((e) => e.kind === 'spend' && e.status === 'paid').reduce((n, e) => n + hk(e), 0);
-  const upcoming = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0);
-  const actual = exps.filter((e) => e.kind === 'spend' && e.status === 'actual').reduce((n, e) => n + hk(e), 0);
-  const plannedEntries = exps.filter((e) => e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0);
-  const shopPlanned = shop.filter((i) => !checks['shop:' + i.id] && i.price).reduce((n, i) => n + toHKD(i.price!, i.currency, r), 0);
-  const planned = acts.reduce((n, a) => n + (a.costHKD ?? 0), 0) + plannedEntries + shopPlanned;
-  // Money already paid = bought before the trip + spent during the trip
-  const paidTotal = prepaid + actual;
-  // Still to spend: per category, planned minus what you already logged as spent (no double counting)
-  const remaining = (() => {
-    const est: Record<string, number> = {}; const act: Record<string, number> = {};
-    for (const a of acts) if (a.costHKD && a.priority !== 'optional') est[catOf(a)] = (est[catOf(a)] ?? 0) + a.costHKD;
-    for (const i of shop) if (!checks['shop:' + i.id] && i.price) est['Shopping'] = (est['Shopping'] ?? 0) + toHKD(i.price, i.currency, r);
-    for (const e of exps) if (e.kind === 'spend' && e.amount) { if (e.status === 'estimated') est[e.category] = (est[e.category] ?? 0) + hk(e); if (e.status === 'actual') act[e.category] = (act[e.category] ?? 0) + hk(e); }
-    return Object.keys(est).reduce((n, c) => n + Math.max(0, est[c] - (act[c] ?? 0)), 0);
-  })();
-  const optionalTotal = acts.filter((a) => a.priority === 'optional' && a.costHKD).reduce((n, a) => n + (a.costHKD ?? 0), 0) + exps.filter((e) => e.kind === 'spend' && e.status === 'optional').reduce((n, e) => n + hk(e), 0);
-  const everything = paidTotal + remaining;
+  const { prepaid, actual, paidTotal, remaining, optionalTotal, everything } = computeBudget(acts, exps, shop, checks, r);
   const paidBreakdown = (() => {
     const m = new Map<string, { cur: Set<string>; native: number; hkd: number }>();
-    for (const e of exps) if (e.kind === 'spend' && e.amount && (e.status === 'paid' || e.status === 'actual')) { const x = m.get(e.category) ?? { cur: new Set<string>(), native: 0, hkd: 0 }; x.cur.add(e.currency); x.native += e.amount; x.hkd += hk(e); m.set(e.category, x); }
+    for (const e of exps) if (e.kind === 'spend' && e.amount && (e.status === 'paid' || e.status === 'actual')) { const x = m.get(e.category) ?? { cur: new Set<string>(), native: 0, hkd: 0 }; x.cur.add(e.currency === 'USD' ? 'PHP' : e.currency); x.native += e.currency === 'USD' ? usdToPhp(e.amount, r) : e.amount; x.hkd += hk(e); m.set(e.category, x); }
     return [...m.entries()].map(([c, x]) => `${c} ${x.cur.size === 1 ? fmtNative(x.native, [...x.cur][0] as Currency) : fmtHKD(x.hkd)}`).join(' · ');
   })();
   const cash = exps.filter((e) => e.kind === 'cash').reduce((n, e) => n + hk(e), 0);
   const deposit = exps.filter((e) => e.kind === 'deposit').reduce((n, e) => n + hk(e), 0);
   const unknown = exps.filter((e) => e.amount === null).length;
-  const palPhp = exps.filter((e) => e.category === 'Flights' && e.status === 'paid').reduce((n, e) => n + (e.currency === 'PHP' ? e.amount ?? 0 : hkdToPhp(hk(e), r)), 0);
 
   const cats = useMemo(() => {
     const m: Record<string, { est: number; act: number }> = {};
@@ -152,7 +135,7 @@ export function Money() {
                   {e.kind === 'deposit' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Refundable</span>}{e.kind === 'cash' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Cash · not spending</span>}</div>
                 {e.note && <div className="mt-1 text-[12px] text-muted">{e.note}</div>}
                 {e.status === 'estimated' && e.kind === 'spend' && <button onClick={(ev) => { ev.stopPropagation(); update(e.id, { status: e.day ? 'actual' : 'paid' }); }} className="tap mt-2 rounded-xl bg-turq-soft px-3 text-[13px] font-bold text-[#0b6b61]">✓ Mark as {e.day ? 'spent' : 'paid'}</button>}</div>
-              <div className="text-right">{e.amount !== null ? <><div className="text-[15px] font-bold text-navy">{fmtNative(e.amount, e.currency)}</div><div className="text-[12px] text-muted">{e.currency === 'HKD' ? fmtPHP(hkdToPhp(e.amount, r)) : fmtHKD(hk(e))}</div></> : <div className="text-[12px] font-bold text-coral">Add price</div>}</div>
+              <div className="text-right">{e.amount !== null ? <><div className="text-[15px] font-bold text-navy">{fmtNative(e.amount, e.currency, r)}</div><div className="text-[12px] text-muted">{e.currency === 'HKD' ? fmtPHP(hkdToPhp(e.amount, r)) : fmtHKD(hk(e))}</div></> : <div className="text-[12px] font-bold text-coral">Add price</div>}</div>
             </div>
           </Card>
         ))}
@@ -160,7 +143,7 @@ export function Money() {
 
       <SectionTitle>Exchange rates</SectionTitle>
       <Card className="space-y-2 p-4 text-[14px]">
-        <div className="flex items-center gap-2"><Banknote className="text-sky" /><div>HK$1 = ₱{r.hkdToPhp.toFixed(3)} · US$1 = HK${r.usdToHkd.toFixed(3)}</div></div>
+        <div className="flex items-center gap-2"><Banknote className="text-sky" /><div>HK$1 = ₱{r.hkdToPhp.toFixed(3)}</div></div>
         <p className="text-[13px] text-muted">{r.fetchedAt ? `Live rate fetched ${new Date(r.fetchedAt).toLocaleString()}.` : r.manual ? 'Rate set by you.' : 'This is a placeholder estimate, not your Wise rate. Tap refresh when online, or set your own.'}</p>
         <div className="flex gap-2">
           <Btn variant="soft" icon={<RefreshCw size={16} className={fetching ? 'animate-spin' : ''} />} className="flex-1 text-[14px]" onClick={async () => { setFetching(true); const n = await fetchRates(); setFetching(false); if (n) setSettings({ rates: n }); else alert('Could not fetch a live rate (offline?). Your current rate is kept.'); }}>Refresh</Btn>
@@ -169,7 +152,7 @@ export function Money() {
       </Card>
 
       <EditSheet open={!!edit} onClose={() => setEdit(null)} title="Edit entry" fields={FIELDS}
-        values={edit ? { label: edit.label, amount: edit.amount, currency: edit.currency, category: edit.category, status: edit.status, kind: edit.kind, day: edit.day ?? '', note: edit.note ?? '' } : {}}
+        values={edit ? { label: edit.label, amount: edit.currency === 'USD' && edit.amount ? Math.round(usdToPhp(edit.amount, r) * 100) / 100 : edit.amount, currency: edit.currency === 'USD' ? 'PHP' : edit.currency, category: edit.category, status: edit.status, kind: edit.kind, day: edit.day ?? '', note: edit.note ?? '' } : {}}
         onSave={(v) => edit && update(edit.id, { label: String(v.label || edit.label), amount: v.amount as number | null, currency: v.currency as Currency, category: String(v.category), status: v.status as Expense['status'], kind: v.kind as Expense['kind'], day: v.day ? Number(v.day) : undefined, note: String(v.note ?? '') })}
         onDelete={edit ? () => remove(edit.id) : undefined} onRestore={edit && isSeed(edit.id) && isEdited(edit.id) ? () => restore(edit.id) : undefined} />
       <EditSheet open={adding} onClose={() => setAdding(false)} title="Add spending" saveLabel="Add" fields={FIELDS}
@@ -178,9 +161,9 @@ export function Money() {
       <EditSheet open={capEdit} onClose={() => setCapEdit(false)} title="Budget cap (pesos)" fields={[{ key: 'cap', label: 'Most we want to spend on the whole trip (₱)', type: 'number', hint: 'Counts everything: flights, hotel, tickets, food, shopping — not optional items.' }]}
         values={{ cap: capPHP }} onRestore={() => setSettings({ capPHP: 150000 })} onSave={(v) => setSettings({ capPHP: Number(v.cap) > 0 ? Number(v.cap) : capPHP })} />
       <EditSheet open={rateEdit} onClose={() => setRateEdit(false)} title="My exchange rate" fields={[
-        { key: 'hkdToPhp', label: 'Pesos for HK$1 (₱ per HK$)', type: 'number', hint: 'Use the rate your Wise app shows.' }, { key: 'usdToHkd', label: 'HK$ for US$1', type: 'number' }]}
-        values={{ hkdToPhp: r.hkdToPhp, usdToHkd: r.usdToHkd }} onRestore={() => setSettings({ rates: DEFAULT_RATES })}
-        onSave={(v) => setSettings({ rates: { hkdToPhp: Number(v.hkdToPhp) || r.hkdToPhp, usdToHkd: Number(v.usdToHkd) || r.usdToHkd, manual: true } })} />
+        { key: 'hkdToPhp', label: 'Pesos for HK$1 (₱ per HK$)', type: 'number', hint: 'Use the rate your Wise app shows.' }]}
+        values={{ hkdToPhp: r.hkdToPhp }} onRestore={() => setSettings({ rates: DEFAULT_RATES })}
+        onSave={(v) => setSettings({ rates: { hkdToPhp: Number(v.hkdToPhp) || r.hkdToPhp, usdToHkd: r.usdToHkd, manual: true } })} />
     </div>
   );
 }

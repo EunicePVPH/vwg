@@ -13,7 +13,7 @@ export function Splash({ show, onDone }: { show: boolean; onDone: () => void }) 
               <motion.path d="M20 100 Q160 -20 300 90" fill="none" stroke="#ffc83d" strokeWidth="3" strokeDasharray="6 8" strokeLinecap="round" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 1.6, ease: 'easeInOut' }} />
               <circle cx="20" cy="100" r="6" fill="#ff9fbd" /><circle cx="300" cy="90" r="6" fill="#14b8a6" />
               <motion.g initial={{ offsetDistance: '0%' }} animate={{ offsetDistance: '100%' }} transition={{ duration: 1.6, ease: 'easeInOut' }} style={{ offsetPath: 'path("M20 100 Q160 -20 300 90")', offsetRotate: 'auto' } as React.CSSProperties}>
-                <g transform="translate(-10 -10)"><path d="M10 2 L18 10 L10 18 L8 14 L2 12 L2 8 L8 6 Z" fill="#fff" /></g>
+                <g transform="scale(1.5) translate(-12 -12)"><path d="M22 12 L15 10 L9 2 L6.5 2 L9.5 10 L4 10.5 L2.5 8 L1 8 L2.5 12 L1 16 L2.5 16 L4 13.5 L9.5 14 L6.5 22 L9 22 L15 14 Z" fill="#fff" stroke="#ffc83d" strokeWidth="0.8" strokeLinejoin="round" /></g>
               </motion.g>
             </svg>
             <motion.h1 className="mt-4 text-[34px] font-bold leading-tight" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>Hong Kong 2026</motion.h1>

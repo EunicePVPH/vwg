@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, ArrowRight, Car, CloudSun, Ticket as TicketIcon, Navigation, Soup, Train, Wallet, Luggage, ClipboardCheck, FileText, CheckCircle2, Clock } from 'lucide-react';
-import { ACTIVITIES, DAYS, EXPENSES, PACKING, TASKS, TICKETS, FAMILY, LINKS } from '../data/seed';
+import { ACTIVITIES, DAYS, EXPENSES, PACKING, SHOPPING, TASKS, TICKETS, FAMILY, LINKS } from '../data/seed';
 import { useAppState, useChecks, useCollection } from '../state/store';
 import { useVault } from '../state/vault';
 import { currentDayId, dateLabel, daysUntil, DEPART_HOME, fmt12, greeting, hkClock, hkDateLong, nowMs, tripPhase } from '../lib/time';
 import { cachedWx, fetchWx, wxEmoji, wxText, type Wx } from '../lib/weather';
 import { fmtBoth, fmtHKD, fmtPHP, hkdToPhp, toHKD } from '../lib/money';
+import { computeBudget } from '../lib/budget';
 import { actState, dayEstimate, dayOf, prepaid, sortActs, tripSpend } from '../lib/trip';
 import { mapDir, mapNearby } from '../lib/maps';
 import { Card, SectionTitle, StatusPill, Btn } from '../ui/primitives';
@@ -76,6 +77,8 @@ export function Home() {
       {phase === 'during' && dayId && <TodayHero dayId={dayId} acts={acts} wx={wx} offline={offline} />}
 
       {phase === 'after' && <AfterTrip acts={acts} exps={exps} r={r} />}
+
+      <CapCard />
 
       {warnings.length > 0 && (
         <div className="space-y-2">
@@ -249,3 +252,25 @@ function AfterTrip({ acts, exps, r }: { acts: Activity[]; exps: ReturnType<typeo
   );
 }
 export { toHKD };
+
+function CapCard() {
+  const acts = useCollection<Activity>('activities', ACTIVITIES).items;
+  const exps = useCollection('expenses', EXPENSES).items;
+  const shop = useCollection('shopping', SHOPPING).items; const { checks } = useChecks();
+  const { state } = useAppState(); const r = state.settings.rates;
+  const cap = state.settings.capPHP ?? 150000;
+  const b = computeBudget(acts, exps, shop, checks, r);
+  const spent = hkdToPhp(b.paidTotal, r), planned = hkdToPhp(b.remaining, r), used = spent + planned, left = cap - used;
+  const over = left < 0, close = !over && used / cap >= 0.9;
+  return (
+    <Card onClick={() => go('more/expenses')} className="p-4">
+      <div className="flex items-baseline justify-between gap-2"><div className="text-[12px] font-bold uppercase tracking-wide text-muted">Budget cap · {fmtPHP(cap)}</div><div className="text-[12px] font-bold text-sky">Details</div></div>
+      <div className={`mt-0.5 font-display text-[24px] font-bold leading-tight ${over ? 'text-coral' : 'text-navy'}`}>{over ? `Over by ${fmtPHP(-left)}` : `${fmtPHP(left)} left`}</div>
+      <div className="mt-2 flex h-3 overflow-hidden rounded-full bg-paper">
+        <motion.div className="h-full bg-turq" initial={{ width: 0 }} animate={{ width: `${Math.min(100, (spent / cap) * 100)}%` }} transition={{ duration: 0.9 }} />
+        <motion.div className={over ? 'h-full bg-coral' : 'h-full bg-sun'} initial={{ width: 0 }} animate={{ width: `${Math.max(0, Math.min(100 - (spent / cap) * 100, (planned / cap) * 100))}%` }} transition={{ duration: 0.9, delay: 0.1 }} />
+      </div>
+      <div className="mt-1.5 text-[12px] text-muted">Spent {fmtPHP(spent)} · Planned {fmtPHP(planned)}{close ? ' · getting close!' : ''}</div>
+    </Card>
+  );
+}
