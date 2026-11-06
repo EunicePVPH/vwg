@@ -11,6 +11,7 @@ export interface Settings {
   motion: 'system' | 'off';
   rates: Rates;
   simulatedNow: string | null;
+  capPHP?: number; // total trip budget cap in pesos
   ratesAsked?: boolean;
 }
 export interface UserState {

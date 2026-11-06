@@ -31,6 +31,7 @@ export function Money() {
   const [edit, setEdit] = useState<Expense | null>(null);
   const [adding, setAdding] = useState(false);
   const [rateEdit, setRateEdit] = useState(false);
+  const [capEdit, setCapEdit] = useState(false);
   const [fetching, setFetching] = useState(false);
 
   const hk = (e: Expense) => (e.amount ? toHKD(e.amount, e.currency, r) : 0);
@@ -71,6 +72,10 @@ export function Money() {
     return Object.entries(m).filter(([c]) => c !== 'Flights' && c !== 'Other').sort((a, b) => b[1].est + b[1].act - (a[1].est + a[1].act));
   }, [acts, exps, shop, checks, r]); // eslint-disable-line react-hooks/exhaustive-deps
   const max = Math.max(1, ...cats.map(([, v]) => Math.max(v.est, v.act)));
+  const capPHP = state.settings.capPHP ?? 150000;
+  const spentPhp = hkdToPhp(paidTotal, r), plannedPhp = hkdToPhp(remaining, r), optionalPhp = hkdToPhp(optionalTotal, r);
+  const usedPhp = spentPhp + plannedPhp; const leftPhp = capPHP - usedPhp;
+  const capState = leftPhp < 0 ? 'over' : usedPhp / capPHP >= 0.9 ? 'close' : 'ok';
   const budgetPct = everything ? Math.min(1, paidTotal / everything) : 0;
 
   return (
@@ -82,6 +87,21 @@ export function Money() {
         <div className="text-[12px] font-bold uppercase tracking-wide text-white/65">Spent so far</div>
         <div className="font-display text-[34px] font-bold leading-tight text-sun">{fmtBoth(paidTotal, r)}</div>
         <div className="mt-1 text-[14px] text-white/80">{paidBreakdown}</div>
+      </Card>
+
+      <Card className="mb-3 p-4">
+        <div className="flex items-start justify-between gap-2"><div><div className="text-[12px] font-bold uppercase tracking-wide text-muted">Budget cap · whole trip</div><div className="font-display text-[26px] font-bold leading-tight text-navy">{fmtPHP(capPHP)}</div><div className="text-[13px] text-muted">≈ {fmtHKD(capPHP / r.hkdToPhp)}</div></div>
+          <button onClick={() => setCapEdit(true)} className="tap inline-flex items-center gap-1.5 rounded-xl bg-paper px-3 text-[13px] font-bold text-sky"><Pencil size={14} />Change</button></div>
+        <div className="mt-3 flex h-4 overflow-hidden rounded-full bg-paper" role="img" aria-label={`Spent ${Math.round(spentPhp)} and planned ${Math.round(plannedPhp)} of ${capPHP} pesos`}>
+          <motion.div className="h-full bg-turq" initial={{ width: 0 }} animate={{ width: `${Math.min(100, (spentPhp / capPHP) * 100)}%` }} transition={{ duration: 0.9 }} />
+          <motion.div className={cx('h-full', capState === 'over' ? 'bg-coral' : 'bg-sun')} initial={{ width: 0 }} animate={{ width: `${Math.max(0, Math.min(100 - (spentPhp / capPHP) * 100, (plannedPhp / capPHP) * 100))}%` }} transition={{ duration: 0.9, delay: 0.1 }} />
+        </div>
+        <div className="mt-1.5 flex flex-wrap gap-x-3 text-[12px] text-muted"><span><i className="mr-1 inline-block h-2 w-2 rounded-full bg-turq" />Spent {fmtPHP(spentPhp)}</span><span><i className={cx('mr-1 inline-block h-2 w-2 rounded-full', capState === 'over' ? 'bg-coral' : 'bg-sun')} />Planned {fmtPHP(plannedPhp)}</span></div>
+        <div className={cx('mt-3 rounded-2xl px-4 py-3 text-[15px] font-bold', capState === 'over' ? 'bg-coral-soft text-[#a63a2b]' : capState === 'close' ? 'bg-sun-soft text-[#6d4b00]' : 'bg-turq-soft text-[#0b6b61]')}>
+          {capState === 'over' ? `Over the cap by ${fmtPHP(-leftPhp)} — time to trim something.` : `${fmtPHP(leftPhp)} left under the cap${capState === 'close' ? ' — getting close!' : ''}`}
+        </div>
+        {optionalPhp > 0 && <p className="mt-2 text-[13px] text-muted">Optional extras ({fmtPHP(optionalPhp)}) are not counted. If you do them all you would have {leftPhp - optionalPhp >= 0 ? `${fmtPHP(leftPhp - optionalPhp)} left` : `go over by ${fmtPHP(optionalPhp - leftPhp)}`}.</p>}
+        {unknown > 0 && <p className="mt-2 text-[13px] text-muted">{unknown} item{unknown > 1 ? 's' : ''} still have no price, so the real total may be higher.</p>}
       </Card>
 
       <Card className="mb-3 flex items-center justify-between gap-3 p-4"><div><div className="text-[12px] font-bold uppercase text-muted">Spent + Planned</div><div className="text-[13px] text-muted">not counting optional</div></div><div className="text-right"><div className="font-display text-[22px] font-bold text-navy">{fmtHKD(everything)}</div><div className="text-[13px] text-muted">{fmtPHP(hkdToPhp(everything, r))}</div></div></Card>
@@ -155,6 +175,8 @@ export function Money() {
       <EditSheet open={adding} onClose={() => setAdding(false)} title="Add spending" saveLabel="Add" fields={FIELDS}
         values={{ label: '', amount: '', currency: 'HKD', category: 'Food', status: 'actual', kind: 'spend', day: currentDayId() ?? '', note: '' }}
         onSave={(v) => add({ id: 'u-' + Date.now().toString(36), label: String(v.label || 'Expense'), amount: v.amount as number | null, currency: v.currency as Currency, category: String(v.category), status: v.status as Expense['status'], kind: v.kind as Expense['kind'], day: v.day ? Number(v.day) : undefined, note: String(v.note ?? '') })} />
+      <EditSheet open={capEdit} onClose={() => setCapEdit(false)} title="Budget cap (pesos)" fields={[{ key: 'cap', label: 'Most we want to spend on the whole trip (₱)', type: 'number', hint: 'Counts everything: flights, hotel, tickets, food, shopping — not optional items.' }]}
+        values={{ cap: capPHP }} onRestore={() => setSettings({ capPHP: 150000 })} onSave={(v) => setSettings({ capPHP: Number(v.cap) > 0 ? Number(v.cap) : capPHP })} />
       <EditSheet open={rateEdit} onClose={() => setRateEdit(false)} title="My exchange rate" fields={[
         { key: 'hkdToPhp', label: 'Pesos for HK$1 (₱ per HK$)', type: 'number', hint: 'Use the rate your Wise app shows.' }, { key: 'usdToHkd', label: 'HK$ for US$1', type: 'number' }]}
         values={{ hkdToPhp: r.hkdToPhp, usdToHkd: r.usdToHkd }} onRestore={() => setSettings({ rates: DEFAULT_RATES })}
