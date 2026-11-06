@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@font-face { font-family: 'Nunito Variable'; font-style: normal; font-display: swap; font-weight: 200 1000;
+  src: url('@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Nunito Variable'; font-style: normal; font-display: swap; font-weight: 200 1000;
+  src: url('@fontsource-variable/nunito/files/nunito-latin-ext-wght-normal.woff2') format('woff2-variations');
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Baloo 2'; font-style: normal; font-display: swap; font-weight: 600;
+  src: url('@fontsource/baloo-2/files/baloo-2-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Baloo 2'; font-style: normal; font-display: swap; font-weight: 700;
+  src: url('@fontsource/baloo-2/files/baloo-2-latin-700-normal.woff2') format('woff2'); }
+
+@theme {
+  --font-sans: 'Nunito Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Baloo 2', 'Nunito Variable', system-ui, sans-serif;
+  --color-navy: #12284c;
+  --color-navy-2: #1d3a6b;
+  --color-sky: #3aa8f5;
+  --color-sky-soft: #e3f2ff;
+  --color-turq: #14b8a6;
+  --color-turq-soft: #d9f6f1;
+  --color-coral: #ff6b57;
+  --color-coral-soft: #ffe6e1;
+  --color-lav: #8f84ee;
+  --color-lav-soft: #ece9ff;
+  --color-sun: #ffc83d;
+  --color-sun-soft: #fff3cc;
+  --color-pink: #ff9fbd;
+  --color-pink-soft: #ffe5ee;
+  --color-ink: #1b2740;
+  --color-muted: #5d6b86;
+  --color-paper: #f5f9ff;
+}
+
+@layer base {
+:root { color-scheme: light; --safe-b: env(safe-area-inset-bottom, 0px); --safe-t: env(safe-area-inset-top, 0px); }
+html, body, #root { min-height: 100dvh; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--color-paper); color: var(--color-ink);
+  font-family: var(--font-sans); font-size: 16px; line-height: 1.45;
+  overflow-x: hidden; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none;
+}
+h1, h2, h3, .font-display { font-family: var(--font-display); letter-spacing: 0.1px; }
+button { font: inherit; color: inherit; touch-action: manipulation; }
+input, textarea, select { font: inherit; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 3px solid var(--color-sky); outline-offset: 2px;
+}
+a { color: inherit; }
+}
+@layer components {
+.tap { min-height: 48px; min-width: 48px; }
+.card { background: #fff; border-radius: 24px; box-shadow: 0 1px 0 rgba(18,40,76,.04), 0 8px 24px -12px rgba(18,40,76,.18); }
+.scroll-hide::-webkit-scrollbar { display: none; }
+.scroll-hide { scrollbar-width: none; }
+.safe-b { padding-bottom: calc(var(--safe-b) + 0px); }
+
+}
+@keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(255,107,87,.55);} 100% { box-shadow: 0 0 0 12px rgba(255,107,87,0);} }
+.pulse-dot { animation: pulse-ring 1.8s ease-out infinite; }
+@keyframes dash-move { to { stroke-dashoffset: -40; } }
+.route-dash { animation: dash-move 2.5s linear infinite; }
+@keyframes shimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+.shimmer { background: linear-gradient(90deg, #e8eef9 25%, #f6f9ff 50%, #e8eef9 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite linear; }
+@keyframes fly { 0% { transform: translateX(-30px); } 100% { transform: translateX(30px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+}
+html[data-motion="off"] *, html[data-motion="off"] *::before, html[data-motion="off"] *::after {
+  animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important;
+}
