@@ -1,6 +1,6 @@
 import { lazy, Suspense, useState } from 'react';
 import { Bed, Clock, Copy, ExternalLink, FileText, MapPin, Pencil, Phone, Plane, Plus, TriangleAlert, Navigation, ShoppingCart, Pill, Utensils, Train } from 'lucide-react';
-import { FLIGHTS, HOTEL } from '../data/seed';
+import { EXPENSES, FLIGHTS, HOTEL } from '../data/seed';
 import { useAppState, useCollection } from '../state/store';
 import { useVault } from '../state/vault';
 import { dateLabel, fmt12, fmtDur, toMin } from '../lib/time';
@@ -14,6 +14,7 @@ const DocViewer = lazy(() => import('./DocViewer').then((m) => ({ default: m.Doc
 
 export function FlightsHotel() {
   const { items: flights } = useCollection<Flight>('flights', FLIGHTS);
+  const hotelExp = useCollection<import('../types').Expense>('expenses', EXPENSES).items.find((e) => e.id === 'e-hotel');
   const { docs, key } = useVault();
   const { hotel, setState, state } = useAppState();
   const [imp, setImp] = useState<{ flightId?: string; folder: string } | null>(null);
@@ -25,7 +26,8 @@ export function FlightsHotel() {
   const conn = (a: Flight, b: Flight) => toMin(b.dep) - toMin(a.arr);
   const copy = async (t: string) => { try { await navigator.clipboard.writeText(t); setCopied(true); setTimeout(() => setCopied(false), 1800); } catch { prompt('Copy this address:', t); } };
   const hq = `${hotel.name}, ${hotel.address}`;
-  const owed = hotel.localTaxHKD; const dep = hotel.depositHKD;
+  const owed = hotel.localTaxHKD;
+  const paidPhp = hotelExp?.amount ? (hotelExp.currency === 'PHP' ? hotelExp.amount : hotelExp.currency === 'HKD' ? hotelExp.amount * r.hkdToPhp : usdToPhp(hotelExp.amount, r)) : usdToPhp(hotel.paidUSD, r); const dep = hotel.depositHKD;
   return (
     <div className="pb-4">
       <PageHeader title="Flights & Hotel" back="more" />
@@ -91,7 +93,7 @@ export function FlightsHotel() {
 
       <SectionTitle>Hotel money</SectionTitle>
       <Card className="space-y-2 p-4 text-[14px]">
-        <Row k="Total reservation" v={`${fmtPHP(usdToPhp(hotel.totalUSD, r))} · ${fmtHKD(usdToPhp(hotel.totalUSD, r) / r.hkdToPhp)} (Expedia; converted)`} /><Row k="Already paid" v={`${fmtPHP(usdToPhp(hotel.paidUSD, r))} · ${fmtHKD(usdToPhp(hotel.paidUSD, r) / r.hkdToPhp)}`} />
+        <Row k="Already paid" v={`${fmtPHP(paidPhp)} · ${fmtHKD(paidPhp / r.hkdToPhp)}`} /><Row k="Total incl. local tax" v={`${fmtPHP(paidPhp + owed * r.hkdToPhp)} · ${fmtHKD(paidPhp / r.hkdToPhp + owed)}`} />
         <Row k="Local tax due at property" v={`HK$${owed.toFixed(2)} · ${fmtPHP(hkdToPhp(owed, r))}`} />
         <Row k="Deposit (refundable?)" v={`HK$${dep} per stay — kept separate from spending`} />
         <label className="block pt-1 font-bold text-navy">How was the deposit handled?
