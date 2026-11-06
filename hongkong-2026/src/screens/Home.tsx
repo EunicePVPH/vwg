@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, ArrowRight, Car, CloudSun, Ticket as TicketIcon, Navigation, Soup, Train, Wallet, Luggage, ClipboardCheck, FileText, CheckCircle2, Clock } from 'lucide-react';
-import { ACTIVITIES, DAYS, EXPENSES, PACKING, SHOPPING, TASKS, TICKETS, FAMILY, LINKS } from '../data/seed';
+import { ACTIVITIES, DAYS, EXPENSES, SHOPPING, TASKS, TICKETS, FAMILY, LINKS } from '../data/seed';
 import { useAppState, useChecks, useCollection } from '../state/store';
 import { useVault } from '../state/vault';
 import { currentDayId, dateLabel, daysUntil, DEPART_HOME, fmt12, greeting, hkClock, hkDateLong, nowMs, tripPhase } from '../lib/time';
 import { cachedWx, fetchWx, wxEmoji, wxText, type Wx } from '../lib/weather';
 import { fmtBoth, fmtHKD, fmtPHP, hkdToPhp, toHKD } from '../lib/money';
 import { computeBudget } from '../lib/budget';
+import { overallPack } from '../lib/pack';
+import { INV } from '../data/pack';
 import { actState, dayEstimate, dayOf, prepaid, sortActs, tripSpend } from '../lib/trip';
 import { mapDir, mapNearby } from '../lib/maps';
 import { Card, SectionTitle, StatusPill, Btn } from '../ui/primitives';
@@ -33,14 +35,14 @@ export function Home() {
   const tasks = useCollection('tasks', TASKS).items;
   const tickets = useCollection('tickets', TICKETS).items;
   const exps = useCollection('expenses', EXPENSES).items;
-  const packing = PACKING; const { checks } = useChecks();
+  const { checks } = useChecks();
+  const packT = overallPack(useCollection('inv', INV).items);
   const { state } = useAppState(); const r = state.settings.rates;
   const { docs } = useVault();
   const { wx, offline } = useWeather();
 
   const doneTasks = tasks.filter((t) => checks['task:' + t.id]).length;
   const openTasks = tasks.filter((t) => !checks['task:' + t.id]);
-  const packed = packing.filter((p) => checks['pack:' + p.id]).length;
   const days = daysUntil(DEPART_HOME.slice(0, 10));
   const baseline = 60;
 
@@ -98,7 +100,7 @@ export function Home() {
           <div className="grid grid-cols-2 gap-3">
             <Tile icon={<TicketIcon />} tone="bg-coral-soft" title="Tickets" sub={`${tickets.filter((t) => docs.some((d) => d.ticketId === t.id)).length}/${tickets.length} with files`} to="tickets" />
             <Tile icon={<FileText />} tone="bg-sky-soft" title="Documents" sub={`${docs.length} imported`} to="more/documents" />
-            <Tile icon={<Luggage />} tone="bg-turq-soft" title="Packing" sub={`${packed}/${packing.length} packed`} to="more/packing" />
+            <Tile icon={<Luggage />} tone="bg-turq-soft" title="Packing" sub={packT.total ? `${packT.done}/${packT.total} packed` : 'Start packing'} to="more/packing" />
             <Tile icon={<Wallet />} tone="bg-lav-soft" title="Money" sub={`Paid ${fmtPHP(hkdToPhp(prepaid(exps, r), r))}`} to="more/expenses" />
             <Tile icon={<ClipboardCheck />} tone="bg-sun-soft" title="Travel Ready" sub={`${doneTasks}/${tasks.length} done`} to="more/ready" />
             <Tile icon={<CloudSun />} tone="bg-pink-soft" title="Weather" sub={wxSummary(wx)} to="more/guide" />

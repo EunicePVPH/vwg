@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Baby, Bed, Bus, CableCar, Camera, Car, Check, ChevronDown, ExternalLink, Footprints, MapPin, Moon, Navigation, Pencil, Plane, Plus, Ship, Sparkles, Star, Ticket as TicketIcon, TrainFront, TramFront, Utensils, TriangleAlert, Info, ClipboardList } from 'lucide-react';
+import { Backpack, Baby, Bed, Bus, CableCar, Camera, Car, Check, ChevronDown, ExternalLink, Footprints, MapPin, Moon, Navigation, Pencil, Plane, Plus, Ship, Sparkles, Star, Ticket as TicketIcon, TrainFront, TramFront, Utensils, TriangleAlert, Info, ClipboardList } from 'lucide-react';
 import { ACTIVITIES, ARRIVAL_CHECKLIST, DAYS, FLIGHTS, LINKS, TICKETS } from '../data/seed';
 import { useAppState, useChecks, useCollection, useNote } from '../state/store';
 import { useVault } from '../state/vault';
@@ -77,6 +77,8 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
             <div className="px-3 pt-2"><RoutePreview stops={day.route} modes={day.routeModes} color={{ sky: '#3aa8f5', coral: '#ff6b57', turq: '#14b8a6', lav: '#8f84ee', sun: '#e6a800' }[day.accent]} /></div>
             <p className="px-4 pb-3 text-[12px] text-muted">Schematic route — not to scale. Use Navigate on each stop for live directions.</p>
           </Card>
+
+          <a href={'#/more/packing/day/' + dayId} className="tap flex items-center justify-center gap-2 rounded-2xl bg-sun px-4 py-3 text-[16px] font-bold text-navy active:scale-[.98]"><Backpack size={20} />Pack Today’s Bag · Day {dayId}</a>
 
           {dayId === 5 && (
             <div className="flex gap-3 rounded-2xl bg-coral-soft p-4 text-[#8f2f21]" role="note"><TriangleAlert className="mt-0.5 shrink-0" /><div className="text-[14px]"><b>Time-sensitive connection.</b> Cebu Pacific lands at 1:30 PM; PAL leaves at 5:35 PM — 4 h 5 min on two separate bookings. Stroller return, immigration, bags and the T3 → T2 transfer all happen in that window.</div></div>

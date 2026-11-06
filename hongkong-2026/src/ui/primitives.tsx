@@ -52,17 +52,25 @@ export function PageHeader({ title, back, right, sub }: { title: string; back?: 
   );
 }
 
-/** Bottom sheet. Android's back button closes it. */
-export function Sheet({ open, onClose, title, children, tall }: { open: boolean; onClose: () => void; title: string; children: ReactNode; tall?: boolean }) {
+// Android Back closes the top sheet. Programmatic closes call history.back(); the global listener below
+// marks that resulting event as "ours" so a newly opened sheet never mistakes it for a real Back press.
+let ignorePops = 0; let skipPop = false;
+if (typeof window !== 'undefined') window.addEventListener('popstate', () => { if (ignorePops > 0) { ignorePops--; skipPop = true; } else skipPop = false; });
+export function useBackClose(open: boolean, onClose: () => void) {
   const closeRef = useRef(onClose); closeRef.current = onClose;
   useEffect(() => {
     if (!open) return;
     history.pushState({ sheet: 1 }, '');
     let popped = false;
-    const onPop = () => { popped = true; closeRef.current(); };
+    const onPop = () => { if (skipPop) return; popped = true; closeRef.current(); };
     window.addEventListener('popstate', onPop);
-    return () => { window.removeEventListener('popstate', onPop); if (!popped && history.state?.sheet) history.back(); };
+    return () => { window.removeEventListener('popstate', onPop); if (!popped && history.state?.sheet) { ignorePops++; history.back(); } };
   }, [open]);
+}
+
+/** Bottom sheet. Android's back button closes it. */
+export function Sheet({ open, onClose, title, children, tall }: { open: boolean; onClose: () => void; title: string; children: ReactNode; tall?: boolean }) {
+  useBackClose(open, onClose);
   return (
     <AnimatePresence>
       {open && (

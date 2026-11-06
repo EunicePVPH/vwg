@@ -15,7 +15,7 @@ const Maps = lazy(() => import('./screens/Maps').then((m) => ({ default: m.Maps 
 const FlightsHotel = lazy(() => import('./screens/Trip').then((m) => ({ default: m.FlightsHotel })));
 const Money = lazy(() => import('./screens/Money').then((m) => ({ default: m.Money })));
 const Ready = lazy(() => import('./screens/Ready').then((m) => ({ default: m.Ready })));
-const Packing = lazy(() => import('./screens/Ready').then((m) => ({ default: m.Packing })));
+const Packing = lazy(() => import('./screens/Packing').then((m) => ({ default: m.Packing })));
 const Shopping = lazy(() => import('./screens/Shopping').then((m) => ({ default: m.Shopping })));
 const Docs = lazy(() => import('./screens/Docs').then((m) => ({ default: m.Docs })));
 const Food = lazy(() => import('./screens/Info').then((m) => ({ default: m.Food })));
@@ -45,7 +45,7 @@ function Shell({ onLock }: { onLock: () => void }) {
   else if (tab === 'itinerary') page = <Itinerary dayArg={sub} />;
   else if (tab === 'maps') page = <Maps />;
   else if (tab === 'tickets') page = <Tickets focus={sub} />;
-  else page = sub === 'flights' ? <FlightsHotel /> : sub === 'expenses' ? <Money /> : sub === 'ready' ? <ConfettiBoundary><Ready /></ConfettiBoundary> : sub === 'packing' ? <Packing /> : sub === 'shopping' ? <Shopping />
+  else page = sub === 'flights' ? <FlightsHotel /> : sub === 'expenses' ? <Money /> : sub === 'ready' ? <ConfettiBoundary><Ready /></ConfettiBoundary> : sub === 'packing' ? <Packing param={route.slice(2)} /> : sub === 'shopping' ? <Shopping />
     : sub === 'documents' ? <Docs /> : sub === 'food' ? <Food /> : sub === 'guide' ? <Guide /> : sub === 'health' ? <Health /> : sub === 'emergency' ? <Emergency /> : sub === 'settings' ? <Settings onLock={onLock} /> : <More onLock={onLock} />;
 
   return (

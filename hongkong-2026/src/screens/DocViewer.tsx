@@ -4,7 +4,7 @@ import { ChevronLeft, ChevronRight, Minus, Plus, ShieldCheck, TriangleAlert, X, 
 import type { PDFDocumentProxy } from 'pdfjs-dist';
 import { readOriginal } from '../lib/vault';
 import { destroyPdf, openPdf } from '../lib/pdf';
-import { PlaneLoader } from '../ui/primitives';
+import { PlaneLoader, useBackClose } from '../ui/primitives';
 import type { DocMeta, DocRecord } from '../types';
 
 /**
@@ -26,13 +26,7 @@ export function DocViewer({ docs, start = 0, dataKey, onClose, title }: { docs: 
   const doc = docs[i];
 
   // Android back button closes the viewer
-  const closeRef = useRef(onClose); closeRef.current = onClose;
-  useEffect(() => {
-    history.pushState({ sheet: 1 }, '');
-    let popped = false; const onPop = () => { popped = true; closeRef.current(); };
-    window.addEventListener('popstate', onPop);
-    return () => { window.removeEventListener('popstate', onPop); if (!popped && history.state?.sheet) history.back(); };
-  }, []);
+  useBackClose(true, onClose);
 
   // keep the screen awake while a ticket is on display
   useEffect(() => {
