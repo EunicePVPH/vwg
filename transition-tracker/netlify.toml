@@ -1,0 +1,7 @@
+# Use when deploying from GitHub. In Netlify set "Base directory" to transition-tracker.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
