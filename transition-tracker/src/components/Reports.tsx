@@ -27,7 +27,7 @@ export function Reports() {
   const trend = useMemo(() => dailyTrend(obs, rid), [obs, rid]);
   const byRoutine = useMemo(() => summaryByRoutine(obs), [obs]);
   const savings = useMemo(() => estimateSavings(obs), [obs]);
-  const t = useMemo(() => paired(obs, settings.pairingRule, settings.pairingApproved), [obs, settings.pairingRule, settings.pairingApproved]);
+  const t = useMemo(() => paired(obs, settings.pairingRule, settings.pairingApproved || isDemo), [obs, settings.pairingRule, settings.pairingApproved, isDemo]);
 
   const change = pctChange(byPhase.baseline.mean, byPhase.posttest.mean);
   const diffSec = byPhase.baseline.mean != null && byPhase.posttest.mean != null ? byPhase.posttest.mean - byPhase.baseline.mean : null;
@@ -137,7 +137,7 @@ export function Reports() {
           <Panel title="Paired-samples t-test" sub="Significance level α = 0.05">
             {t.ok ? (
               <div className="stack">
-                <div className="banner banner-sky"><Info size={18} /><span>Pairing rule: same routine, observations matched in order of start time, as chosen and approved in Research setup. {t.pairs.length} pairs used. Unmatched records are left out.</span></div>
+                <div className="banner banner-sky"><Info size={18} /><span>Pairing rule: same routine, observations matched in order of start time, as chosen in Research setup{isDemo && !settings.pairingApproved ? '. In Demo Mode the adviser approval is assumed so you can preview the test. Real data needs the approval box ticked' : ' and approved'}. {t.pairs.length} pairs used. Unmatched records are left out.</span></div>
                 <dl className="kv">
                   <dt>Mean difference (post − base)</dt><dd>{fmtNum(t.result.meanDiff, 1)} sec</dd>
                   <dt>SD of differences</dt><dd>{fmtNum(t.result.sdDiff, 1)} sec</dd>

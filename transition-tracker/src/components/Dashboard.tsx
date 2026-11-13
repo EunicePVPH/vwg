@@ -131,7 +131,8 @@ export function Dashboard() {
             <ul className="checklist">
               <Step ok={isDemo || settings.readinessConfirmed} text={isDemo ? 'Readiness criterion (not needed in Demo Mode)' : settings.readinessConfirmed ? `Readiness criterion confirmed: ${settings.readinessValue}${settings.readinessType === 'percent' ? '%' : ' pupils'}` : 'Readiness criterion not confirmed yet'} />
               <Step ok={settings.phase !== 'posttest' || settings.posttestUse !== 'unset'} text={settings.posttestUse === 'unset' ? 'Posttest tracker use not chosen yet' : `Posttest: ${settings.posttestUse === 'with-tracker' ? 'with pupil display' : 'teacher stopwatch only'}`} />
-              <Step ok={settings.pairingRule !== 'unset' && settings.pairingApproved} text={settings.pairingRule === 'unset' ? 'Pairing method for t-test not chosen (test withheld)' : settings.pairingApproved ? 'Pairing method approved' : 'Pairing method not yet approved (test withheld)'} />
+              <Step ok={settings.pairingRule !== 'unset' && (settings.pairingApproved || isDemo)} text={settings.pairingRule === 'unset' ? 'Pairing method for t-test not chosen (test withheld)' : settings.pairingApproved ? 'Pairing method approved' : isDemo ? 'Pairing method chosen (approval assumed in Demo Mode only)' : 'Pairing method not yet approved (test withheld)'} />
+              {settings.prototypeDefaults && <Step ok={false} text="Prototype defaults in use. Replace with approved values." />}
             </ul>
           </Panel>
           <p className="small muted row" style={{ gap: 6 }}><TrendingDown size={16} /> Time recovered is an estimate of transition time only. It does not show learning gains.</p>

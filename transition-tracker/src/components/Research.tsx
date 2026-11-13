@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { AlertTriangle, Check, ClipboardList, EyeOff, History, MonitorPlay, Plus } from 'lucide-react';
+import { AlertTriangle, Check, ClipboardList, EyeOff, History, Info, MonitorPlay, Plus } from 'lucide-react';
 import { useStore } from '../store';
 import { fmtClock, fmtTime, localDateStr } from '../lib/format';
 import { PHASES, PHASE_LABEL, PHASE_SHORT, STATUS_LABEL, type ObsStatus, type Observation, type Phase, type PosttestUse } from '../lib/types';
@@ -30,6 +30,13 @@ function Setup() {
   return (
     <Panel data={false} title="Study setup" sub="These choices control how observations are recorded and labelled.">
       <div className="stack" style={{ gap: 22 }}>
+        {settings.prototypeDefaults && (
+          <div className="banner banner-sky" role="note">
+            <Info size={18} />
+            <div className="grow"><b>Prototype defaults in use.</b> Readiness 85%, posttest with the pupil display, and same-routine pairing were pre-filled for this demo. They are not approved research values. Replace them once your adviser confirms.</div>
+            <Button size="sm" variant="secondary" onClick={() => updateSettings({ prototypeDefaults: false })}>These are final</Button>
+          </div>
+        )}
         <div className="stack" style={{ gap: 10 }}>
           <span className="label">Current research phase</span>
           <div className="phase-cards">

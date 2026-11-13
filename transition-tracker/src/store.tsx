@@ -121,7 +121,19 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         kvGet<Observation[]>('obs:demo'),
         kvGet<ActiveSession>('active'),
       ]);
-      const merged = { ...DEFAULT_SETTINGS, ...(s ?? {}) };
+      let merged: Settings = { ...DEFAULT_SETTINGS, ...(s ?? {}) };
+      if (s && (s.settingsVersion ?? 1) < 2) {
+        // one-time upgrade to the prototype defaults, without overriding anything the teacher already chose
+        merged = {
+          ...merged,
+          settingsVersion: 2,
+          prototypeDefaults: true,
+          phase: !or || or.length === 0 ? 'intervention' : merged.phase,
+          ...(s.readinessConfirmed ? {} : { readinessType: 'percent', readinessValue: 85, readinessConfirmed: true }),
+          ...(s.posttestUse && s.posttestUse !== 'unset' ? {} : { posttestUse: 'with-tracker' }),
+          ...(s.pairingRule && s.pairingRule !== 'unset' ? {} : { pairingRule: 'routine-order' }),
+        };
+      }
       setSettings(merged);
       if (r && r.length) setRoutines(r);
       setObsReal(or ?? []);

@@ -58,6 +58,9 @@ export interface Settings {
   pairingRule: PairingRule;
   pairingApproved: boolean;
   defaultTargetSec: number;
+  settingsVersion: number;
+  /** true while the readiness / posttest / pairing choices are demo placeholders, not approved values */
+  prototypeDefaults: boolean;
 }
 
 export interface AuditEntry {
