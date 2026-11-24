@@ -1,0 +1,154 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="cv" width="1080" height="1920"></canvas>
+<script src="data.js"></script><script src="lib.js"></script>
+<script>
+// ---------- Tour Architex · Spain 2027 : SCROLL-STOPPER hook covers ----------
+const IMG = {}, BGI = {};
+const KEYS = ['hero','lions','charles','court','door','myrtles','night','beach','flam','cypress','caixa','hall','street','arch'];
+const loadImg = s => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error(s)); i.src = s; });
+const ctx = document.getElementById('cv').getContext('2d');
+const INK = C.ink, OR = C.orange, CV = C.cream, AM = C.amber;
+
+// ----- primitives
+function cover(key, z, fx, fy, filter) {
+  const im = IMG[key], s = Math.max(W / im.width, H / im.height), dw = im.width * s * z, dh = im.height * s * z;
+  ctx.save(); if (filter) ctx.filter = filter; ctx.drawImage(im, clamp(W / 2 - fx * dw, W - dw, 0), clamp(H / 2 - fy * dh, H - dh, 0), dw, dh); ctx.restore();
+}
+function scrim(y0, y1, a0, a1, rgb = '14,8,5') { const g = ctx.createLinearGradient(0, y0, 0, y1); g.addColorStop(0, `rgba(${rgb},${a0})`); g.addColorStop(1, `rgba(${rgb},${a1})`); ctx.fillStyle = g; ctx.fillRect(0, Math.min(y0, y1), W, Math.abs(y1 - y0)); }
+// sticker type: hard drop-shadow + thick outline + fill (reads at thumbnail size)
+function sticker(str, x, y, size, fill, o = {}) {
+  const f = F.disp(size), align = o.align || 'left', track = o.track == null ? 2 : o.track, sw = o.sw == null ? Math.max(10, size * 0.085) : o.sw;
+  ctx.save(); ctx.font = f; ctx.letterSpacing = track + 'px'; ctx.textAlign = 'left';
+  const w = ctx.measureText(str).width - track, ox = align === 'center' ? -w / 2 : align === 'right' ? -w : 0;
+  ctx.translate(x, y); if (o.rot) ctx.rotate(o.rot); ctx.lineJoin = 'round'; ctx.miterLimit = 2;
+  if (o.shadow !== false) { ctx.fillStyle = ctx.strokeStyle = o.shadowColor || 'rgba(0,0,0,0.6)'; ctx.lineWidth = sw; ctx.strokeText(str, ox + 7, 13); ctx.fillText(str, ox + 7, 13); }
+  if (sw > 0 && o.stroke !== null) { ctx.strokeStyle = o.stroke || INK; ctx.lineWidth = sw; ctx.strokeText(str, ox, 0); }
+  ctx.fillStyle = fill; ctx.fillText(str, ox, 0); ctx.restore(); return w;
+}
+function sstack(lines, o) { // lines: {t,size,fill,rot,opts}; returns y after
+  let y = o.y;
+  for (const l of lines) {
+    const size = fitSize(ctx, l.t, F.disp, o.maxW || 900, l.size, 2); y += size * (l.lh || 0.9);
+    sticker(l.t, o.x == null ? 90 : o.x, y, size, l.fill || CV, Object.assign({ align: o.align || 'left' }, l.opts || {})); y += size * (l.gap == null ? 0.06 : l.gap);
+  }
+  return y;
+}
+function tag(str, x, y, o = {}) { // pill label
+  const f = F.sans(o.size || 44, 800), w = measure(ctx, str, f, 4) + 70, h = (o.size || 44) * 1.9;
+  ctx.save(); ctx.translate(x + (o.cx ? 0 : w / 2), y + h / 2); ctx.rotate(o.rot || 0); ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 22; ctx.shadowOffsetY = 10;
+  roundRect(ctx, -w / 2, -h / 2, w, h, h / 2); ctx.fillStyle = o.bg || INK; ctx.fill(); ctx.shadowColor = 'transparent';
+  if (o.border) { ctx.strokeStyle = o.border; ctx.lineWidth = 5; ctx.stroke(); }
+  text(ctx, str, 0, (o.size || 44) * 0.36, { f, color: o.fg || CV, align: 'center', track: 4 }); ctx.restore(); return w;
+}
+function scribble(cx, cy, rx, ry, color, w, seed) {
+  const R = rng(seed); ctx.save(); ctx.strokeStyle = color; ctx.lineWidth = w; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 10; ctx.beginPath();
+  const n = 110; for (let i = 0; i <= n; i++) { const a = -0.5 + (i / n) * Math.PI * 2 * 1.12, k = 1 + 0.035 * Math.sin(a * 3 + seed) + (R() - 0.5) * 0.015 + 0.06 * i / n;
+    const x = cx + Math.cos(a) * rx * k, y = cy + Math.sin(a) * ry * k; i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); } ctx.stroke(); ctx.restore();
+}
+function arrow(x0, y0, qx, qy, x1, y1, color, w) {
+  const a = Math.atan2(y1 - qy, x1 - qx), hl = w * 3.4;
+  for (const [c, ww] of [[INK, w + 14], [color, w]]) {
+    ctx.save(); ctx.strokeStyle = c; ctx.fillStyle = c; ctx.lineWidth = ww; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(qx, qy, x1, y1); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x1 + Math.cos(a) * ww * 0.6, y1 + Math.sin(a) * ww * 0.6); ctx.lineTo(x1 - hl * Math.cos(a - 0.5), y1 - hl * Math.sin(a - 0.5)); ctx.lineTo(x1 - hl * Math.cos(a + 0.5), y1 - hl * Math.sin(a + 0.5)); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore();
+  }
+}
+function polaroid(key, cx, cy, w, h, rot, fx, fy, z = 1) {
+  const im = IMG[key], pad = 24; ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot);
+  ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 44; ctx.shadowOffsetY = 24; roundRect(ctx, -w / 2 - pad, -h / 2 - pad, w + 2 * pad, h + 2 * pad, 20); ctx.fillStyle = CV; ctx.fill(); ctx.shadowColor = 'transparent';
+  ctx.save(); ctx.beginPath(); ctx.rect(-w / 2, -h / 2, w, h); ctx.clip(); const s = Math.max(w / im.width, h / im.height) * z, dw = im.width * s, dh = im.height * s;
+  ctx.drawImage(im, -w / 2 + clamp(w / 2 - fx * dw, w - dw, 0), -h / 2 + clamp(h / 2 - fy * dh, h - dh, 0), dw, dh); ctx.restore();
+  ctx.save(); ctx.translate(0, -h / 2 - pad + 4); ctx.rotate(0.04); ctx.fillStyle = 'rgba(255,214,140,0.82)'; ctx.fillRect(-90, -26, 180, 52); ctx.restore(); ctx.restore();
+}
+function circlePhoto(key, cx, cy, r, fx, fy, z = 1) {
+  const im = IMG[key]; ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 20; ctx.beginPath(); ctx.arc(cx, cy, r + 18, 0, 7); ctx.fillStyle = CV; ctx.fill(); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.clip(); const s = Math.max(2 * r / im.width, 2 * r / im.height) * z, dw = im.width * s, dh = im.height * s;
+  ctx.drawImage(im, cx - r + clamp(r - fx * dw, 2 * r - dw, 0), cy - r + clamp(r - fy * dh, 2 * r - dh, 0), dw, dh); ctx.restore();
+}
+function finish(seed, vig = 0.3) {
+  ctx.save(); ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = 'rgba(255,170,90,0.08)'; ctx.fillRect(0, 0, W, H); ctx.restore();
+  const vg = ctx.createRadialGradient(540, 960, 560, 540, 960, 1250); vg.addColorStop(0, 'rgba(10,5,2,0)'); vg.addColorStop(1, `rgba(10,5,2,${vig})`); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  const g = document.createElement('canvas'); g.width = g.height = 256; const gc = g.getContext('2d'), id = gc.createImageData(256, 256), R = rng(seed);
+  for (let i = 0; i < id.data.length; i += 4) { const v = Math.floor(R() * 255); id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; } gc.putImageData(id, 0, 0);
+  ctx.save(); ctx.globalAlpha = 0.06; ctx.globalCompositeOperation = 'overlay'; ctx.fillStyle = ctx.createPattern(g, 'repeat'); ctx.fillRect(0, 0, W, H); ctx.restore();
+}
+function orangeBG() {
+  const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#FF7F22'); g.addColorStop(1, '#E4540B'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.save(); ctx.strokeStyle = 'rgba(20,12,8,0.07)'; ctx.lineWidth = 26; for (let i = -20; i < 40; i++) { ctx.beginPath(); ctx.moveTo(i * 90, 0); ctx.lineTo(i * 90 + 1500, H); ctx.stroke(); } ctx.restore();
+}
+function inkBG() { const g = ctx.createRadialGradient(540, 960, 100, 540, 960, 1300); g.addColorStop(0, '#2A1A14'); g.addColorStop(1, '#0C0706'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); }
+
+// ----- the covers
+const COVERS = {
+  // 1 curiosity + brand line
+  'H01_this_isnt_a_tour': () => { orangeBG();
+    sstack([{ t: "THIS ISN'T", size: 250, fill: INK, opts: { stroke: null, shadowColor: CV, sw: 0 } }, { t: 'A TOUR.', size: 340, fill: CV }], { y: 290 });
+    polaroid('door', 560, 1290, 600, 720, -0.05, 0.47, 0.35, 1.35);
+    tag("IT'S A JOURNEY.", 470, 1560, { bg: INK, size: 46, rot: 0.06 }); tag('SPAIN 2027', 90, 1590, { bg: CV, fg: INK, size: 40, rot: -0.05 }); },
+  // 2 scarcity
+  'H02_only_24': () => { inkBG(); ctx.save(); const g = ctx.createRadialGradient(540, 1000, 50, 540, 1000, 700); g.addColorStop(0, 'rgba(242,107,29,0.55)'); g.addColorStop(1, 'rgba(242,107,29,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
+    circlePhoto('cypress', 540, 1000, 410, 0.5, 0.45, 1.25);
+    ctx.save(); ctx.beginPath(); ctx.arc(540, 1000, 410, 0, 7); ctx.clip(); scrim(1000, 1410, 0, 0.7); ctx.restore();
+    sticker('ONLY', 540, 470, 210, AM, { align: 'center' }); sticker('24', 540, 1235, 700, CV, { align: 'center', sw: 40, track: 0 });
+    sticker('STUDENTS GET THIS SUMMER.', 540, 1480, 112, OR, { align: 'center', sw: 14 }); },
+  // 3 POV
+  'H03_pov_july_in_spain': () => { cover('hero', 1.1, 0.56, 0.5, 'saturate(1.3) contrast(1.08)'); scrim(0, 1000, 0.55, 0.1, '10,5,3'); scrim(1000, H, 0.1, 0.65, '10,5,3');
+    tag('POV:', 90, 300, { bg: INK, size: 70, rot: -0.04 });
+    sstack([{ t: "IT'S JULY.", size: 300 }, { t: "YOU'RE IN", size: 215 }, { t: 'SPAIN.', size: 420, fill: OR }], { y: 500 }); tag('JULY 12–22, 2027', 90, 1500, { bg: OR, size: 44 }); },
+  // 4 split-screen contrast
+  'H04_summer_at_home_or_this': () => {
+    ctx.fillStyle = '#26262B'; ctx.fillRect(0, 0, W, 980);
+    ctx.save(); ctx.beginPath(); ctx.moveTo(0, 940); ctx.lineTo(W, 880); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath(); ctx.clip(); cover('hero', 1.2, 0.5, 0.55, 'saturate(1.3) contrast(1.08)'); scrim(900, H, 0, 0.55, '10,5,3'); ctx.restore();
+    ctx.save(); ctx.translate(540, 910); ctx.rotate(-0.062); ctx.fillStyle = OR; ctx.fillRect(-700, -22, 1400, 44); ctx.restore();
+    sticker('ANOTHER SUMMER', 90, 440, 150, '#9B9BA2', { sw: 0, shadow: false, track: 3 }); sticker('AT HOME?', 90, 680, 300, CV, { sw: 0, shadowColor: '#000' });
+    sticker('z z z', 830, 350, 105, '#6A6A72', { sw: 0, shadow: false, rot: -0.15, track: 12 });
+    sticker('OR THIS?', 90, 1330, fitSize(ctx, 'OR THIS?', F.disp, 860, 400, 2), OR, { sw: 30 }); arrow(965, 730, 1030, 840, 965, 975, CV, 24); tag('SPAIN 2027  ·  JULY 12–22', 90, 1450, { bg: INK, size: 42 }); },
+  // 5 parent question + hand-drawn circle
+  'H05_would_you_say_yes': () => { cover('beach', 1.0, 0.6, 0.5, 'saturate(1.25) contrast(1.06)'); scrim(0, 1050, 0.78, 0.05, '8,16,22'); scrim(1050, H, 0.05, 0.6, '8,16,22');
+    tag('PARENTS:', 90, 300, { bg: OR, size: 62, rot: -0.04 });
+    sstack([{ t: 'WOULD YOU', size: 250 }, { t: 'SAY YES?', size: 400, fill: AM }], { y: 480 }); scribble(430, 1020, 410, 190, CV, 14, 3);
+    tag('SPAIN 2027  ·  4 CITIES  ·  11 DAYS', 90, 1480, { bg: INK, size: 40 }); },
+  // 6 engagement / poll grid
+  'H06_which_city_first': () => { inkBG();
+    sstack([{ t: 'WHICH CITY', size: 215 }, { t: 'FIRST?', size: 330, fill: OR }], { y: 270, x: 540, align: 'center' });
+    const tiles = [['MADRID', 'caixa', 0.45, 0.55, 1], ['GRANADA', 'charles', 0.5, 0.35, 2], ['MURCIA', null, 0, 0, 3], ['CARTAGENA', 'hall', 0.5, 0.4, 4]], S = 400;
+    tiles.forEach(([name, key, fx, fy, n], i) => { const x = i % 2 ? 560 : 120, y = i < 2 ? 800 : 1230 - 20 + 0; const ty = i < 2 ? 790 : 1210;
+      ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 14; roundRect(ctx, x, ty, S, S, 30); ctx.fillStyle = CV; ctx.fill(); ctx.restore();
+      ctx.save(); roundRect(ctx, x + 8, ty + 8, S - 16, S - 16, 24); ctx.clip();
+      if (key) { const im = IMG[key], s = Math.max((S - 16) / im.width, (S - 16) / im.height) * 1.0, dw = im.width * s, dh = im.height * s; ctx.drawImage(im, x + 8 + clamp((S - 16) / 2 - fx * dw, S - 16 - dw, 0), ty + 8 + clamp((S - 16) / 2 - fy * dh, S - 16 - dh, 0), dw, dh); }
+      else { ctx.fillStyle = '#12788A'; ctx.fillRect(x, ty, S, S); const k = Math.cos(40 * Math.PI / 180), P = (lo, la) => [x + S / 2 + (lo + 0.95) * k * 560, ty + S / 2 - (la - 37.85) * 560];
+        for (const poly of MAP.Spain) for (const ring of poly) { ctx.beginPath(); ring.forEach(([lo, la], j) => { const [px, py] = P(lo, la); j ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }); ctx.closePath(); ctx.fillStyle = C.sand; ctx.fill(); }
+        const [mx, my] = P(-1.1307, 37.9922); ctx.beginPath(); ctx.arc(mx, my, 26, 0, 7); ctx.fillStyle = OR; ctx.fill(); ctx.strokeStyle = CV; ctx.lineWidth = 8; ctx.stroke(); }
+      scrim(ty + S * 0.55, ty + S, 0, 0.75); ctx.restore();
+      text(ctx, name, x + S / 2, ty + S - 34, { f: F.sans(46, 800), align: 'center', track: 4, color: CV, shadow: { c: 'rgba(0,0,0,0.8)', b: 12, y: 3 } });
+      ctx.beginPath(); ctx.arc(x + 34, ty + 34, 38, 0, 7); ctx.fillStyle = OR; ctx.fill(); ctx.strokeStyle = CV; ctx.lineWidth = 6; ctx.stroke(); text(ctx, String(n), x + 34, ty + 52, { f: F.sans(52, 800), align: 'center', color: CV }); });
+    tag('COMMENT 1–4  ·  SPAIN 2027', 540, 1625, { cx: true, bg: OR, size: 38 }); },
+  // 7 save prompt
+  'H07_save_this': () => { cover('street', 1.0, 0.5, 0.5, 'saturate(1.25) contrast(1.06)'); scrim(0, 1000, 0.72, 0.05, '12,6,3'); scrim(1000, H, 0.05, 0.6, '12,6,3');
+    ctx.save(); ctx.translate(90, 330); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(120, 0); ctx.lineTo(120, 190); ctx.lineTo(60, 140); ctx.lineTo(0, 190); ctx.closePath(); ctx.fillStyle = OR; ctx.strokeStyle = CV; ctx.lineWidth = 12; ctx.lineJoin = 'round'; ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 20; ctx.shadowOffsetY = 8; ctx.fill(); ctx.stroke(); ctx.restore();
+    sstack([{ t: 'SAVE', size: 440 }, { t: 'THIS.', size: 440, fill: OR }], { y: 480 }); sticker('FOR SUMMER 2027', 90, 1480, 128, AM, { sw: 14 }); },
+  // 8 pattern interrupt / disbelief
+  'H08_not_a_filter': () => { cover('charles', 1.0, 0.5, 0.42, 'saturate(1.35) contrast(1.1)'); scrim(0, 900, 0.5, 0, '10,6,4'); scrim(900, H, 0, 0.6, '10,6,4');
+    sstack([{ t: 'THIS IS', size: 270 }, { t: 'NOT A', size: 330 }, { t: 'FILTER.', size: 400, fill: OR }], { y: 300 }); tag("IT'S THE ALHAMBRA  ·  GRANADA", 90, 1470, { bg: INK, size: 40 }); },
+  // 9 disbelief + activity
+  'H09_wait_flamenco': () => { orangeBG();
+    sstack([{ t: 'WAIT…', size: 380, fill: CV }, { t: 'YOU CAN DO', size: 170, fill: INK, opts: { stroke: null, shadowColor: CV, sw: 0 } }], { y: 290 });
+    polaroid('flam', 540, 1190, 760, 640, 0.045, 0.5, 0.6, 1.0);
+    sticker('FLAMENCO', 520, 1010, 190, OR, { align: 'center', rot: -0.06 }); sticker('IN SPAIN?!', 540, 1600, 190, CV, { align: 'center', rot: 0.03 }); },
+  // 10 DM call-to-action as a chat bubble
+  'H10_dm_2027_bubble': () => { ctx.drawImage(BGI.night, 0, 0, W, H); scrim(0, H, 0.55, 0.7, '8,4,3');
+    sticker('WANT IN?', 540, 560, 270, CV, { align: 'center' });
+    ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.55)'; ctx.shadowBlur = 50; ctx.shadowOffsetY = 26; ctx.fillStyle = OR; roundRect(ctx, 110, 700, 860, 470, 90); ctx.fill(); ctx.beginPath(); ctx.moveTo(760, 1150); ctx.lineTo(850, 1290); ctx.lineTo(690, 1160); ctx.closePath(); ctx.fill(); ctx.restore();
+    text(ctx, 'DM', 540, 835, { f: F.sans(84, 800), align: 'center', color: INK, track: 14 }); sticker('“2027”', 540, 1130, 320, CV, { align: 'center', sw: 26, stroke: INK });
+    sticker('TO LEARN MORE', 540, 1470, 120, AM, { align: 'center', sw: 14 }); tag('SPAIN 2027  ·  24 STUDENT SPOTS', 540, 1520, { cx: true, bg: INK, size: 38 }); },
+};
+window.COVER_IDS = Object.keys(COVERS);
+window.drawCover = (id, seed) => { ctx.clearRect(0, 0, W, H); COVERS[id](); finish(seed || 7, id.startsWith('H01') || id.startsWith('H09') ? 0.18 : 0.3); };
+(async () => {
+  try {
+    await Promise.all(KEYS.map(async k => { IMG[k] = await loadImg(`media/${k}.jpg`); BGI[k] = await loadImg(`media/${k}_bg.jpg`); }));
+    await Promise.all(['700 100px "Bebas Neue"', '700 40px "League Spartan"', '800 40px "League Spartan"'].map(f => document.fonts.load(f))); await document.fonts.ready;
+    window.READY = true;
+  } catch (e) { window.ERR = String(e); }
+})();
+</script></body></html>

@@ -27,6 +27,6 @@ Only photos that looked clearly real and sharp were used. Seville, Porto and bra
 v3 fixes: the Alhambra video clip is a portrait phone recording with a rotation flag, so it now plays at its true 720x1280 (it was squashed in v2).
 Narration names are set by exact phonemes in `src/make_vo.py`: Murcia "MUR-shuh", Cartagena Spanish "kar-tah-HEH-nah".
 
-## Reel covers
-`covers/` has 11 cover images (1080x1920), each with a different hook. Text stays inside the centre area that survives Instagram's profile-grid crop.
-Rebuild with `src/covers.js` (uses `src/web/thumbs.html` and the Drive photos in `src/web/media/`, which are not committed).
+## Reel covers (scroll-stopper hooks)
+`covers/` has 10 hook covers (1080x1920): bold sticker-style type, colour blocks, tilted photo frames and hand-drawn circles/arrows. Text stays in the centre area that survives Instagram's profile-grid crop.
+Rebuild with `src/hooks.js` (uses `src/web/hooks.html` and the Drive photos in `src/web/media/`, which are not committed).
