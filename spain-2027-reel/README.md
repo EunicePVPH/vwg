@@ -19,8 +19,10 @@ arch tunnel, animated map of Madrid, Granada, Murcia and Cartagena, kayak, Alham
 1. `src/make_vo.py` makes the narration clips. 2. `src/audio.py` makes the mix. 3. `src/render.js` renders frames from `src/web/index.html`. 4. `src/mux.sh` encodes the MP4.
 `src/events.json` is the shared timeline that keeps the visuals and the sound in sync.
 
-## v2 – built from the client's own photos and video
-`Tour_Architex_Spain_2027_Student_Reel_v2_Your_Photos.mp4` uses photos and one video clip from the shared Drive folder "Tour Promo Pics"
+## v3 – built from the client's own photos and video
+`Tour_Architex_Spain_2027_Student_Reel_v3_Your_Photos.mp4` uses photos and one video clip from the shared Drive folder "Tour Promo Pics"
 (the original graphics-only cut is still `Tour_Architex_Spain_2027_Student_Reel.mp4`).
 The media itself is not committed. `src/web/scenesP.js` loads graded copies from `src/web/media/` (made from the Drive files).
 Only photos that looked clearly real and sharp were used. Seville, Porto and brand-dominated shots were left out.
+v3 fixes: the Alhambra video clip is a portrait phone recording with a rotation flag, so it now plays at its true 720x1280 (it was squashed in v2).
+Narration names are set by exact phonemes in `src/make_vo.py`: Murcia "MUR-shuh", Cartagena Spanish "kar-tah-HEH-nah".

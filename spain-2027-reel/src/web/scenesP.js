@@ -62,15 +62,11 @@ function drawP3a(ctx, t) {
 }
 // ---- scene 3b1: Alhambra gate (user's video clip)
 function drawP3b1(ctx, t) {
-  const ct = 0.35 + (t - 10.3) * 0.95, idx = clamp(Math.round(ct * 30), 0, VID.length - 1), f = VID[idx];
-  // soft background from the frame itself
-  ctx.save(); ctx.filter = 'blur(40px) brightness(0.55)'; ctx.drawImage(f, -200, -100, 1480, 2100); ctx.restore();
-  const cw = 940, ch = 1175, x = (W - cw) / 2, y = 1000 - ch / 2, sw = 576, sh = 720, z = lerp(1.0, 1.1, prog(t, 10.3, 11.6));
-  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.6)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 24; roundRect(ctx, x, y, cw, ch, 30); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
-  ctx.save(); roundRect(ctx, x, y, cw, ch, 30); ctx.clip();
-  const w2 = sw / z, h2 = sh / z; ctx.drawImage(f, 640 - w2 / 2, 360 - h2 / 2, w2, h2, x, y, cw, ch); ctx.restore();
-  ctx.save(); roundRect(ctx, x, y, cw, ch, 30); ctx.strokeStyle = 'rgba(255,242,223,0.85)'; ctx.lineWidth = 5; ctx.stroke(); ctx.restore();
-  scrim(ctx, 0, 800, 0.6, 0, '16,8,4');
+  // the clip is a true 720x1280 portrait recording: play it full-bleed, no resizing distortion
+  const ct = 0.35 + (t - 10.3) * 0.95, f = VID[clamp(Math.round(ct * 30), 0, VID.length - 1)];
+  const z = lerp(1.0, 1.08, prog(t, 10.3, 11.6)), sw = 720 / z, sh = 1280 / z;
+  ctx.drawImage(f, (720 - sw) / 2, (1280 - sh) / 2, sw, sh, 0, 0, W, H);
+  scrim(ctx, 0, 800, 0.55, 0, '16,8,4'); scrim(ctx, 1200, H, 0, 0.35, '16,8,4');
 }
 // ---- scene 3b2: arch with Roman ruins
 function drawP3b2(ctx, t) {

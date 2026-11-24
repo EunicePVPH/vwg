@@ -18,8 +18,11 @@ lines = {
  "s6b": "Your adventure starts here.",
 }
 out={}
+# exact pronunciations: Murcia = "MUR-shuh", Cartagena = Spanish "kar-tah-HEH-nah"
+PHONEMES = {"s4a": "ɛksplˈɔːɹ mˈɜːʃə ænd kˌɑɹtɑhˈɛnɑ."}
 for key,txt in lines.items():
-    a,sr=k.create(txt, voice=VOICE, speed=SPEED, lang="en-us")
+    if key in PHONEMES: a,sr=k.create(PHONEMES[key], voice=VOICE, speed=SPEED, lang="en-us", is_phonemes=True)
+    else: a,sr=k.create(txt, voice=VOICE, speed=SPEED, lang="en-us")
     a=np.asarray(a,dtype=np.float32)
     # trim silence
     thr=0.01*np.abs(a).max(); idx=np.where(np.abs(a)>thr)[0]
