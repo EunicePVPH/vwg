@@ -1,0 +1,88 @@
+<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="cv" width="1080" height="1920"></canvas>
+<script src="lib.js"></script>
+<script>
+// ---------- Tour Architex · Spain 2027 : reel cover generator ----------
+const IMG = {}, BGI = {};
+const KEYS = ['hero','lions','charles','court','door','myrtles','night','beach','flam','cypress'];
+const loadImg = s => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = () => rej(new Error(s)); i.src = s; });
+const ctx = document.getElementById('cv').getContext('2d');
+
+function fill(key, z, fx, fy) {
+  const im = IMG[key], s = Math.max(W / im.width, H / im.height), dw = im.width * s * z, dh = im.height * s * z;
+  const ox = clamp(W / 2 - fx * dw, W - dw, 0), oy = clamp(H / 2 - fy * dh, H - dh, 0); ctx.drawImage(im, ox, oy, dw, dh);
+}
+function card(key, cw, cy, fx = 0.5, fy = 0.5, z = 1.0) {
+  const im = IMG[key]; ctx.drawImage(BGI[key], 0, 0, W, H);
+  const ch = Math.min(1250, cw * im.height / im.width), x = (W - cw) / 2, y = cy - ch / 2;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.65)'; ctx.shadowBlur = 60; ctx.shadowOffsetY = 24; roundRect(ctx, x, y, cw, ch, 32); ctx.fillStyle = '#000'; ctx.fill(); ctx.restore();
+  ctx.save(); roundRect(ctx, x, y, cw, ch, 32); ctx.clip();
+  const dw = cw * z, dh = ch * z; ctx.drawImage(im, x + clamp(cw / 2 - fx * dw, cw - dw, 0), y + clamp(ch / 2 - fy * dh, ch - dh, 0), dw, dh); ctx.restore();
+  roundRect(ctx, x, y, cw, ch, 32); ctx.strokeStyle = 'rgba(255,242,223,0.9)'; ctx.lineWidth = 6; ctx.stroke();
+}
+function scrim(y0, y1, a0, a1, rgb = '14,8,5') { const g = ctx.createLinearGradient(0, y0, 0, y1); g.addColorStop(0, `rgba(${rgb},${a0})`); g.addColorStop(1, `rgba(${rgb},${a1})`); ctx.fillStyle = g; ctx.fillRect(0, Math.min(y0, y1), W, Math.abs(y1 - y0)); }
+// stacked headline. line: {t,size,color,font:'disp'|'serif'|'sans',strike,track}
+function stack(lines, o) {
+  const maxW = o.maxW || 900, x = o.align === 'center' ? 540 : 90, sd = { c: 'rgba(0,0,0,0.6)', b: 36, y: 8 };
+  const L = lines.map(l => { const fam = l.font === 'serif' ? F.serif : l.font === 'sans' ? s => F.sans(s, 800) : F.disp; const track = l.track == null ? 4 : l.track;
+    const size = fitSize(ctx, l.t, fam, maxW, l.size, track); return Object.assign({}, l, { fam, track, size, lh: size * (l.font === 'serif' ? 1.05 : 1.1) }); });
+  const total = L.reduce((a, l) => a + l.lh, 0); let y = o.anchor === 'bot' ? o.y - total : o.anchor === 'mid' ? o.y - total / 2 : o.y;
+  for (const l of L) {
+    y += l.lh; const f = l.fam(l.size);
+    if (l.hl) { const w0 = measure(ctx, l.t, f, l.track), sx0 = o.align === 'center' ? 540 - w0 / 2 : x; ctx.save(); roundRect(ctx, sx0 - 26, y - l.size * 0.84, w0 + 52, l.size * 1.0, 20); ctx.fillStyle = OR; ctx.fill(); ctx.restore(); }
+    text(ctx, l.t, x, y - l.size * 0.04, { f, color: l.color || C.cream, align: o.align || 'left', track: l.track, shadow: sd });
+    if (l.strike) { const w = measure(ctx, l.t, f, l.track), sx = o.align === 'center' ? 540 - w / 2 : x; ctx.fillStyle = C.orange; ctx.fillRect(sx - 14, y - l.size * 0.32, w + 28, Math.max(12, l.size * 0.07)); }
+  }
+  return y;
+}
+function pill(str, x, y, align = 'left') {
+  const f = F.sans(40, 800), w = measure(ctx, str, f, 5) + 80; const left = align === 'center' ? 540 - w / 2 : x;
+  ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.45)'; ctx.shadowBlur = 24; ctx.shadowOffsetY = 8; roundRect(ctx, left, y, w, 84, 42); ctx.fillStyle = C.orange; ctx.fill(); ctx.restore();
+  text(ctx, str, left + 40, y + 55, { f, color: C.cream, track: 5 });
+}
+function footer() {
+  ctx.fillStyle = C.orange; ctx.fillRect(540 - 36, 1530, 72, 4);
+  text(ctx, 'TOUR ARCHITEX', 540, 1585, { f: F.sans(34, 700), align: 'center', track: 16, color: C.cream, shadow: { c: 'rgba(0,0,0,0.7)', b: 20, y: 4 } });
+}
+function finish(seed) {
+  ctx.save(); ctx.globalCompositeOperation = 'soft-light'; ctx.fillStyle = 'rgba(255,170,90,0.10)'; ctx.fillRect(0, 0, W, H); ctx.restore();
+  const vg = ctx.createRadialGradient(540, 960, 520, 540, 960, 1250); vg.addColorStop(0, 'rgba(10,5,2,0)'); vg.addColorStop(1, 'rgba(10,5,2,0.4)'); ctx.fillStyle = vg; ctx.fillRect(0, 0, W, H);
+  const g = document.createElement('canvas'); g.width = g.height = 256; const gc = g.getContext('2d'), id = gc.createImageData(256, 256), R = rng(seed);
+  for (let i = 0; i < id.data.length; i += 4) { const v = Math.floor(R() * 255); id.data[i] = id.data[i + 1] = id.data[i + 2] = v; id.data[i + 3] = 255; } gc.putImageData(id, 0, 0);
+  ctx.save(); ctx.globalAlpha = 0.07; ctx.globalCompositeOperation = 'overlay'; ctx.fillStyle = ctx.createPattern(g, 'repeat'); ctx.fillRect(0, 0, W, H); ctx.restore();
+}
+const CV = C.cream, OR = C.orange, AM = C.amber;
+const COVERS = {
+  '01_stop_taking_tours': () => { fill('hero', 1.15, 0.58, 0.5); scrim(0, 1150, 0.82, 0, '10,5,3'); scrim(1150, H, 0, 0.6, '10,5,3');
+    stack([{ t: 'STOP TAKING', size: 160 }, { t: 'TOURS.', size: 330, color: OR, strike: true }, { t: 'START LIVING', size: 160 }, { t: 'JOURNEYS.', size: 230, color: AM }], { y: 330 }); pill('SPAIN 2027  ·  JULY 12–22', 90, 1390); },
+  '02_only_24_spots': () => { fill('door', 1.3, 0.47, 0.3); scrim(0, 1150, 0.78, 0, '14,7,4'); scrim(1150, H, 0, 0.55, '14,7,4');
+    stack([{ t: 'only', size: 170, color: AM, font: 'serif' }, { t: '24', size: 470, color: OR }, { t: 'SPOTS.', size: 230 }], { y: 310 }); pill('SPAIN 2027  ·  JULY 12–22', 90, 1350); },
+  '03_would_you_go': () => { fill('beach', 1.0, 0.6, 0.5); scrim(0, 1150, 0.75, 0, '8,20,26'); scrim(1150, H, 0, 0.5, '8,20,26');
+    stack([{ t: 'WOULD YOU', size: 230 }, { t: 'GO?', size: 430, color: OR }], { y: 310 }); pill('SPAIN 2027  ·  JULY 12–22', 90, 1060); },
+  '04_what_if_your_summer': () => { fill('hero', 1.0, 0.42, 0.52); scrim(0, 1000, 0.72, 0, '10,5,3'); scrim(1000, H, 0, 0.62, '10,5,3');
+    stack([{ t: 'WHAT IF YOUR', size: 150 }, { t: 'SUMMER', size: 330, color: OR }, { t: 'looked like this?', size: 190, color: CV, font: 'serif', track: 0 }], { y: 330 }); },
+  '05_four_cities_eleven_days': () => { fill('court', 1.3, 0.5, 0.3); scrim(0, 1150, 0.78, 0, '10,5,6'); scrim(1150, H, 0, 0.55, '10,5,6');
+    stack([{ t: '4 CITIES.', size: 270 }, { t: '11 DAYS.', size: 270, color: AM }, { t: '1 STORY.', size: 270, color: OR }], { y: 320 }); },
+  '06_more_than_a_trip': () => { card('night', 860, 1195, 0.5, 0.58, 1.0); scrim(0, 760, 0.75, 0, '12,6,4');
+    stack([{ t: 'MORE THAN', size: 205 }, { t: 'A TRIP.', size: 205, color: AM, strike: true }], { y: 280 }); },
+  '07_dance_flamenco': () => { card('flam', 760, 1262, 0.5, 0.6, 1.0); scrim(0, 820, 0.8, 0, '12,3,5');
+    stack([{ t: 'DANCE', size: 230, color: OR }, { t: 'FLAMENCO', size: 175 }, { t: 'in Spain.', size: 140, color: AM, font: 'serif', track: 0 }], { y: 270 }); },
+  '08_world_is_your_classroom': () => { fill('charles', 1.0, 0.5, 0.4); scrim(0, 1000, 0.78, 0, '14,7,4'); scrim(1000, H, 0, 0.55, '14,7,4');
+    stack([{ t: 'THE WORLD IS', size: 150 }, { t: 'YOUR', size: 150, color: AM }, { t: 'CLASSROOM.', size: 215, hl: true }], { y: 330 }); pill('SPAIN 2027', 90, 1230); },
+  '09_save_the_date': () => { fill('lions', 1.0, 0.5, 0.5); scrim(0, 1920, 0.5, 0.55, '12,6,4');
+    stack([{ t: 'SAVE THE DATE', size: 105, color: AM, track: 10 }, { t: 'JULY', size: 270 }, { t: '12–22', size: 340, color: OR }, { t: '2027', size: 190 }], { y: 330 }); pill('SPAIN  ·  24 STUDENT SPOTS', 90, 1440); },
+  '10_dm_2027': () => { fill('cypress', 1.4, 0.5, 0.25); scrim(0, 1150, 0.78, 0, '10,6,3'); scrim(1150, H, 0, 0.5, '10,6,3');
+    stack([{ t: 'DM', size: 230 }, { t: '“2027”', size: 350, color: OR }, { t: 'TO LEARN MORE', size: 130, color: AM }], { y: 320 }); pill('SPAIN 2027  ·  24 STUDENT SPOTS', 90, 1190); },
+  '11_parents_educational_travel': () => { fill('myrtles', 1.0, 0.5, 0.5); scrim(0, 1150, 0.88, 0, '14,7,4'); scrim(1100, H, 0, 0.6, '14,7,4');
+    stack([{ t: 'PARENTS:', size: 190, color: OR }, { t: 'THIS IS WHAT', size: 140 }, { t: 'EDUCATIONAL', size: 175 }, { t: 'TRAVEL LOOKS LIKE.', size: 130, hl: true }], { y: 320 }); pill('SPAIN 2027  ·  JULY 12–22', 90, 1400); },
+};
+window.COVER_IDS = Object.keys(COVERS);
+window.drawCover = (id, seed) => { ctx.clearRect(0, 0, W, H); COVERS[id](); finish(seed || 7); };
+(async () => {
+  try {
+    await Promise.all(KEYS.map(async k => { IMG[k] = await loadImg(`media/${k}.jpg`); BGI[k] = await loadImg(`media/${k}_bg.jpg`); }));
+    await Promise.all(['700 100px "Bebas Neue"', '700 40px "League Spartan"', '800 40px "League Spartan"', 'italic 500 40px "EB Garamond"'].map(f => document.fonts.load(f))); await document.fonts.ready;
+    window.READY = true;
+  } catch (e) { window.ERR = String(e); }
+})();
+</script></body></html>
