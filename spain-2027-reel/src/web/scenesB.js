@@ -3,7 +3,7 @@ const CITIES4 = [
   { n: 'MADRID', lon: -3.7038, lat: 40.4168, t: 14.0, side: 'r', dy: 0 },
   { n: 'GRANADA', lon: -3.5986, lat: 37.1773, t: 14.0, side: 'r', dy: 0 },
   { n: 'MURCIA', lon: -1.1307, lat: 37.9922, sub: '', t: 15.35, side: 'l', dy: -78 },
-  { n: 'CARTAGENA', lon: -0.9863, lat: 37.6, sub: 'ROMAN THEATRE', t: 15.75, side: 'l', dy: 64 },
+  { n: 'CARTAGENA', photo: 'hall', pf: [0.5, 0.4], lon: -0.9863, lat: 37.6, sub: 'ROMAN THEATRE', t: 15.75, side: 'l', dy: 64 },
 ];
 function s4cam(t) { return keyAt([[14.7, -1.95, 37.78, 335, 945], [17.1, -1.85, 37.8, 372, 945]], t); }
 function drawS4a(ctx, t) {
@@ -131,7 +131,9 @@ function drawS5(ctx, t) {
   ctx.restore();
   // light haze
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; g = ctx.createRadialGradient(540, 1400, 10, 540, 1400, 900); g.addColorStop(0, 'rgba(255,150,60,0.16)'); g.addColorStop(1, 'rgba(255,150,60,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, H); ctx.restore();
-  // ---- type
+  drawS5Text(ctx, t);
+}
+function drawS5Text(ctx, t) {
   const sd = { c: 'rgba(0,0,0,0.5)', b: 30, y: 6 };
   const pS = prog(t, 22.0, 22.45), pY = prog(t, 22.12, 22.6);
   letters(ctx, 'SPAIN', 540, 705, { f: F.disp(250), align: 'center', track: 10, color: C.cream, shadow: sd }, (i) => { const p = prog(t, 22.0 + i * 0.045, 22.3 + i * 0.045); return { dy: (1 - E.outExpo(p)) * 160, sc: lerp(1.5, 1, E.outBack(p, 1.4)), alpha: clamp(p * 3) }; });
@@ -160,6 +162,7 @@ function drawS6(ctx, t) {
   const sc = t - 26.0;
   let g = ctx.createRadialGradient(540, 1200, 20, 540, 1200, 1300); g.addColorStop(0, '#9A4216'); g.addColorStop(0.5, '#3D1A0C'); g.addColorStop(1, '#120A07');
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.save(); ctx.globalAlpha = 0.3; ctx.drawImage(BGI.hero, 0, 0, W, H); ctx.restore();
   // faint Spain outline
   const cam = [-3.3, 39.4, 128, 960];
   ctx.save(); ctx.globalAlpha = 0.9 * E.outCubic(prog(sc, 0.1, 1.2));
@@ -247,20 +250,20 @@ function drawOverlay(ctx, t) {
   kWord(ctx, 'EXPERIENCE.', t, 12.5, 14.9, 84, 640, { f: F.disp(bw('EXPERIENCE.')), color: C.amber, track: 6, shadow: sd });
   // scene 4
   const ink = { c: 'rgba(255,242,223,0.7)', b: 30, y: 0 };
-  const newWord = (w, a, b) => {
+  const newWord = (w, a, b, dk) => {
     if (t < a - 0.02 || t > b + 0.12) return;
     const pS = prog(t, a, a + 0.4), out = prog(t, b - 0.12, b + 0.05);
-    text(ctx, 'new', 90, 392, { f: F.serif(150), color: C.terra, alpha: E.outCubic(pS) * (1 - out), shadow: ink });
+    text(ctx, 'new', 90, 392, { f: F.serif(150), color: dk ? C.amber : C.terra, alpha: E.outCubic(pS) * (1 - out), shadow: dk ? sd : ink });
     const fs = fitSize(ctx, w, F.disp, 920, 300, 6);
-    kWord(ctx, w, t, a + 0.05, b, 84, 640, { f: F.disp(fs), color: C.ink, track: 6, shadow: ink });
+    kWord(ctx, w, t, a + 0.05, b, 84, 640, { f: F.disp(fs), color: dk ? C.cream : C.ink, track: 6, shadow: dk ? sd : ink });
   };
-  newWord('PLACES.', 15.06, 17.0); newWord('FRIENDS.', 17.06, 18.0); newWord('PERSPECTIVES.', 18.02, 19.5);
+  newWord('PLACES.', 15.06, 17.0); newWord('FRIENDS.', 17.06, 18.0, true); newWord('PERSPECTIVES.', 18.02, 19.5, true);
   if (t > 19.5 && t < 21.95) {
     const out = prog(t, 21.4, 21.9);
-    kWord(ctx, 'MORE THAN', t, 19.5, 22.2, 84, 600, { f: F.disp(250), color: C.ink, track: 6, shadow: ink }, 0.03);
+    kWord(ctx, 'MORE THAN', t, 19.5, 22.2, 84, 600, { f: F.disp(250), color: C.cream, track: 6, shadow: sd }, 0.03);
     const p = prog(t, 19.95, 20.4); const o = { f: F.disp(250), track: 6 };
     ctx.save(); ctx.globalAlpha = (1 - out);
-    text(ctx, 'A TRIP.', 84, 850 + (1 - E.outExpo(p)) * 120, Object.assign({ color: 'rgba(0,0,0,0)', stroke: { c: C.ink, w: 4 }, noFill: false, alpha: E.outCubic(p) }, o));
+    text(ctx, 'A TRIP.', 84, 850 + (1 - E.outExpo(p)) * 120, Object.assign({ color: 'rgba(0,0,0,0)', stroke: { c: C.cream, w: 6 }, noFill: false, alpha: E.outCubic(p) }, o));
     const sp = E.outExpo(prog(t, 20.7, 21.0)); ctx.fillStyle = C.orange; ctx.fillRect(70, 760, 620 * sp, 16);
     ctx.restore();
   }
@@ -268,7 +271,7 @@ function drawOverlay(ctx, t) {
 }
 
 // ---------- compositor ----------
-const SCN = [drawS1, drawS2, drawS3a, drawS3b1, drawS3b2, drawS3c, drawS4a, drawS4b, drawS4c, drawS5, drawS6];
+const SCN = [drawP1, drawS2, drawP3a, drawP3b1, drawP3b2, drawP3c, drawS4a, drawP4b, drawP4cd, drawP5, drawS6];
 const TR = [
   { a: 2.72, b: 3.12, type: 'iris' }, { a: 7.86, b: 8.10, type: 'whip', d: 1 }, { a: 10.30, b: 10.52, type: 'whip', d: 1 },
   { a: 11.40, b: 11.60, type: 'whip', d: -1 }, { a: 12.34, b: 12.52, type: 'whip', d: 1 }, { a: 14.78, b: 15.06, type: 'band' },
@@ -332,5 +335,6 @@ async function initRenderer() {
   g.putImageData(id, 0, 0);
   await Promise.all(['100px "Bebas Neue"', '700 40px "League Spartan"', '800 40px "League Spartan"', 'italic 500 40px "EB Garamond"', '600 40px "Montserrat"'].map(f => document.fonts.load(f)));
   await document.fonts.ready;
+  await loadMedia();
   window.renderFrame = renderFrame; window.READY = true;
 }

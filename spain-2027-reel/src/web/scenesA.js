@@ -52,7 +52,9 @@ function drawS1(ctx, t) {
   g = ctx.createLinearGradient(0, 0, 0, 900); g.addColorStop(0, 'rgba(20,8,4,0.55)'); g.addColorStop(1, 'rgba(20,8,4,0)');
   ctx.fillStyle = g; ctx.fillRect(-60, 0, W + 120, 900);
   ctx.restore();
-  // ---- kinetic type
+  drawS1Text(ctx, t);
+}
+function drawS1Text(ctx, t) {
   const sd = { c: 'rgba(20,8,4,0.55)', b: 40, y: 8 };
   const pe = E.inExpo(prog(t, 1.38, 1.68));
   const p1 = prog(t, -0.14, 0.30), p2 = prog(t, -0.02, 0.40);
@@ -78,10 +80,10 @@ function drawS1(ctx, t) {
 
 // ---------- SCENE 2 : the map ----------
 const CITIES = [
-  { n: 'MADRID', lon: -3.7038, lat: 40.4168, sub: 'THE CAPITAL', t: 3.5, side: 'r', dy: -4 },
-  { n: 'GRANADA', lon: -3.5986, lat: 37.1773, sub: 'THE ALHAMBRA', t: 5.12, side: 'r', dy: -2, fo: [6.85, 7.15] },
+  { n: 'MADRID', photo: 'caixa', pf: [0.45, 0.6], lon: -3.7038, lat: 40.4168, sub: 'THE CAPITAL', t: 3.5, side: 'r', dy: -4 },
+  { n: 'GRANADA', photo: 'door', pf: [0.45, 0.5], lon: -3.5986, lat: 37.1773, sub: 'THE ALHAMBRA', t: 5.12, side: 'r', dy: -2, fo: [6.85, 7.15] },
   { n: 'MURCIA', lon: -1.1307, lat: 37.9922, sub: '', t: 6.4, side: 'l', dy: -78 },
-  { n: 'CARTAGENA', lon: -0.9863, lat: 37.6, sub: 'ROMAN THEATRE', t: 7.0, side: 'l', dy: 50 },
+  { n: 'CARTAGENA', photo: 'hall', pf: [0.5, 0.4], lon: -0.9863, lat: 37.6, sub: 'ROMAN THEATRE', t: 7.0, side: 'l', dy: 50 },
 ];
 const ROUTE = [[0, 1, 3.65, 5.08], [1, 2, 5.4, 6.3], [2, 3, 6.6, 6.95]];
 const KS = Math.cos(40 * Math.PI / 180);
@@ -153,12 +155,18 @@ function drawPinLabel(ctx, t, c, cam, theme, o = {}) {
   for (let k = 0; k < 2; k++) {
     const q = ((t - c.t) * 0.9 + k * 0.5) % 1; if (t < c.t) break;
     ctx.strokeStyle = rgba(night ? '#FFC46B' : '#140C08', 0.55 * (1 - q)); ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.arc(x, y, (16 + q * 54) * big, 0, 7); ctx.stroke();
+    ctx.beginPath(); ctx.arc(x, y, ((c.photo ? 56 : 16) + q * 54) * big, 0, 7); ctx.stroke();
   }
   const pr = E.outBack(prog(t, c.t, c.t + 0.3), 3) * big;
   ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0.5)'; ctx.shadowBlur = 16; ctx.shadowOffsetY = 6;
+  if (c.photo && pr > 0.05) {
+    const R = 56 * pr; ctx.beginPath(); ctx.arc(x, y, R + 6, 0, 7); ctx.fillStyle = C.cream; ctx.fill(); ctx.shadowColor = 'transparent';
+    ctx.save(); ctx.beginPath(); ctx.arc(x, y, R, 0, 7); ctx.clip(); const im = IMG[c.photo], s = Math.max(2 * R / im.width, 2 * R / im.height) * 1.6;
+    ctx.drawImage(im, x - c.pf[0] * im.width * s, y - c.pf[1] * im.height * s, im.width * s, im.height * s); ctx.restore();
+  } else {
   ctx.fillStyle = night ? C.orange : C.ink; ctx.strokeStyle = C.cream; ctx.lineWidth = 6;
-  ctx.beginPath(); ctx.arc(x, y, 17 * pr, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore();
+  ctx.beginPath(); ctx.arc(x, y, 17 * pr, 0, 7); ctx.fill(); ctx.stroke(); }
+  ctx.restore();
   if (o.noLabel) return;
   // label card
   const labA = c.fo ? 1 - prog(t, c.fo[0], c.fo[1]) : 1; if (labA <= 0.01) return;
@@ -166,7 +174,7 @@ function drawPinLabel(ctx, t, c, cam, theme, o = {}) {
   const nf = F.sans(48, 800), sf = F.sans(23, 700);
   const nw = measure(ctx, c.n, nf, 5), sw = c.sub ? measure(ctx, c.sub, sf, 5) : 0;
   const bw = Math.max(nw, sw) + 62, bh = c.sub ? 108 : 80;
-  const left = c.side === 'r' ? x + 44 : x - 44 - bw, top = y + c.dy - bh / 2;
+  const off = c.photo ? 76 : 44, left = c.side === 'r' ? x + off : x - off - bw, top = y + c.dy - bh / 2;
   const lp = E.outExpo(prog(t, c.t + 0.08, c.t + 0.5));
   ctx.save();
   ctx.beginPath();
@@ -182,7 +190,7 @@ function drawPinLabel(ctx, t, c, cam, theme, o = {}) {
   ctx.restore();
   // leader
   ctx.strokeStyle = night ? C.cream : C.ink; ctx.lineWidth = 3; ctx.beginPath();
-  const sx = c.side === 'r' ? x + 20 : x - 20, ex = c.side === 'r' ? left : left + bw;
+  const rr_ = c.photo ? 62 : 20, sx = c.side === 'r' ? x + rr_ : x - rr_, ex = c.side === 'r' ? left : left + bw;
   ctx.moveTo(sx, y); ctx.lineTo(sx + (ex - sx) * lp, y + (top + bh / 2 - y) * lp); ctx.stroke();
   ctx.restore();
 }
