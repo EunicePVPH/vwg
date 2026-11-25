@@ -1,0 +1,47 @@
+{
+  "name": "comfort-one",
+  "brand": "Comfort One",
+  "duration": 30,
+  "fps": 30,
+  "navy": "#0A1B3F",
+  "navy2": "#10306B",
+  "accent": "#F5A83B",
+  "scenes": [
+    { "start": 0, "end": 3, "type": "hook",
+      "lines": [ { "text": "Heat is on.", "size": 128 }, { "text": "Still", "size": 150 }, { "text": "{cold?}", "size": 150 } ],
+      "card": { "kind": "thermostat", "label": "LIVING ROOM", "from": 68, "foot": "HEATING · RUNNING", "delay": 0.9 } },
+
+    { "start": 3, "end": 6, "type": "hook",
+      "lines": [ { "text": "Turning it up", "size": 124 }, { "text": "isn't always", "size": 104 }, { "text": "the {answer.}", "size": 124 } ],
+      "card": { "kind": "thermostat", "label": "LIVING ROOM", "from": 68, "to": 70, "swapAt": 1.5, "foot": "SET · +2°", "delay": 0.7 } },
+
+    { "start": 6, "end": 9, "type": "brand",
+      "sub": "Professional {HVAC} service",
+      "tag": "Westchester · Rockland · Connecticut" },
+
+    { "start": 9, "end": 13, "type": "step", "n": 1, "of": 3,
+      "lines": [ { "text": "Check the", "size": 124 }, { "text": "{system}", "size": 150 } ],
+      "card": { "kind": "checklist", "label": "SYSTEM CHECK", "sample": true,
+        "rows": [ ["Visual inspection", "Equipment and service info"], ["Thermostat settings", "Schedule and mode"], ["Safety controls", "Left in place, checked"] ] } },
+
+    { "start": 13, "end": 17, "type": "step", "n": 2, "of": 3,
+      "lines": [ { "text": "Check the", "size": 124 }, { "text": "{airflow}", "size": 150 } ],
+      "card": { "kind": "bars", "label": "AIRFLOW CHECK", "sample": true, "foot": "FILTER · REGISTERS · DUCTS",
+        "bars": [ {"l":"FILTER","h":170}, {"l":"SUPPLY","h":250,"acc":true}, {"l":"RETURN","h":210}, {"l":"ROOM 2","h":140}, {"l":"ROOM 3","h":190} ] } },
+
+    { "start": 17, "end": 21, "type": "step", "n": 3, "of": 3,
+      "lines": [ { "text": "Professional", "size": 118 }, { "text": "{HVAC care}", "size": 150 } ],
+      "card": { "kind": "progress", "label": "SERVICE VISIT NOTES", "sample": true,
+        "rows": [ ["Inspection", "DONE"], ["Measurements", "REVIEWED"], ["Checklist", "RECORDED"] ] } },
+
+    { "start": 21, "end": 26, "type": "statement",
+      "lines": [ { "text": "Comfort", "size": 150 }, { "text": "starts", "size": 150 }, { "text": "{here.}", "size": 170 } ],
+      "sub": "The right care for your home." },
+
+    { "start": 26, "end": 30, "type": "cta",
+      "services": "Heating • Cooling • Indoor Air Quality",
+      "lines": [ { "text": "Let's talk about", "size": 74 }, { "text": "your {comfort}", "size": 112 } ],
+      "button": "CONTACT US TODAY",
+      "foot": "SERVING WESTCHESTER · ROCKLAND · CT" }
+  ]
+}
