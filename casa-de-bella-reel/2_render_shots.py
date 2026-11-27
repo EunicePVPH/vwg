@@ -29,8 +29,11 @@ def load_clip(path):
     return np.frombuffer(raw, np.uint8).reshape(-1, H, W, 3)
 
 
-def sample_weights(tm, t, clip_start, nclip):
+def sample_weights(tm, t, clip_start, nclip, blend=False):
     """Source-frame weights for output time t (handles speed ramps, slow motion blending, motion blur)."""
+    if not blend:  # crisp: one real source frame, never a mix of two
+        p = min(max(round((tm.src(t) - clip_start) * FPS), 0), nclip - 1)
+        return {int(p): 1.0}
     s = tm.speed(t)
     span = (1.0 if s > 1.7 else SHUTTER) * s  # whoosh frames get a wider shutter (smooth streaks)
     ns = 1 if span < 0.6 else min(8, int(math.ceil(span)) + 1)
@@ -69,7 +72,7 @@ def render(shot):
     z0, z1 = shot.get("zoom", [1.0, 1.0])
     for k in range(total):
         t = (k - HANDLE) / FPS
-        w = sample_weights(tm, t, cs, nclip)
+        w = sample_weights(tm, t, cs, nclip, shot.get("blend", False))
         acc = None
         for i, wt in w.items():
             if wt < 1e-4:
@@ -80,12 +83,11 @@ def render(shot):
         frame = apply_grade(frame, grade)
         img = Image.fromarray(frame)
         sp = float(tm.speed(t))
-        if sp > 1.7:  # smooth the stepped ghosting of discrete motion-blur samples on fast whoosh frames
+        if shot.get("blend") and sp > 1.7:  # smooth the stepped ghosting of discrete motion-blur samples on fast whoosh frames
             img = img.filter(ImageFilter.GaussianBlur((sp - 1.7) * 6.5))
         u = min(max(t / dur, 0), 1)
         img = zoomed(img, z0 + (z1 - z0) * (u * u * (3 - 2 * u)), shot.get("zoom_anchor", (0.5, 0.5)))
-        if sp <= 1.7:
-            img = img.filter(ImageFilter.UnsharpMask(radius=1.6, percent=45, threshold=2))
+        img = img.filter(ImageFilter.UnsharpMask(radius=1.4, percent=75, threshold=2))
         mm[k] = np.asarray(img)
     mm.flush()
     print(f"{sid:3s} {total} frames  gain x{grade['gain']:.2f}  wb {np.round(grade['gains'], 3)}  "

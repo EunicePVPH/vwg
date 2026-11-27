@@ -21,7 +21,7 @@ OUT.mkdir(parents=True, exist_ok=True)
 CONTEXT = 0.6  # seconds of extra footage either side so the stabiliser can smooth the path
 SRC_LEN = 115.7
 
-PRE = ("hqdn3d=1.6:1.2:4:3,"
+PRE = ("hqdn3d=1.0:0.8:3:2,"
        "scale=1080:1931:flags=lanczos,crop=1080:1920")
 
 
