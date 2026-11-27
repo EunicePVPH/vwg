@@ -76,10 +76,12 @@
                {"text": "to welcome you.", "font": "serif_italic", "size": 100, "weight": 500, "gap": 2}]},
     {"id": "t7", "start": 23.1, "end": 27.6, "y": 1130, "scrim": 0.40,
      "lines": [{"text": "CASA DE BELLA", "font": "sans", "size": 34, "weight": 400, "tracking": 10},
-               {"text": "Book your", "font": "serif", "size": 126, "weight": 500, "gap": 26},
-               {"text": "next visit.", "font": "serif_italic", "size": 126, "weight": 500, "gap": 0},
-               {"rule": true, "gap": 30, "gap_after": 30},
-               {"text": "MAMARONECK, NY", "font": "sans", "size": 30, "weight": 400, "tracking": 9}]}
+               {"text": "Book your", "font": "serif", "size": 112, "weight": 500, "gap": 20},
+               {"text": "next visit.", "font": "serif_italic", "size": 112, "weight": 500, "gap": 0},
+               {"rule": true, "gap": 26, "gap_after": 26},
+               {"text": "MAMARONECK, NY", "font": "sans", "size": 30, "weight": 400, "tracking": 9},
+               {"text": "casadebella.co", "font": "sans", "size": 42, "weight": 400, "tracking": 3, "gap": 34},
+               {"text": "914 563 1711", "font": "sans", "size": 42, "weight": 400, "tracking": 5, "gap": 10}]}
   ],
   "grain": 2.2,
   "vignette": 0.10,

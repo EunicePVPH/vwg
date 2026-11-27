@@ -19,7 +19,7 @@ Raw file: 1:55.8, 944x528 stored with a -90 degree rotation flag (plays as 528x9
 | 0:17.3-18.7 | N2 | 0:51.95-0:52.6 | 0.49x | Pedicure chairs in gentle slow motion. |
 | 0:18.7-21.3 | T1 | 1:23.9-1:26.4 | 0.94x | Private treatment room (the sharpest interior footage). Text 6. |
 | 0:21.3-22.7 | T2 | 1:28.4-1:29.7 | 0.97x | Treatment room vanity and shelf. |
-| 0:22.7-28.0 | E | 0:18.9-0:19.7 | 0.55x easing to a stop | End card: eases to a stop on the embossed CB logo wall at reception, slow push-in, text 7, soft dip to cream. The logo touches the right edge in the raw footage itself, so it reads as a detail crop. |
+| 0:22.7-28.0 | E | 0:18.9-0:19.7 | 0.55x easing to a stop | End card: eases to a stop on the embossed CB logo wall at reception, slow push-in, text 7 (now with casadebella.co and 914 563 1711), soft dip to cream. The logo touches the right edge in the raw footage itself, so it reads as a detail crop. |
 
 ## Cut from the raw footage
 Parking lot (0:11-0:16), side wall and the camera swing (0:05.5-0:08), the long dark/white hallway and door
