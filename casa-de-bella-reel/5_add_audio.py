@@ -8,6 +8,7 @@ Outputs:
   output/casa-de-bella-reel_music_voiceover.mp4  reel + text + music + voiceover (music ducks under the voice)
 
 The voiceover is cut into its 7 lines by silence detection and each line is placed at the moment its text appears.
+Usage: python3 5_add_audio.py [music_file_in_audio/] [name_tag] [music_level_under_voice] [fade_out_seconds] [music_lufs_in_voiceover_mix]
 Edit VO_STARTS below (seconds) to move a line. The video stream is copied untouched.
 """
 import re
@@ -56,7 +57,11 @@ def segments(path, noise="-35dB", min_sil=0.28):
 
 def main():
     vo = A / "voiceover.mp3"
-    music = A / "music.mp3"
+    music = A / (sys.argv[1] if len(sys.argv) > 1 else "music.mp3")
+    tag = sys.argv[2] if len(sys.argv) > 2 else ""      # e.g. "lively" -> casa-de-bella-reel_lively_music.mp4
+    duck = float(sys.argv[3]) if len(sys.argv) > 3 else 0.55  # music level under the voice
+    fade = float(sys.argv[4]) if len(sys.argv) > 4 else 2.8   # length of the closing fade-out (s)
+    music_lufs = float(sys.argv[5]) if len(sys.argv) > 5 else None  # if set: normalise music to this loudness instead of a fixed level
     segs = segments(vo)
     for i, j in MERGE:  # lines the voice split with a short breath, e.g. 'Your beauty.' / 'Your moment.'
         segs[i:j + 1] = [(segs[i][0], segs[j][1])]
@@ -66,11 +71,11 @@ def main():
         sys.exit(1)
 
     # ---- version 1: music only
-    bed = (f"[1:a]atrim=0:{DUR},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.8,afade=t=out:st={DUR - 2.8}:d=2.8,"
-           f"loudnorm=I=-15:TP=-1.5:LRA=7[mus]")
+    bed = (f"[1:a]atrim=0:{DUR},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.8,afade=t=out:st={DUR - fade}:d={fade},"
+           f"loudnorm=I=-16:TP=-3:LRA=7,alimiter=limit=0.7:level=disabled[mus]")
     run(["ffmpeg", "-y", "-i", str(VIDEO), "-i", str(music), "-filter_complex", bed, "-map", "0:v", "-map", "[mus]",
          "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-t", str(DUR), "-movflags", "+faststart",
-         str(OUT / "casa-de-bella-reel_music.mp4")])
+         str(OUT / f"casa-de-bella-reel{'_' + tag if tag else ''}_music.mp4")])
     print("wrote music version")
 
     # ---- version 2: music + voiceover (music ducked while the voice speaks)
@@ -83,12 +88,13 @@ def main():
         labels.append(f"[v{i}]")
     fc = ";".join(parts) + ";" + "".join(labels) + f"amix=inputs={len(labels)}:normalize=0:dropout_transition=0,"
     fc += f"apad=whole_dur={DUR},atrim=0:{DUR},highpass=f=70,loudnorm=I=-15:TP=-1.5:LRA=7,asplit=2[vo][vosc];"
-    fc += (f"[1:a]atrim=0:{DUR},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.8,afade=t=out:st={DUR - 2.8}:d=2.8,volume=0.55[m];"
-           f"[m][vosc]sidechaincompress=threshold=0.02:ratio=8:attack=20:release=500:makeup=1[ducked];"
-           f"[ducked][vo]amix=inputs=2:normalize=0:dropout_transition=0,alimiter=limit=0.95[mix]")
+    level = f"loudnorm=I={music_lufs}:TP=-2:LRA=7" if music_lufs is not None else f"volume={duck}"
+    fc += (f"[1:a]atrim=0:{DUR},asetpts=PTS-STARTPTS,afade=t=in:st=0:d=0.8,afade=t=out:st={DUR - fade}:d={fade},{level}[m];"
+           f"[m][vosc]sidechaincompress=threshold=0.02:ratio=8:attack=20:release=450:makeup=1[ducked];"
+           f"[ducked][vo]amix=inputs=2:normalize=0:dropout_transition=0,alimiter=limit=0.7:level=disabled[mix]")
     run(["ffmpeg", "-y", "-i", str(VIDEO), "-i", str(music), "-i", str(vo), "-filter_complex", fc,
          "-map", "0:v", "-map", "[mix]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-t", str(DUR),
-         "-movflags", "+faststart", str(OUT / "casa-de-bella-reel_music_voiceover.mp4")])
+         "-movflags", "+faststart", str(OUT / f"casa-de-bella-reel{'_' + tag if tag else ''}_music_voiceover.mp4")])
     print("wrote music + voiceover version")
 
 

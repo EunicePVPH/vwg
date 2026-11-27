@@ -20,6 +20,8 @@ Two audio versions are built from the same picture by `5_add_audio.py`:
 
 The music and voice were generated with ElevenLabs (Music v2.5, and the "Bernadette" voice with the v4 speech model).
 The source files are in `audio/`. **Check that your ElevenLabs plan allows commercial use before posting these publicly.**
+A livelier alternative track (`audio/music_lively.mp3`, upbeat pop at 90 BPM) gives `casa-de-bella-reel_lively_music.mp4` and
+`casa-de-bella-reel_lively_music_voiceover.mp4`: `python3 5_add_audio.py music_lively.mp3 lively 0.5 1.2 -17`.
 To change the script, regenerate `audio/voiceover.mp3` with the new wording and re-run `python3 5_add_audio.py`.
 
 ## Asking for changes
