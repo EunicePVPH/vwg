@@ -12,8 +12,15 @@ edited from one raw walkthrough video. Everything is scripted so revisions are q
 
 Docs: `docs/caption.md` (caption + hashtags), `docs/edit-notes.md` (timestamps and editing decisions).
 
-Both MP4s are silent (a silent audio track is included so uploads are accepted). Add a licensed track in the
-Instagram/Facebook app. Cuts sit on a 90 BPM grid, so a track near 90 BPM will land on the beat.
+`casa-de-bella-reel.mp4` and `_clean.mp4` are silent (a silent audio track is included so uploads are accepted).
+Two audio versions are built from the same picture by `5_add_audio.py`:
+- `casa-de-bella-reel_music.mp4` - reel + text + instrumental music
+- `casa-de-bella-reel_music_voiceover.mp4` - same, plus a female voiceover reading the 7 on-screen lines
+  (music dips under the voice). Voiceover line times are in `VO_STARTS` at the top of `5_add_audio.py`.
+
+The music and voice were generated with ElevenLabs (Music v2.5, and the "Bernadette" voice with the v4 speech model).
+The source files are in `audio/`. **Check that your ElevenLabs plan allows commercial use before posting these publicly.**
+To change the script, regenerate `audio/voiceover.mp3` with the new wording and re-run `python3 5_add_audio.py`.
 
 ## Asking for changes
 Almost everything lives in **`edit.json`**:
