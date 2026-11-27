@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Banknote, PiggyBank, Pencil, Plus, RefreshCw } from 'lucide-react';
 import { ACTIVITIES, DAYS, EXPENSES, EXPENSE_CATEGORIES, FUNDING, SHOPPING, UBER_COMPARISON } from '../data/seed';
 import { useAppState, useChecks, useCollection, useSettings } from '../state/store';
-import { CATEGORIES, catOf, dayEstimate, normCat } from '../lib/trip';
+import { CATEGORIES, catOf, dayEstimate, normCat, routeAdjust } from '../lib/trip';
 import { computeBudget } from '../lib/budget';
 import { currentDayId } from '../lib/time';
 import { fetchRates, fmtBoth, fmtHKD, fmtNative, fmtPHP, fmtPHP2, hkdToPhp, toHKD, usdToPhp, DEFAULT_RATES } from '../lib/money';
@@ -36,7 +36,7 @@ export function Money() {
   const [fetching, setFetching] = useState(false);
 
   const hk = (e: Expense) => (e.amount ? toHKD(e.amount, e.currency, r) : 0);
-  const { prepaid, actual, paidTotal, remaining, optionalTotal, everything, quoted, toVerify, holds } = computeBudget(acts, exps, shop, checks, r);
+  const { prepaid, actual, paidTotal, remaining, optionalTotal, everything, quoted, toVerify, holds } = computeBudget(acts, exps, shop, checks, r, routeAdjust(acts, state.notes));
   const fund = useCollection<Funding>('funding', FUNDING);
   const [fundEdit, setFundEdit] = useState<Funding | null>(null);
   const phpOf = (e: Expense) => (e.currency === 'PHP' ? e.amount ?? 0 : hkdToPhp(e.amount ? toHKD(e.amount, e.currency, r) : 0, r));

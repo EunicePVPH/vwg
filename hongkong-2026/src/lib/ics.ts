@@ -20,7 +20,7 @@ export function buildIcs(acts: Activity[], days: Day[], opts: { alarms: number[]
   const L: string[] = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Hong Kong 2026 Family Trip//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', 'X-WR-CALNAME:Hong Kong 2026 (draft)', 'X-WR-TIMEZONE:Asia/Hong_Kong',
     'BEGIN:VTIMEZONE', 'TZID:Asia/Hong_Kong', 'BEGIN:STANDARD', 'DTSTART:19700101T000000', 'TZOFFSETFROM:+0800', 'TZOFFSETTO:+0800', 'TZNAME:HKT', 'END:STANDARD', 'END:VTIMEZONE'];
   const now = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
-  const list = acts.filter((a) => (opts.dayId ? a.day === opts.dayId : true)).sort((a, b) => a.day - b.day || a.start.localeCompare(b.start));
+  const list = acts.filter((a) => (opts.dayId !== undefined ? a.day === opts.dayId : true)).sort((a, b) => a.day - b.day || a.start.localeCompare(b.start));
   for (const a of list) {
     const date = days.find((d) => d.id === a.day)?.date; if (!date) continue;
     const endMin = a.end ? toMin(a.end) - toMin(a.start) : 30;
@@ -30,7 +30,7 @@ export function buildIcs(acts: Activity[], days: Day[], opts: { alarms: number[]
     for (const m of opts.alarms) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${esc(a.title)}`, `TRIGGER:-PT${m}M`, 'END:VALARM');
     L.push('END:VEVENT');
   }
-  if (opts.deadlines !== false && !opts.dayId) for (const d of DEADLINES) {
+  if (opts.deadlines !== false && opts.dayId === undefined) for (const d of DEADLINES) {
     const dt = new Date(Date.parse(d.at) + 8 * 3600000); const iso = dt.toISOString(); const date = iso.slice(0, 10); const hhmm = iso.slice(11, 16);
     L.push('BEGIN:VEVENT', `UID:${d.id}@hk2026.local`, `DTSTAMP:${now}`, `DTSTART;TZID=Asia/Hong_Kong:${stamp(date, hhmm)}`, `DTEND;TZID=Asia/Hong_Kong:${stamp(date, hhmm, 30)}`, `SUMMARY:${esc(d.title)}`, `DESCRIPTION:${esc(d.body)}`, 'STATUS:TENTATIVE');
     for (const m of opts.alarms) L.push('BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${esc(d.title)}`, `TRIGGER:-PT${m}M`, 'END:VALARM');

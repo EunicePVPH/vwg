@@ -27,6 +27,11 @@ export const DAYS: Day[] = [
     route: ['Hotel', 'HK Airport', 'Manila', 'Daraga', 'Goa'], routeModes: ['uber', 'plane', 'plane', 'car'], photoKey: 'harbour', accent: 'sun', summaryNote: '' },
 ];
 
+/** Day 0 = everything to do before leaving (on or before Dec 6). Kept separate so Home / Money / Packing keep their five trip days. */
+export const DAY0: Day = { id: 0, date: '2026-12-06', weekday: 'Sunday', title: 'Before You Leave', subtitle: 'Documents · eTravel · baggage · packing — on or before Dec 6',
+  route: ['Documents', 'eTravel', 'Baggage', 'Packing'], routeModes: ['walk', 'walk', 'walk'], photoKey: 'airport', accent: 'sky', summaryNote: '' };
+export const ALL_DAYS: Day[] = [DAY0, ...DAYS];
+
 export { ACTIVITIES } from './itinerary';
 
 export const TICKETS: Ticket[] = [
@@ -122,6 +127,9 @@ export const EXPENSES: Expense[] = [
   { id: 'e-palbag', label: 'PAL checked baggage (handwritten ≈)', category: 'Flights', amount: 2200, currency: 'PHP', status: 'to_verify', kind: 'spend', note: 'Booking/payment status to verify; domestic routing airline to confirm' },
   { id: 'e-tax', label: 'Hotel property tax due at property', category: 'Hotel', amount: 56.6, currency: 'HKD', status: 'to_verify', kind: 'spend', day: 1, note: 'Handwritten — confirm actual voucher / currency' },
   { id: 'e-deposit', label: 'Hotel deposit (HK$500 hold)', category: 'Hotel', amount: 500, currency: 'HKD', status: 'refundable_hold', kind: 'deposit', day: 1, note: 'Refundable hold — not trip spending if refunded' },
+  { id: 'e-pixar', label: 'Pixar Magic Passport (price discussed ~HK$149 — verify in the park)', category: 'Activities & Attractions', amount: 149, currency: 'HKD', status: 'to_verify', kind: 'spend', day: 3, note: 'Not bought. Counts nowhere until you confirm and change the status.' },
+  { id: 'e-dmeal', label: 'Disney meal voucher — adult (Lunch + Dinner + Snack, discussed)', category: 'Food', amount: 2478, currency: 'PHP', status: 'to_verify', kind: 'spend', day: 4, note: 'Discussed only, not confirmed purchased.' },
+  { id: 'e-dmeal-c', label: 'Disney meal voucher — child-sized (discussed)', category: 'Food', amount: 967, currency: 'PHP', status: 'to_verify', kind: 'spend', day: 4, note: 'Discussed only. Check the age rules for a 2-year-old before buying.' },
   { id: 'e-photopass', label: 'Disney PhotoPass', category: 'Activities & Attractions', amount: 398, currency: 'HKD', status: 'to_verify', kind: 'spend', day: 4, note: 'Handwritten — confirm purchased vs planned' },
   { id: 'e-traveltax', label: 'Aya’s travel tax', category: 'Flights', amount: null, currency: 'PHP', status: 'to_verify', kind: 'spend', note: 'Amount and payment not confirmed' },
   { id: 'e-stroller', label: 'Stroller rent + refundable deposit (faint ₱2,500)', category: 'Other', amount: 2500, currency: 'PHP', status: 'to_verify', kind: 'spend', note: 'You already own a compact stroller — possibly unnecessary. Not counted.' },

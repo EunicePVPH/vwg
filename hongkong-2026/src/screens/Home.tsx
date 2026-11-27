@@ -10,7 +10,7 @@ import { fmtBoth, fmtHKD, fmtPHP, hkdToPhp, toHKD } from '../lib/money';
 import { computeBudget } from '../lib/budget';
 import { overallPack } from '../lib/pack';
 import { INV } from '../data/pack';
-import { actState, dayEstimate, dayOf, prepaid, sortActs, tripSpend } from '../lib/trip';
+import { actState, dayEstimate, dayOf, prepaid, routeAdjust, sortActs, tripSpend } from '../lib/trip';
 import { mapDir, mapNearby } from '../lib/maps';
 import { Card, SectionTitle, StatusPill, Btn } from '../ui/primitives';
 import { Photo } from '../ui/Photo';
@@ -284,7 +284,7 @@ function CapCard() {
   const shop = useCollection('shopping', SHOPPING).items; const { checks } = useChecks();
   const { state } = useAppState(); const r = state.settings.rates;
   const cap = state.settings.capPHP ?? 150000;
-  const b = computeBudget(acts, exps, shop, checks, r);
+  const b = computeBudget(acts, exps, shop, checks, r, routeAdjust(acts, state.notes));
   const spent = hkdToPhp(b.paidTotal, r), planned = hkdToPhp(b.remaining, r), used = spent + planned, left = cap - used;
   const over = left < 0, close = !over && used / cap >= 0.9;
   return (

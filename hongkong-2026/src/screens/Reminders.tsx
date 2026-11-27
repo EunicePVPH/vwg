@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { BellRing, Check, Clock, Download, Share2, TriangleAlert } from 'lucide-react';
-import { ACTIVITIES, DAYS } from '../data/seed';
+import { ACTIVITIES, ALL_DAYS as DAYS } from '../data/seed';
 import { useCollection } from '../state/store';
 import { useRemind, showNotification } from '../state/remind';
 import { RKIND_LABEL, dueNow, upcoming, type RKind } from '../lib/reminders';
@@ -18,7 +18,7 @@ export function Reminders() {
   const [next, setNext] = useState(false);
   const [msg, setMsg] = useState('');
   const [alarms, setAlarms] = useState(true);
-  const [exportDay, setExportDay] = useState<number | 0>(0);
+  const [exportDay, setExportDay] = useState<number>(-1);
   const [perm, setPerm] = useState<string>(typeof Notification === 'undefined' ? 'unsupported' : Notification.permission);
   useEffect(() => { const t = setInterval(() => setTick((x) => x + 1), 30000); return () => clearInterval(t); }, []);
   const [, setTick] = useState(0);
@@ -33,8 +33,8 @@ export function Reminders() {
     if (p === 'granted') { set({ notify: true }); setMsg('Allowed. Alerts will show while the app is open or was recently open.'); } else setMsg('Notifications are blocked. You can allow them in Chrome’s site settings.');
   }
   async function download(share: boolean) {
-    const ics = buildIcs(acts, DAYS, { alarms: alarms ? [60, 30, 0] : [], dayId: exportDay || undefined });
-    const name = exportDay ? `hong-kong-2026-day-${exportDay}.ics` : 'hong-kong-2026-all-days.ics';
+    const ics = buildIcs(acts, DAYS, { alarms: alarms ? [60, 30, 0] : [], dayId: exportDay >= 0 ? exportDay : undefined });
+    const name = exportDay >= 0 ? `hong-kong-2026-day-${exportDay}.ics` : 'hong-kong-2026-all-days.ics';
     const file = new File([ics], name, { type: 'text/calendar' });
     if (share && navigator.canShare?.({ files: [file] })) { try { await navigator.share({ files: [file], title: 'Hong Kong 2026 calendar' }); return; } catch { /* fall back */ } }
     const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 20000);
@@ -83,7 +83,7 @@ export function Reminders() {
       <SectionTitle>Calendar export (.ics)</SectionTitle>
       <Card className="space-y-3 p-4 text-[14px]">
         <p className="text-muted">Creates a file you import yourself. Nothing is sent to your calendar automatically. Events are marked tentative where the plan still needs verification. No passport numbers, tickets or QR codes are included.</p>
-        <select className="w-full rounded-2xl border border-navy/15 bg-paper px-4 py-3" value={exportDay} onChange={(e) => setExportDay(Number(e.target.value))}><option value={0}>All days (plus deadline reminders)</option>{DAYS.map((d) => <option key={d.id} value={d.id}>Day {d.id} · {dateLabel(d.date, { weekday: 'short', day: 'numeric', month: 'short' })}</option>)}</select>
+        <select className="w-full rounded-2xl border border-navy/15 bg-paper px-4 py-3" value={exportDay} onChange={(e) => setExportDay(Number(e.target.value))}><option value={-1}>All days (plus deadline reminders)</option>{DAYS.map((d) => <option key={d.id} value={d.id}>Day {d.id} · {dateLabel(d.date, { weekday: 'short', day: 'numeric', month: 'short' })}</option>)}</select>
         <div className="flex items-center gap-3"><span className="flex-1 font-bold text-navy">Include alerts (60, 30, 0 min before)</span><Toggle label="Include calendar alerts" on={alarms} onChange={setAlarms} /></div>
         <div className="grid grid-cols-2 gap-2"><Btn icon={<Download size={17} />} onClick={() => void download(false)}>Download</Btn><Btn variant="soft" icon={<Share2 size={17} />} onClick={() => void download(true)}>Share…</Btn></div>
       </Card>

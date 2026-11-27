@@ -1,4 +1,4 @@
-export type Status = 'confirmed' | 'paid' | 'estimated' | 'pending' | 'optional' | 'verify';
+export type Status = 'confirmed' | 'paid' | 'estimated' | 'pending' | 'optional' | 'verify' | 'planned';
 export type Currency = 'HKD' | 'PHP' | 'USD';
 export type Mode = 'walk' | 'uber' | 'mtr' | 'ferry' | 'bus' | 'plane' | 'tram' | 'car' | 'cable';
 export type Kind = 'travel' | 'flight' | 'meal' | 'sight' | 'rest' | 'hotel' | 'task' | 'show';
@@ -50,7 +50,18 @@ export interface Activity {
   verify?: { label: string; url: string }[];
   expenseId?: string; // linked expense (quote / payment)
   remind?: ('leave' | 'ticket' | 'meal' | 'nap' | 'restroom' | 'last' | 'passport')[];
+  // Nov 27 itinerary & directions supplement
+  desc?: string; // what to expect
+  steps?: string[]; // numbered OFFLINE directions (plain text, work with no network)
+  fallback?: string; // if running late / delayed
+  cost?: string; // cost text — quotes, fares (always with VERIFY unless official)
+  alts?: RouteAlt[]; // alternative routes for this leg
+  carSeat?: boolean; // car journey: show the child-car-seat reminder
+  zh?: string; // station / place names in Chinese (one line)
+  sub?: string; // short collapsed summary line
+  optionalStop?: boolean; // can be skipped with the “Skip optional stop” button
 }
+export interface RouteAlt { id: string; label: string; mode: Mode; steps: string[]; cost?: string; hkd?: number; status: Status; note?: string }
 
 export interface Ticket {
   id: string;

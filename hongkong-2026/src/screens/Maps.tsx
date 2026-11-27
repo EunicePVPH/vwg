@@ -1,9 +1,10 @@
 import { lazy, Suspense, useState } from 'react';
-import { ExternalLink, Home as HomeIcon, MapPin, Map as MapIcon, Navigation, Plus, Download, FileText } from 'lucide-react';
+import { Copy, ExternalLink, Home as HomeIcon, MapPin, Map as MapIcon, Navigation, Plus, Download, FileText } from 'lucide-react';
 import { LINKS } from '../data/seed';
 import { useAppState } from '../state/store';
 import { useVault } from '../state/vault';
 import { mapDir, mapSearch } from '../lib/maps';
+import { KEY_ADDRESSES } from '../data/addresses';
 import { Btn, Card, Empty, PageHeader, SectionTitle } from '../ui/primitives';
 import { Photo } from '../ui/Photo';
 import { ImportSheet } from '../ui/ImportSheet';
@@ -19,6 +20,21 @@ const PLACES = [
   { name: 'Hong Kong International Airport', q: 'Hong Kong International Airport', url: LINKS.airport, photo: 'airport', note: 'Arrival Day 1 · departure Day 5' },
 ];
 
+function AddrRow({ k }: { k: (typeof KEY_ADDRESSES)[number] }) {
+  const [ok, setOk] = useState(false);
+  const copy = async () => {
+    let done = false;
+    try { await navigator.clipboard.writeText(k.addr); done = true; } catch { try { const el = document.createElement('textarea'); el.value = k.addr; document.body.appendChild(el); el.select(); done = document.execCommand('copy'); el.remove(); } catch { /* */ } }
+    if (done) { setOk(true); setTimeout(() => setOk(false), 1600); }
+  };
+  return (
+    <div className="flex items-start gap-3 p-3">
+      <div className="min-w-0 flex-1"><div className="text-[15px] font-bold leading-tight text-navy">{k.name}</div>{k.zh && <div className="text-[14px] text-ink" lang="zh-HK">{k.zh}</div>}<div className="text-[13px] text-muted">{k.addr}</div>{k.note && <div className="text-[12px] text-[#8a5f00]">{k.note}</div>}</div>
+      <button onClick={copy} className="tap inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-sky-soft px-3 py-2 text-[13px] font-bold text-navy"><Copy size={15} />{ok ? 'Copied ✓' : 'Copy'}</button>
+    </div>
+  );
+}
+
 export function Maps() {
   const { docs, key } = useVault();
   const { hotel } = useAppState();
@@ -31,6 +47,10 @@ export function Maps() {
       <a href={mapDir(hotel.name + ' ' + hotel.address, 'transit')} target="_blank" rel="noopener noreferrer"
         className="tap mb-4 flex items-center gap-3 rounded-3xl bg-navy p-4 text-white active:scale-[.99]"><span className="grid h-12 w-12 place-items-center rounded-2xl bg-sun text-navy"><HomeIcon /></span>
         <span className="flex-1"><span className="block text-[17px] font-bold">Return to hotel</span><span className="block text-[13px] text-white/75">{hotel.name} · {hotel.address}</span></span><Navigation /></a>
+      <SectionTitle>Key addresses (works offline)</SectionTitle>
+      <Card className="divide-y divide-navy/5">
+        {KEY_ADDRESSES.map((k) => <AddrRow key={k.id} k={k} />)}
+      </Card>
       <SectionTitle>Attractions</SectionTitle>
       <div className="space-y-3">
         {PLACES.map((p) => (

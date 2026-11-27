@@ -1,9 +1,9 @@
 import type { Activity, Day, Expense, Kind } from '../types';
 import { hkParts, nowMs, toMin, TRIP_START } from './time';
 import { toHKD, type Rates } from './money';
-import { DAYS } from '../data/seed';
+import { ALL_DAYS } from '../data/seed';
 
-export const dayOf = (id: number): Day => DAYS.find((d) => d.id === id) ?? DAYS[0];
+export const dayOf = (id: number): Day => ALL_DAYS.find((d) => d.id === id) ?? ALL_DAYS[1];
 export const sortActs = (a: Activity[]) => [...a].sort((x, y) => x.day - y.day || toMin(x.start) - toMin(y.start));
 
 const absMin = (date: string, hhmm: number) => Math.round((Date.parse(date + 'T00:00:00Z') - Date.parse(TRIP_START + 'T00:00:00Z')) / 60000) + hhmm;
@@ -38,3 +38,20 @@ export function tripSpend(exps: Expense[], r: Rates, day?: number) {
   return exps.filter((e) => e.kind === 'spend' && e.status === 'actual' && e.amount && (day === undefined || e.day === day)).reduce((n, e) => n + toHKD(e.amount!, e.currency, r), 0);
 }
 export const prepaid = (exps: Expense[], r: Rates) => exps.filter((e) => e.kind === 'spend' && e.status === 'paid' && e.amount).reduce((n, e) => n + toHKD(e.amount!, e.currency, r), 0);
+
+/** Route choice: the alternative you picked on a leg is stored as a note `route:<activity id>` (empty = the planned route). */
+export const routeKey = (id: string) => 'route:' + id;
+export const chosenAlt = (a: Activity, notes: Record<string, string>) => a.alts?.find((x) => x.id === notes[routeKey(a.id)]);
+export interface RouteAdjust { exclude: Set<string>; extraHKD: number }
+/** Only the route you SELECTED counts in the planned budget. Unselected car quotes never count; a selected alternative with a known quote counts once. */
+export function routeAdjust(acts: Activity[], notes: Record<string, string>): RouteAdjust {
+  const exclude = new Set<string>(); let extraHKD = 0;
+  for (const a of acts) {
+    const alt = chosenAlt(a, notes); if (!alt) continue;
+    const car = alt.mode === 'uber' || alt.mode === 'car';
+    if (a.expenseId && !car) exclude.add(a.expenseId);
+    if (a.expenseId && car && alt.hkd) exclude.add(a.expenseId);
+    if (car && alt.hkd) extraHKD += alt.hkd;
+  }
+  return { exclude, extraHKD };
+}

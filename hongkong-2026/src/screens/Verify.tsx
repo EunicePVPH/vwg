@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Check, ExternalLink, History, Plus, ShieldQuestion, UserRound, Wifi, WifiOff } from 'lucide-react';
-import { ACTIVITIES, DAYS } from '../data/seed';
+import { ACTIVITIES, ALL_DAYS as DAYS } from '../data/seed';
 import { LEGACY_ACTIVITIES } from '../data/legacy';
 import { GATES } from '../data/gates';
 import { useAppState, useChecks, useCollection } from '../state/store';

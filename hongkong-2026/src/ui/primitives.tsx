@@ -12,7 +12,10 @@ const STATUS: Record<Status, { label: string; cls: string }> = {
   pending: { label: 'Pending', cls: 'bg-coral-soft text-[#a63a2b]' },
   optional: { label: 'Optional', cls: 'bg-lav-soft text-[#5046b4]' },
   verify: { label: 'Needs verification', cls: 'bg-sun-soft text-[#8a5f00]' },
+  planned: { label: 'Planned', cls: 'bg-sky-soft text-[#1d5f99]' },
 };
+/** Itinerary wording — status is always readable as TEXT, never only as colour. */
+export const ITIN_LABEL: Record<Status, string> = { confirmed: 'CONFIRMED BY USER', planned: 'PLANNED', optional: 'OPTIONAL', estimated: 'ESTIMATE', verify: 'VERIFY OFFICIAL SOURCE', pending: 'PENDING', paid: 'PAID' };
 export function StatusPill({ status, label }: { status: Status; label?: string }) {
   const s = STATUS[status];
   return <span className={cx('inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[12px] font-bold leading-5 whitespace-nowrap', s.cls)}>

@@ -1,13 +1,24 @@
 import { useState } from 'react';
 import { Download, FileText, Share2, TriangleAlert, Printer } from 'lucide-react';
-import { ACTIVITIES, DAYS, EMERGENCY, EXPENSES, FLIGHTS, FUNDING, SHOPPING, TICKETS } from '../data/seed';
+import { ACTIVITIES, ALL_DAYS as DAYS, EMERGENCY, EXPENSES, FLIGHTS, FUNDING, SHOPPING, TICKETS } from '../data/seed';
 import { DAYBAG, FINALS } from '../data/pack';
 import { GATES } from '../data/gates';
 import { useAppState, useChecks, useCollection } from '../state/store';
 import { buildBookletPages, imposeBooklet, imposeOrder } from '../lib/booklet';
 import { computeBudget } from '../lib/budget';
 import { fmtHKD, fmtPHP, fmtPHP2, hkdToPhp, toHKD } from '../lib/money';
-import { normCat } from '../lib/trip';
+import { normCat, routeAdjust } from '../lib/trip';
+import { KEY_ADDRESSES } from '../data/addresses';
+
+/** Chinese text is drawn with the phone's own font into a small picture, because the standard PDF fonts cannot show Chinese. */
+async function zhPng(text: string): Promise<Uint8Array | null> {
+  try {
+    const c = document.createElement('canvas'); const ctx = c.getContext('2d'); if (!ctx) return null;
+    const font = 'bold 36px "PingFang HK","Noto Sans CJK TC","Noto Sans TC","Microsoft JhengHei",sans-serif';
+    ctx.font = font; c.width = Math.ceil(ctx.measureText(text).width) + 8; c.height = 52; ctx.font = font; ctx.fillStyle = '#000'; ctx.textBaseline = 'middle'; ctx.fillText(text, 4, 27);
+    const blob = await new Promise<Blob | null>((res) => c.toBlob(res, 'image/png')); return blob ? new Uint8Array(await blob.arrayBuffer()) : null;
+  } catch { return null; }
+}
 import { Btn, Card, PageHeader, SectionTitle, Toggle, cx } from '../ui/primitives';
 import { PdfPreview } from '../ui/PdfPreview';
 import type { Activity, EmergencyItem, Expense, Flight, Ticket } from '../types';
@@ -36,7 +47,7 @@ export function Booklet() {
   async function make() {
     setBusy(true); setErr(''); setBuilt(null);
     try {
-      const b = computeBudget(acts, exps, shop, checks, r);
+      const b = computeBudget(acts, exps, shop, checks, r, routeAdjust(acts, state.notes));
       const paidE = exps.filter((e) => e.kind === 'spend' && (e.status === 'paid' || e.status === 'actual') && e.amount);
       const php = (e: Expense) => (e.currency === 'PHP' ? e.amount ?? 0 : hkdToPhp(toHKD(e.amount ?? 0, e.currency, r), r));
       const shopP = paidE.filter((e) => normCat(e.category) === 'Shopping').reduce((n, e) => n + php(e), 0);
@@ -53,7 +64,7 @@ export function Booklet() {
         { label: 'Budget cap', value: fmtPHP(cap) }, { label: 'Left under the cap', value: fmtPHP(cap - used) },
         { label: 'Exchange rate used', value: `HK$1 = PHP ${r.hkdToPhp.toFixed(2)}${r.setAt ? ' (set ' + new Date(r.setAt).toLocaleDateString() + ')' : ''}` },
       ] : null;
-      const content = await buildBookletPages({ acts, days: DAYS, tickets, flights, hotel, dayItems, finals, gates: GATES, budget, emergency: emerg, generated: new Date().toLocaleString() });
+      const content = await buildBookletPages({ acts, days: DAYS, tickets, flights, hotel, dayItems, finals, gates: GATES, budget, emergency: emerg, generated: new Date().toLocaleString(), routeChoice: Object.fromEntries(Object.entries(state.notes).filter(([k]) => k.startsWith('route:')).map(([k, v]) => [k.slice(6), v])), keyAddresses: KEY_ADDRESSES, zhPng });
       const sheets = await imposeBooklet(content);
       const { PDFDocument } = await import('pdf-lib'); const pages = (await PDFDocument.load(content)).getPageCount();
       setBuilt({ content, sheets, pages });

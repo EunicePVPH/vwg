@@ -1,27 +1,27 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Backpack, Baby, Bed, Bus, CableCar, Camera, Car, Check, ChevronDown, ExternalLink, Footprints, MapPin, Moon, Navigation, Pencil, Plane, Plus, Ship, Sparkles, Star, Ticket as TicketIcon, TrainFront, TramFront, Utensils, TriangleAlert, Info, ClipboardList } from 'lucide-react';
-import { ACTIVITIES, ARRIVAL_CHECKLIST, DAYS, EXPENSES, FLIGHTS, LINKS, TICKETS } from '../data/seed';
+import { Backpack, Baby, Copy, SkipForward, Zap, Clock, Bed, Bus, CableCar, Camera, Car, Check, ChevronDown, ExternalLink, Footprints, MapPin, Moon, Navigation, Pencil, Plane, Plus, Ship, Sparkles, Star, Ticket as TicketIcon, TrainFront, TramFront, Utensils, TriangleAlert, Info, ClipboardList } from 'lucide-react';
+import { ACTIVITIES, ARRIVAL_CHECKLIST, ALL_DAYS as DAYS, EXPENSES, FLIGHTS, LINKS, TICKETS } from '../data/seed';
 import { useAppState, useChecks, useCollection, useNote } from '../state/store';
 import { useVault } from '../state/vault';
 import { currentDayId, dateLabel, fmt12, nowMs, tripPhase } from '../lib/time';
 import { fmtBoth, toHKD } from '../lib/money';
 import { fmtDur, toMin } from '../lib/time';
-import { actState, catOf, dayEstimate, dayOf, sortActs, unpricedCount } from '../lib/trip';
+import { actState, catOf, chosenAlt, dayEstimate, dayOf, routeKey, sortActs, unpricedCount } from '../lib/trip';
 import { mapDir, mapSearch } from '../lib/maps';
-import { Card, StatusPill, accentBg, accentSoft, cx, Btn } from '../ui/primitives';
+import { Card, StatusPill, accentBg, accentSoft, cx, Btn, ITIN_LABEL } from '../ui/primitives';
 import { Photo } from '../ui/Photo';
 import { RoutePreview } from '../ui/RoutePreview';
 import { EditSheet, type Field } from '../ui/EditSheet';
 import { go } from '../ui/router';
 import { Confetti } from '../ui/Confetti';
-import type { Activity, Expense, Kind, Mode, Priority, Status } from '../types';
+import type { Activity, Expense, Kind, Mode, Priority, RouteAlt, Status } from '../types';
 
 const MODE_ICON: Record<Mode, React.ReactNode> = { walk: <Footprints size={16} />, uber: <Car size={16} />, car: <Car size={16} />, mtr: <TrainFront size={16} />, ferry: <Ship size={16} />, bus: <Bus size={16} />, plane: <Plane size={16} />, tram: <TramFront size={16} />, cable: <CableCar size={16} /> };
 const KIND_ICON: Record<Kind, React.ReactNode> = { travel: <Navigation size={16} />, flight: <Plane size={16} />, meal: <Utensils size={16} />, sight: <Camera size={16} />, rest: <Moon size={16} />, hotel: <Bed size={16} />, task: <ClipboardList size={16} />, show: <Sparkles size={16} /> };
 
-const STATUS_LABEL: Record<Status, string> = { confirmed: 'Confirmed', paid: 'Paid', estimated: 'Estimated', pending: 'Pending', optional: 'Optional', verify: 'Needs verification' };
-const STATUS_OPTS = (['confirmed', 'estimated', 'pending', 'optional', 'verify'] as Status[]).map((s) => ({ value: s, label: STATUS_LABEL[s] }));
+const STATUS_LABEL: Record<Status, string> = { planned: 'Planned', confirmed: 'Confirmed', paid: 'Paid', estimated: 'Estimated', pending: 'Pending', optional: 'Optional', verify: 'Needs verification' };
+const STATUS_OPTS = (['confirmed', 'planned', 'estimated', 'pending', 'optional', 'verify'] as Status[]).map((s) => ({ value: s, label: ITIN_LABEL[s] }));
 const FIELDS: Field[] = [
   { key: 'title', label: 'What', type: 'text' },
   { key: 'start', label: 'Start time (Hong Kong time)', type: 'time' },
@@ -37,21 +37,33 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
   const { items: acts, update, add, remove, restore, isEdited, isSeed } = useCollection<Activity>('activities', ACTIVITIES);
   const { state } = useAppState(); const r = state.settings.rates;
   const phase = tripPhase(); const cd = currentDayId();
-  const initial = Number(dayArg) || (phase === 'during' && cd ? cd : 1);
+  const parsed = dayArg !== undefined && dayArg !== '' && !Number.isNaN(Number(dayArg)) ? Number(dayArg) : undefined;
+  const initial = parsed ?? (phase === 'during' && cd ? cd : 1);
   const [dayId, setDayId] = useState(initial);
-  useEffect(() => { if (dayArg && Number(dayArg)) setDayId(Number(dayArg)); }, [dayArg]);
+  useEffect(() => { if (parsed !== undefined) setDayId(parsed); }, [parsed]);
   const [dir, setDir] = useState(1);
   const [edit, setEdit] = useState<Activity | null>(null);
   const [adding, setAdding] = useState(false);
   const { checks, toggle } = useChecks();
   const expC = useCollection<Expense>('expenses', EXPENSES);
   const [burst, setBurst] = useState(0);
+  const { setState } = useAppState();
+  const { set: setCheck } = useChecks();
+  const [energy, setEnergy] = useNote('energy:' + dayId);
+  const [delayStr, setDelayStr] = useNote('delay:' + dayId);
+  const delay = Number(delayStr) || 0;
+  const [focus, setFocus] = useState<{ id: string; tick: number }>({ id: '', tick: 0 });
   const day = dayOf(dayId);
   const list = useMemo(() => sortActs(acts.filter((a) => a.day === dayId)), [acts, dayId]);
   const chips = useRef<HTMLDivElement>(null);
   const pick = (id: number) => { setDir(id > dayId ? 1 : -1); setDayId(id); history.replaceState(null, '', '#/itinerary/' + id); };
   const est = dayEstimate(acts, dayId); const unpriced = unpricedCount(acts, dayId);
-  const doneCount = list.filter((a) => actState(a, acts, !!checks['done:' + a.id]) === 'done').length;
+  const isDone = (a: Activity) => !!checks['done:' + a.id] || !!checks['skip:' + a.id];
+  const doneCount = list.filter((a) => isDone(a) || actState(a, acts, false) === 'done').length;
+  const ticked = list.filter(isDone).length;
+  const nextStep = list.find((a) => !isDone(a));
+  const showNext = () => { if (!nextStep) return; setFocus((f) => ({ id: nextStep.id, tick: f.tick + 1 })); setTimeout(() => document.getElementById('act-' + nextStep.id)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 60); };
+  const pickRoute = (id: string, v: string) => setState((o) => ({ ...o, notes: { ...o.notes, [routeKey(id)]: v } }));
 
   return (
     <div className="pb-4">
@@ -61,7 +73,7 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
           <button key={d.id} role="tab" aria-selected={d.id === dayId} onClick={() => pick(d.id)}
             className={cx('tap relative shrink-0 rounded-2xl px-4 py-1.5 text-center', d.id === dayId ? 'text-white' : 'bg-white text-navy shadow-sm')}>
             {d.id === dayId && <motion.span layoutId="daychip" className="absolute inset-0 rounded-2xl bg-navy" transition={{ type: 'spring', damping: 28, stiffness: 380 }} />}
-            <span className="relative block text-[11px] font-bold uppercase opacity-80">Day {d.id}</span><span className="relative block text-[15px] font-bold">{dateLabel(d.date, { day: 'numeric', month: 'short' })}</span>
+            <span className="relative block text-[11px] font-bold uppercase opacity-80">{d.id === 0 ? 'Before' : 'Day ' + d.id}</span><span className="relative block text-[15px] font-bold">{dateLabel(d.date, { day: 'numeric', month: 'short' })}</span>
           </button>
         ))}
       </div>
@@ -80,19 +92,25 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
             <p className="px-4 pb-3 text-[12px] text-muted">Schematic route — not to scale. Use Navigate on each stop for live directions.</p>
           </Card>
 
-          <details className="rounded-2xl bg-white px-4 py-2.5 text-[13px] shadow-sm"><summary className="cursor-pointer font-bold text-navy">Status legend · what “verify” and “estimate” mean</summary>
-            <ul className="mt-2 space-y-1 text-muted"><li><b className="text-[#0b6b61]">Confirmed</b> — booked / official.</li><li><b className="text-[#1d5f99]">Estimated</b> — my planning number or provisional time, not an official one.</li><li><b className="text-[#8a5f00]">Needs verification</b> — check an official page or your own booking before relying on it.</li><li><b className="text-[#5046b4]">Optional</b> — skip freely.</li><li><b>Quoted</b> — an Uber price you saw; not booked and not paid.</li></ul>
-            <p className="mt-2 text-muted">Hong Kong and the Philippines are both UTC+8, so no time-zone changes are needed.</p></details>
+          <details className="rounded-2xl bg-white px-4 py-2.5 text-[13px] shadow-sm"><summary className="cursor-pointer font-bold text-navy">What the labels mean</summary>
+            <ul className="mt-2 space-y-1 text-muted"><li><b className="text-[#0b6b61]">CONFIRMED BY USER</b> — you told me this is booked or agreed.</li><li><b className="text-[#1d5f99]">PLANNED</b> — the plan; nothing is booked unless it says so.</li><li><b className="text-[#5046b4]">OPTIONAL</b> — skip freely with the Skip button.</li><li><b className="text-[#1d5f99]">ESTIMATE</b> — my planning number, not an official one.</li><li><b className="text-[#8a5f00]">VERIFY OFFICIAL SOURCE</b> — check the official page or your own booking before relying on it (exits, fares, opening hours, show times).</li><li><b>Quoted</b> — an Uber price you saw; not booked and not paid.</li></ul>
+            <p className="mt-2 text-muted">Hong Kong and the Philippines are both UTC+8, so no time-zone changes are needed. This app does not know where you are — it never tracks your location.</p></details>
 
-          <a href={'#/more/packing/day/' + dayId} className="tap flex items-center justify-center gap-2 rounded-2xl bg-sun px-4 py-3 text-[16px] font-bold text-navy active:scale-[.98]"><Backpack size={20} />Pack Today’s Bag · Day {dayId}</a>
+          {dayId > 0 && <a href={'#/more/packing/day/' + dayId} className="tap flex items-center justify-center gap-2 rounded-2xl bg-sun px-4 py-3 text-[16px] font-bold text-navy active:scale-[.98]"><Backpack size={20} />Pack Today’s Bag · Day {dayId}</a>}
 
+
+          <DayTools dayId={dayId} total={list.length} ticked={ticked} nextTitle={nextStep?.title} onNext={showNext}
+            energy={energy} setEnergy={setEnergy} delay={delay} setDelay={(m) => { setDelayStr(String(m)); if (m > 0 && energy === '') setEnergy('late'); }}
+            helpers={list.filter((a) => !isDone(a))} checks={checks} />
           {dayId === 5 && (
             <div className="flex gap-3 rounded-2xl bg-coral-soft p-4 text-[#8f2f21]" role="note"><TriangleAlert className="mt-0.5 shrink-0" /><div className="text-[14px]"><b>Time-sensitive connection.</b> Cebu Pacific lands at 1:30 PM; PAL leaves at 5:35 PM — 4 h 5 min on two separate bookings. Stroller return, immigration, bags and the T3 → T2 transfer all happen in that window.</div></div>
           )}
 
           <div className="space-y-0">
             {list.map((a, i) => (
-              <ActivityCard key={a.id} a={a} acts={acts} last={i === list.length - 1} accent={day.accent} done={!!checks['done:' + a.id]}
+              <ActivityCard key={a.id} a={a} acts={acts} last={i === list.length - 1} accent={day.accent} done={!!checks['done:' + a.id]} skipped={!!checks['skip:' + a.id]}
+                shift={delay} alt={chosenAlt(a, state.notes)} focusTick={focus.id === a.id ? focus.tick : 0}
+                onSkip={() => setCheck('skip:' + a.id, !checks['skip:' + a.id])} onPick={(v) => pickRoute(a.id, v)}
                 onToggleDone={() => { const was = !!checks['done:' + a.id]; toggle('done:' + a.id); if (!was && i === list.length - 1) setBurst((b) => b + 1); }}
                 onEdit={() => setEdit(a)} edited={isEdited(a.id)} r={r} exp={a.expenseId ? expC.items.find((e) => e.id === a.expenseId) : undefined} />
             ))}
@@ -101,6 +119,7 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
 
           {dayId === 1 && <ArrivalChecklist />}
           {dayId === 4 && <PhotoPass />}
+          {dayId === 0 && <p className="rounded-2xl bg-sky-soft px-4 py-3 text-[13px] text-[#1d5f99]">Day 0 is your “before you leave” list. Mark each item done as you finish it. Nothing here is submitted anywhere for you.</p>}
 
           <DaySummary dayId={dayId} est={est} unpriced={unpriced} total={list.length} done={doneCount} r={r} />
         </motion.div>
@@ -118,18 +137,91 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
   );
 }
 
-function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edited, r, exp }: { exp?: Expense; a: Activity; acts: Activity[]; last: boolean; accent: string; done: boolean; onToggleDone: () => void; onEdit: () => void; edited: boolean; r: import('../lib/money').Rates }) {
+const addMin = (hhmm: string, m: number) => { const t = (((toMin(hhmm) + m) % 1440) + 1440) % 1440; return String(Math.floor(t / 60)).padStart(2, '0') + ':' + String(t % 60).padStart(2, '0'); };
+const isFixed = (a: Activity) => a.kind === 'flight' || a.kind === 'show';
+const canSkip = (a: Activity) => !!a.optionalStop || a.priority === 'optional' || a.status === 'optional';
+async function copyText(t: string) {
+  try { await navigator.clipboard.writeText(t); return true; } catch { /* fall through */ }
+  try { const el = document.createElement('textarea'); el.value = t; el.style.position = 'fixed'; el.style.opacity = '0'; document.body.appendChild(el); el.select(); const ok = document.execCommand('copy'); el.remove(); return ok; } catch { return false; }
+}
+function useOnlineNow() { const [on, setOn] = useState(typeof navigator === 'undefined' ? true : navigator.onLine); useEffect(() => { const u = () => setOn(true), d = () => setOn(false); window.addEventListener('online', u); window.addEventListener('offline', d); return () => { window.removeEventListener('online', u); window.removeEventListener('offline', d); }; }, []); return on; }
+
+/** The step-by-step block that works with NO internet. Everything shown here is stored in the app. */
+function OfflineDirections({ a, alt, onPick, skipped, onSkip, done, onToggleDone }: { a: Activity; alt?: RouteAlt; onPick: (id: string) => void; skipped: boolean; onSkip: () => void; done: boolean; onToggleDone: () => void }) {
+  const online = useOnlineNow();
+  const [open, setOpen] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const steps = alt ? alt.steps : a.steps;
+  const cost = alt ? alt.cost : a.cost;
+  const addr = a.address ?? a.place;
+  const car = alt ? (alt.mode === 'uber' || alt.mode === 'car') : (a.carSeat || a.mode === 'uber' || a.mode === 'car');
+  const mode = alt?.mode ?? a.mode;
+  const mapsHref = a.place ? mapDir(a.place, mode === 'walk' ? 'walking' : mode === 'uber' || mode === 'car' ? 'driving' : 'transit') : '';
+  const has = !!(steps?.length || a.desc || cost || a.fallback || a.alts?.length);
+  if (!has && !addr) return null;
+  return (
+    <div className="rounded-2xl border border-navy/10 bg-white">
+      <button onClick={() => setOpen(!open)} aria-expanded={open} className="tap flex w-full items-center justify-between px-3 py-2.5 text-left">
+        <span className="flex items-center gap-2 text-[14px] font-bold text-navy"><Navigation size={16} className="text-sky" />Offline directions{alt ? ' · alternative route' : ''}</span>
+        <ChevronDown size={18} className={cx('text-muted transition-transform', open && 'rotate-180')} />
+      </button>
+      {open && (
+        <div className="space-y-2.5 border-t border-navy/5 px-3 pb-3 pt-2.5 text-[14px]">
+          {car && <p className="flex gap-2 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#8f2f21]"><Baby size={16} className="mt-0.5 shrink-0" /><span>Child car seat: {CARSEAT_SHORT}</span></p>}
+          {alt && <p className="rounded-xl bg-sky-soft px-3 py-2 text-[13px]"><b>Using: {alt.label}</b> <span className="font-bold text-[#8a5f00]">({ITIN_LABEL[alt.status]})</span></p>}
+          {!alt && a.desc && <p className="text-[13px] text-muted">{a.desc}</p>}
+          {steps && steps.length > 0 && (
+            <ol className="space-y-1.5">
+              {steps.map((t, i) => <li key={i} className="flex gap-2.5 text-[14px] leading-snug"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-navy text-[11px] font-bold text-white">{i + 1}</span><span>{t}</span></li>)}
+            </ol>
+          )}
+          {a.zh && <p className="rounded-xl bg-paper px-3 py-2 text-[13px]" lang="zh-HK"><b className="text-navy">Show this name if you are lost:</b> {a.zh}</p>}
+          {cost && <p className="text-[13px]"><b className="text-navy">Cost:</b> {cost}</p>}
+          {a.fallback && <p className="rounded-xl bg-sun-soft px-3 py-2 text-[13px] text-[#6d4b00]"><b>If you are delayed:</b> {a.fallback}</p>}
+          {a.alts && a.alts.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-[12px] font-bold uppercase tracking-wide text-muted">Other ways to do this leg</p>
+              {a.alts.map((x) => (
+                <div key={x.id} className={cx('rounded-xl p-2.5 text-[13px]', alt?.id === x.id ? 'bg-sky-soft ring-2 ring-sky' : 'bg-paper')}>
+                  <div className="font-bold text-navy">{x.label} <span className="ml-1 text-[11px] text-[#8a5f00]">{ITIN_LABEL[x.status]}</span></div>
+                  {x.cost && <div className="text-muted">{x.cost}</div>}
+                  <button onClick={() => onPick(alt?.id === x.id ? '' : x.id)} className="tap mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-[12px] font-bold text-navy ring-1 ring-navy/15">{alt?.id === x.id ? 'Back to the planned route' : 'Use alternative route'}</button>
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            {mapsHref && (online
+              ? <a href={mapsHref} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center justify-center gap-1.5 rounded-xl bg-navy px-2 py-2.5 text-[13px] font-bold text-white"><ExternalLink size={15} />Open in Maps</a>
+              : <span className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-paper px-2 py-2.5 text-[12px] font-bold text-muted" aria-disabled="true">Maps needs internet</span>)}
+            {addr && <button onClick={async () => { if (await copyText(addr)) { setCopied(true); setTimeout(() => setCopied(false), 1800); } }} className="tap inline-flex items-center justify-center gap-1.5 rounded-xl bg-sky-soft px-2 py-2.5 text-[13px] font-bold text-navy"><Copy size={15} />{copied ? 'Copied ✓' : 'Copy address'}</button>}
+            <button onClick={onToggleDone} className={cx('tap inline-flex items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-[13px] font-bold', done ? 'bg-turq-soft text-[#0b6b61]' : 'bg-paper text-navy')}><Check size={15} />{done ? 'Completed ✓' : 'Mark completed'}</button>
+            {canSkip(a) && <button onClick={onSkip} className={cx('tap inline-flex items-center justify-center gap-1.5 rounded-xl px-2 py-2.5 text-[13px] font-bold', skipped ? 'bg-lav-soft text-[#5046b4]' : 'bg-paper text-navy')}><SkipForward size={15} />{skipped ? 'Skipped — undo' : 'Skip optional stop'}</button>}
+          </div>
+          {!online && <p className="text-[12px] text-muted">You are offline. These steps are saved on your phone — nothing here needs internet.</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+const CARSEAT_SHORT = 'choose “Car Seat (1–7yo)” in Uber and check the seat is in the car before Aya gets in.';
+
+function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusTick, onToggleDone, onSkip, onPick, onEdit, edited, r, exp }: { exp?: Expense; a: Activity; acts: Activity[]; last: boolean; accent: string; done: boolean; skipped: boolean; shift: number; alt?: RouteAlt; focusTick: number; onToggleDone: () => void; onSkip: () => void; onPick: (id: string) => void; onEdit: () => void; edited: boolean; r: import('../lib/money').Rates }) {
   const [open, setOpen] = useState(false);
+  useEffect(() => { if (focusTick) setOpen(true); }, [focusTick]);
   const { docs } = useVault();
-  const st = actState(a, acts, done, nowMs());
-  const hasDetail = a.notes || a.tips?.length || a.stroller || a.restroom || a.alt || a.link || a.route || a.travel || a.walk || a.skip || a.flex || a.booking || a.verify?.length;
+  const st = skipped ? 'done' : actState(a, acts, done, nowMs());
+  const hasDetail = a.notes || a.tips?.length || a.stroller || a.restroom || a.alt || a.link || a.route || a.travel || a.walk || a.skip || a.flex || a.booking || a.verify?.length || a.steps?.length;
   const ticketDocs = a.ticketId ? docs.filter((d) => d.ticketId === a.ticketId).length : 0;
   const fdocs = a.flightId ? docs.filter((d) => d.flightId === a.flightId).length : 0;
   const ticket = a.ticketId ? TICKETS.find((t) => t.id === a.ticketId) : undefined;
+  const shifted = shift !== 0 && !done && !skipped && !isFixed(a);
+  const startShown = shifted ? addMin(a.start, shift) : a.start;
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3" id={'act-' + a.id}>
       <div className="flex w-[58px] shrink-0 flex-col items-center pt-3">
-        <div className={cx('text-[12px] font-bold leading-tight', st === 'done' ? 'text-muted' : 'text-navy')}>{fmt12(a.start).replace(' ', ' ')}</div>
+        <div className={cx('text-[12px] font-bold leading-tight', st === 'done' ? 'text-muted' : shifted ? 'text-[#a63a2b]' : 'text-navy')}>{fmt12(startShown)}</div>
+        {shifted && <div className="text-[10px] leading-tight text-muted line-through">{fmt12(a.start)}</div>}
         <div className="relative mt-1.5 flex flex-1 flex-col items-center">
           <span className={cx('z-10 grid h-6 w-6 place-items-center rounded-full text-white', st === 'done' ? 'bg-turq' : st === 'current' ? 'bg-coral pulse-dot' : cx('ring-2 ring-inset ring-sky bg-white'))}>
             {st === 'done' && <Check size={14} strokeWidth={3.5} />}{st === 'current' && <span className="h-2 w-2 rounded-full bg-white" />}
@@ -138,19 +230,21 @@ function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edite
         </div>
       </div>
       <div className="min-w-0 flex-1 pb-3">
-        <motion.div layout className={cx('card overflow-hidden', st === 'current' && 'ring-2 ring-coral/70', st === 'done' && 'opacity-80')}>
+        <motion.div layout className={cx('card overflow-hidden', st === 'current' && 'ring-2 ring-coral/70', (st === 'done' || skipped) && 'opacity-80')}>
           <button className="flex w-full items-start gap-2 p-3.5 text-left" onClick={() => setOpen(!open)} aria-expanded={open}>
-            <span className={cx('mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-xl text-navy', accentSoft[accent])}>{a.mode ? MODE_ICON[a.mode] : KIND_ICON[a.kind]}</span>
+            <span className={cx('mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-xl text-navy', accentSoft[accent])}>{(alt?.mode ?? a.mode) ? MODE_ICON[(alt?.mode ?? a.mode)!] : KIND_ICON[a.kind]}</span>
             <span className="min-w-0 flex-1">
-              <span className="block text-[16px] font-bold leading-snug text-navy">{a.title}</span>
+              <span className={cx('block text-[16px] font-bold leading-snug text-navy', skipped && 'line-through')}>{a.title}</span>
+              {a.sub && <span className="mt-0.5 block text-[13px] leading-snug text-muted">{a.sub}</span>}
               <span className="mt-1 flex flex-wrap items-center gap-1.5">
                 {a.priority === 'must' && <span className="inline-flex items-center gap-1 rounded-full bg-navy px-2 py-0.5 text-[11px] font-bold text-white"><Star size={10} fill="currentColor" />Must-do</span>}
-                {a.priority === 'optional' && <span className="rounded-full bg-lav-soft px-2 py-0.5 text-[11px] font-bold text-[#5046b4]">Optional</span>}
                 {a.nap && <span className="inline-flex items-center gap-1 rounded-full bg-sky-soft px-2 py-0.5 text-[11px] font-bold text-[#1d5f99]"><Moon size={10} />Nap</span>}
-                <StatusPill status={a.status} />
+                <StatusPill status={a.status} label={ITIN_LABEL[a.status]} />
+                {skipped && <span className="rounded-full bg-lav-soft px-2 py-0.5 text-[11px] font-bold text-[#5046b4]">SKIPPED</span>}
+                {alt && <span className="rounded-full bg-sky-soft px-2 py-0.5 text-[11px] font-bold text-[#1d5f99]">ALT ROUTE</span>}
                 {exp ? <span className="text-[12px] font-bold text-muted">{exp.amount ? `${exp.status === 'paid' || exp.status === 'actual' ? 'Paid' : exp.status === 'quoted' ? 'Quoted' : exp.status === 'to_verify' ? 'Verify' : 'Planned'} ${fmtBoth(toHKD(exp.amount, exp.currency, r), r)}` : 'Quote needed'}</span> : a.costHKD ? <span className="text-[12px] font-bold text-muted">~{fmtBoth(a.costHKD, r)}</span> : a.costHKD === null ? <span className="text-[12px] text-muted">price to add</span> : null}
               </span>
-              {a.end && <span className="mt-1 block text-[12px] text-muted">until {fmt12(a.end)} · {fmtDur(Math.max(0, toMin(a.end) - toMin(a.start)))}{edited && ' · edited'}</span>}
+              {a.end && <span className="mt-1 block text-[12px] text-muted">until {fmt12(shifted ? addMin(a.end, shift) : a.end)} · {fmtDur(Math.max(0, toMin(a.end) - toMin(a.start)))}{edited && ' · edited'}</span>}
             </span>
             <ChevronDown size={20} className={cx('mt-1 shrink-0 text-muted transition-transform', open && 'rotate-180')} />
           </button>
@@ -162,8 +256,9 @@ function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edite
                   {a.flex && <p className="rounded-xl bg-paper px-3 py-2 text-[13px]"><b className="text-navy">Time window:</b> {a.flex}</p>}
                   {a.address && <p className="text-[13px]"><b className="text-navy">Address:</b> {a.address}</p>}
                   {a.route && <p className="text-[13px]"><b className="text-navy">Route:</b> {a.route}</p>}
-                  {a.travel && <p className="text-[13px]"><b className="text-navy">Travel:</b> {a.travel}</p>}
+                  {a.travel && <p className="text-[13px]"><b className="text-navy">Travel time:</b> {a.travel}</p>}
                   {a.walk && <p className="text-[13px]"><b className="text-navy">Walking:</b> {a.walk}</p>}
+                  <OfflineDirections a={a} alt={alt} onPick={onPick} skipped={skipped} onSkip={onSkip} done={done} onToggleDone={onToggleDone} />
                   {a.notes && <p>{a.notes}</p>}
                   {a.tips?.map((t) => <p key={t} className="flex gap-2"><Info size={16} className="mt-0.5 shrink-0 text-sky" />{t}</p>)}
                   {a.stroller && <p className="flex gap-2"><Baby size={16} className="mt-0.5 shrink-0 text-lav" /><span><b>Stroller:</b> {a.stroller}</span></p>}
@@ -171,7 +266,6 @@ function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edite
                   {a.alt && <p className="rounded-xl bg-sky-soft px-3 py-2 text-[13px]"><b>Alternative:</b> {a.alt}</p>}
                   {a.skip && <p className="rounded-xl bg-lav-soft px-3 py-2 text-[13px]"><b>Skip / shorten:</b> {a.skip}</p>}
                   <div className="flex flex-wrap gap-2 pt-1">
-                    {a.place && <a href={mapDir(a.place, a.mode === 'walk' ? 'walking' : a.mode === 'uber' || a.mode === 'car' ? 'driving' : 'transit')} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-navy px-3 py-2 text-[13px] font-bold text-white"><Navigation size={15} />Navigate</a>}
                     {a.place && <a href={mapSearch(a.place)} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-sky-soft px-3 py-2 text-[13px] font-bold text-navy"><MapPin size={15} />Map</a>}
                     {a.ticketId && <button onClick={() => go('tickets/' + a.ticketId)} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><TicketIcon size={15} />{ticketDocs ? `Tickets (${ticketDocs})` : ticket?.statusLabel ?? 'Ticket info'}</button>}
                     {a.flightId && <button onClick={() => go('more/flights')} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><Plane size={15} />{fdocs ? `Boarding pass (${fdocs})` : FLIGHTS.find((f) => f.id === a.flightId)?.code}</button>}
@@ -179,7 +273,7 @@ function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edite
                     {a.link && <a href={a.link.url} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-[13px] font-bold text-navy ring-1 ring-navy/15"><ExternalLink size={15} />{a.link.label}</a>}
                   </div>
                   <div className="flex items-center justify-between border-t border-navy/5 pt-2.5">
-                    <button onClick={onToggleDone} className={cx('tap inline-flex items-center gap-2 rounded-xl px-3 py-2 text-[13px] font-bold', done ? 'bg-turq-soft text-[#0b6b61]' : 'bg-paper text-navy')}><Check size={16} />{done ? 'Done ✓' : 'Mark done'}</button>
+                    <span className="text-[12px] text-muted">{done ? 'Completed' : skipped ? 'Skipped' : 'Not done yet'}</span>
                     <button onClick={onEdit} className="tap inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-[13px] font-bold text-sky"><Pencil size={15} />Edit time & cost</button>
                   </div>
                   {!hasDetail && !a.place && <p className="text-[13px] text-muted">No extra details yet — tap Edit to add notes.</p>}
@@ -190,6 +284,52 @@ function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edite
         </motion.div>
       </div>
     </div>
+  );
+}
+
+function DayTools({ dayId, total, ticked, nextTitle, onNext, energy, setEnergy, delay, setDelay, helpers, checks }: { dayId: number; total: number; ticked: number; nextTitle?: string; onNext: () => void; energy: string; setEnergy: (v: string) => void; delay: number; setDelay: (m: number) => void; helpers: Activity[]; checks: Record<string, boolean> }) {
+  const pct = total ? Math.round((ticked / total) * 100) : 0;
+  const rest = helpers.filter((a) => a.nap || canSkip(a));
+  const fixed = helpers.filter((a) => isFixed(a) || a.ticketId);
+  return (
+    <Card className="space-y-3 p-4">
+      <div>
+        <div className="mb-1 flex items-center justify-between text-[13px] font-bold text-navy"><span>{dayId === 0 ? 'Before-you-leave progress' : `Day ${dayId} progress`}</span><span className="text-sky">{ticked}/{total} · {pct}%</span></div>
+        <div className="h-2 overflow-hidden rounded-full bg-sky-soft"><motion.div className="h-full rounded-full bg-turq" animate={{ width: `${pct}%` }} /></div>
+      </div>
+      <Btn className="w-full" onClick={onNext} disabled={!nextTitle} icon={<Navigation size={18} />}>{nextTitle ? 'Show my next step' : 'All steps done 🎉'}</Btn>
+      {nextTitle && <p className="-mt-1 text-[12px] text-muted">Next not-done item: <b className="text-navy">{nextTitle}</b>. Based on what you ticked — the app does not know where you are.</p>}
+      <div>
+        <div className="mb-1 flex items-center gap-1.5 text-[13px] font-bold text-navy"><Zap size={15} className="text-sun" />Family energy today</div>
+        <div className="grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="Family energy mode">
+          {([['', 'Normal'], ['rest', 'Aya needs rest'], ['late', 'Running late']] as const).map(([v, l]) => (
+            <button key={v} role="radio" aria-checked={energy === v} onClick={() => { setEnergy(v); if (v !== 'late' && delay) setDelay(0); }} className={cx('tap rounded-xl px-1.5 py-2 text-[12.5px] font-bold leading-tight', energy === v ? 'bg-navy text-white' : 'bg-paper text-navy')}>{l}</button>
+          ))}
+        </div>
+      </div>
+      {energy === 'rest' && (
+        <div className="space-y-1.5 rounded-xl bg-lav-soft p-3 text-[13px] text-[#3d3590]">
+          <p className="font-bold">What could change when Aya needs rest — nothing is removed for you:</p>
+          <ul className="list-disc space-y-0.5 pl-5">
+            <li>Add a stroller nap or a quiet snack break before the next move.</li>
+            {rest.slice(0, 6).map((a) => <li key={a.id}>{a.nap ? 'Longer rest: ' : 'You may skip: '}<b>{a.title}</b></li>)}
+            {fixed.length > 0 && <li><b>Stay as planned (booked / fixed):</b> {fixed.slice(0, 4).map((a) => a.title).join(' · ')}{fixed.length > 4 ? ' …' : ''}</li>}
+          </ul>
+          <p>Use “Skip optional stop” on a card to skip one yourself. Ticketed activities are non-refundable — shorten them, do not drop them.</p>
+        </div>
+      )}
+      {energy === 'late' && (
+        <div className="space-y-2 rounded-xl bg-sun-soft p-3 text-[13px] text-[#6d4b00]">
+          <div className="flex items-center gap-1.5 font-bold"><Clock size={15} />How late are you?</div>
+          <div className="grid grid-cols-5 gap-1.5">
+            {[0, 15, 30, 45, 60].map((m) => <button key={m} onClick={() => setDelay(m)} className={cx('tap rounded-lg px-1 py-1.5 text-[12.5px] font-bold', delay === m ? 'bg-navy text-white' : 'bg-white text-navy')}>{m === 0 ? 'On time' : '+' + m}</button>)}
+          </div>
+          <p>Times of the stops still to do move later by {delay} min (shown in red with the old time crossed out). Flights and fixed shows keep their real time. This is only a view — it never changes your saved plan or any booking.</p>
+          {delay > 0 && fixed.length > 0 && <p><b>Check these fixed items:</b> {fixed.slice(0, 4).map((a) => a.title).join(' · ')}</p>}
+          {delay > 0 && <p>Each card’s “If you are delayed” box says what to cut first.</p>}
+        </div>
+      )}
+    </Card>
   );
 }
 

@@ -2,6 +2,7 @@
 // copied into a change log, your own added activities stay, and the old plan stays readable.
 import { LEGACY_ACTIVITIES } from '../data/legacy';
 import { EXPENSES } from '../data/seed';
+import { V2_TITLES } from '../data/v2titles';
 import type { UserState } from '../state/store';
 
 export interface ChangeEntry {
@@ -39,4 +40,16 @@ export function migrateItinerary(s: UserState): UserState {
     }
   }
   return { ...s, itinV2: true, changeLog: log };
+}
+
+/** Second one-time step: the itinerary & directions supplement (Day 0, step-by-step directions, alternatives, Avenue of Stars…). Additive: your edits stay on top. */
+export function migrateSupplement(s: UserState): UserState {
+  if (s.itinV3) return s;
+  const at = Date.now();
+  const log: ChangeEntry[] = [...(s.changeLog ?? [])];
+  log.push({ id: 'chg-v3', at, kind: 'update', title: 'Itinerary & directions supplement added (Nov 27)', detail: 'Added: Day 0 (before you leave), step-by-step offline directions for every leg, alternative routes, delay fallbacks, Avenue of Stars on Dec 8 (Bruce Lee statue + handprints, included), Hong Kong 1 as optional, airport procedures for Dec 7 and Dec 11, family-energy mode, delay shifting, route choice, a “Verify before departure” screen and a bigger booklet. Your own edits, expenses, checklists and documents were not touched.' });
+  const patch = s.col.activities?.patch ?? {};
+  const kept = Object.keys(patch).filter((id) => V2_TITLES[id]);
+  if (kept.length) log.push({ id: 'chg-v3-kept', at, kind: 'update', title: `Your edits to ${kept.length} stop${kept.length > 1 ? 's' : ''} were kept`, detail: 'Your saved times, costs and notes still sit on top of the new text for: ' + kept.map((id) => V2_TITLES[id]).join(' · ') + '. Open the stop and use “Restore original” if you want the new wording instead.' });
+  return { ...s, itinV3: true, changeLog: log };
 }

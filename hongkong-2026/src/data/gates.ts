@@ -21,6 +21,16 @@ export const GATES: Gate[] = [
     detail: 'Check these for the days you rely on them. No walking directions are treated as exact unless verified.' },
   { id: 'g9', title: 'Philippine eTravel (free)', userAction: true, links: [{ label: 'eTravel', url: LINKS.etravel }, { label: 'FAQ', url: LINKS.etravelFaq }],
     detail: 'Declarations within 72 hours before Philippine departure AND before Philippine arrival; completed individually or through permitted dependent flows. Aya’s passport profile was deferred until pickup — mark it “verify completed” when done.' },
+  { id: 'g10', title: 'Dec 8 walking & station details — exits, lifts, distances', userAction: true, links: [{ label: 'MTR journey planner', url: LINKS.mtr }, { label: 'Star Ferry', url: LINKS.starferry }],
+    detail: 'The supplement gives Ocean Park Exit B, Central Exit K, Statue Square, Pier 7, Avenue of Stars walking times and Hong Kong 1 only as planning estimates. Check each exit, lift, walking time, ferry timetable and projection / Wheel hours on the day. No distance in this app is measured.' },
+  { id: 'g11', title: 'Dec 9 — minibus 88F, Exit P2, Science Museum Wednesday admission', userAction: true, links: [{ label: 'Science Museum hours', url: LINKS.scienceHours }, { label: 'Admission', url: LINKS.scienceTickets }, { label: 'MTR', url: LINKS.mtr }],
+    detail: 'Minibus 88F stop near Rambler Crest Tower 3, fare (~HK$4.30 once seen), first service and stroller rules; East Tsim Sha Tsui Exit P2 and its lifts; museum opening time, free Wednesday permanent galleries and any paid special exhibition.' },
+  { id: 'g12', title: 'Dec 9 evening — Disney → Temple Street route, market hours', userAction: true, links: [{ label: 'MTR', url: LINKS.mtr }, { label: 'Disney calendar', url: LINKS.disneyCalendar }],
+    detail: 'Choose MTR or Uber with an actual quote; confirm Jordan Station exit and lift, Temple Street market hours and the legal car pickup near Jordan Road. Check the last train and last minibus before relying on them.' },
+  { id: 'g13', title: 'Pixar Magic Passport · medallion · Disney meal vouchers · PhotoPass', userAction: true, links: [{ label: 'Disney (official)', url: LINKS.disney }, { label: 'Day calendar', url: LINKS.disneyCalendar }],
+    detail: 'Pixar passport price (~HK$149 discussed), redemption venue and whether the medallion is still available; meal voucher (~₱2,478) and child meal (~₱967) were only discussed — not bought; PhotoPass HK$398 status; First Visit pins.' },
+  { id: 'g14', title: 'Airport procedures — Dec 7 (Manila, Hong Kong) and Dec 11 (HKIA T2 → T1, Manila connection)', userAction: true, links: [{ label: 'Cebu Pacific HKG guide', url: LINKS.cebuHkg }, { label: 'eTravel', url: LINKS.etravel }],
+    detail: 'Terminals, check-in desks, baggage rules, T2 → T1 connection, stroller handling, and the Manila domestic leg are read from your real tickets and airline notices. The app does not invent gates, platforms, flight times or minimum connection times.' },
 ];
 
 export type RemindKind = 'deadline';
