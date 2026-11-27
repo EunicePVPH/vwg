@@ -61,6 +61,7 @@ export interface Activity {
   sub?: string; // short collapsed summary line
   optionalStop?: boolean; // can be skipped with the “Skip optional stop” button
   cutIfTired?: boolean; // stays scheduled, but is marked EASY TO CUT IF TIRED
+  bookingDoc?: 'hotel'; // shows a View booking button for the saved hotel confirmation
   decide?: boolean; // choose on the day: both options are shown, none is pre-selected
   prov?: 'user' | 'provider' | 'pending' | 'checked'; // where the confirmation comes from (see PROV_LABEL)
 }
@@ -178,6 +179,8 @@ export interface DocMeta {
   ticketId?: string;
   flightId?: string;
   slot?: string;
+  slots?: string[]; // one file shared by several guests (e.g. one voucher PDF holding two QR codes)
+  flightIds?: string[]; // one file covering several flights (e.g. one e-ticket for both directions)
   outfitId?: string;
   note?: string;
 }

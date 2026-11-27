@@ -1,6 +1,6 @@
 import { lazy, Suspense, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, FileText, FolderOpen, Maximize, Plus, Ticket as TicketIcon, Users, TriangleAlert, Camera } from 'lucide-react';
+import { PackageOpen, ExternalLink, FileText, FolderOpen, Maximize, Plus, Ticket as TicketIcon, Users, TriangleAlert, Camera } from 'lucide-react';
 import { TICKETS } from '../data/seed';
 import { useCollection } from '../state/store';
 import { useVault } from '../state/vault';
@@ -9,6 +9,8 @@ import { mapSearch } from '../lib/maps';
 import { Btn, Card, Empty, PageHeader, StatusPill, cx } from '../ui/primitives';
 import { Photo } from '../ui/Photo';
 import { ImportSheet } from '../ui/ImportSheet';
+import { PackImport } from '../ui/PackImport';
+import { docSlots } from '../lib/vault';
 import { go } from '../ui/router';
 import type { DocRecord, Ticket } from '../types';
 const DocViewer = lazy(() => import('./DocViewer').then((m) => ({ default: m.DocViewer })));
@@ -18,6 +20,7 @@ export function Tickets({ focus }: { focus?: string }) {
   const { docs, key } = useVault();
   const [view, setView] = useState<{ list: DocRecord[]; start: number; title: string } | null>(null);
   const [imp, setImp] = useState<string | null>(null);
+  const [pack, setPack] = useState(false);
   const sorted = useMemo(() => [...items].sort((a, b) => a.date.localeCompare(b.date) || a.name.localeCompare(b.name)), [items]);
   const all = docs.filter((d) => d.ticketId);
   return (
@@ -26,6 +29,7 @@ export function Tickets({ focus }: { focus?: string }) {
       {all.length > 0 && (
         <Btn className="mb-3 w-full" icon={<Maximize size={18} />} onClick={() => setView({ list: sorted.flatMap((t) => all.filter((d) => d.ticketId === t.id)), start: 0, title: 'All tickets' })}>Full-screen scanning view · all tickets ({all.length})</Btn>
       )}
+      <button onClick={() => setPack(true)} className="tap mb-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-sun-soft px-4 py-3 text-[14px] font-bold text-[#6d4b00]"><PackageOpen size={18} />Import booking pack (encrypted file)</button>
       <div className="space-y-4">
         {sorted.map((t, i) => {
           const tdocs = docs.filter((d) => d.ticketId === t.id);
@@ -40,8 +44,8 @@ export function Tickets({ focus }: { focus?: string }) {
                   <div className="flex flex-wrap items-center gap-2"><StatusPill status={t.status} label={t.statusLabel} /><span className="text-[13px] text-muted">{t.type}</span></div>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2 text-[13px] font-bold uppercase text-muted"><Users size={14} />{t.guests.length} guest{t.guests.length > 1 ? 's' : ''}</div>
-                    {t.guests.map((g, gi) => {
-                      const gd = tdocs.filter((d) => d.slot === g.label || (!d.slot && tdocs.length === 1 && gi === 0));
+                    {t.guests.map((g) => {
+                      const gd = tdocs.filter((d) => { const s = docSlots(d); return s.length ? s.includes(g.label) : true; });
                       return (
                         <div key={g.label} className="flex items-center gap-2 rounded-2xl bg-paper px-3 py-2">
                           <span className="min-w-0 flex-1 text-[14px] font-bold text-navy">{g.label}</span>
@@ -67,6 +71,7 @@ export function Tickets({ focus }: { focus?: string }) {
         })}
       </div>
       {!sorted.length && <Empty icon={<TicketIcon size={36} />} title="No tickets">Add one with the Add button.</Empty>}
+      <PackImport open={pack} onClose={() => setPack(false)} />
       <ImportSheet open={imp !== null} onClose={() => setImp(null)} target={imp ? { ticketId: imp, folder: '02 - Attraction Tickets' } : { folder: '02 - Attraction Tickets' }} />
       {view && <Suspense fallback={null}><DocViewer docs={view.list} start={view.start} title={view.title} dataKey={key} onClose={() => setView(null)} /></Suspense>}
     </div>

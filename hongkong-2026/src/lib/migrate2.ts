@@ -71,3 +71,11 @@ export function migrateAudit(s: UserState): UserState {
   if (kept.length) log.push({ id: 'chg-v4-kept', at, kind: 'update', title: `Your edits on ${kept.length} corrected stop${kept.length > 1 ? 's' : ''} were kept`, detail: 'The corrected wording is hidden behind your saved edit for: ' + kept.map((id) => AUDIT_IDS[id]).join(' · ') + '. Open the stop, tap Edit, and use “Restore original” to see the corrected text.' });
   return { ...s, itinV4: true, changeLog: log };
 }
+
+/** Fourth one-time step: booking documents checked (PAL, Cebu Pacific, Expedia, Klook). Nothing you entered is replaced. */
+export function migrateBookings(s: UserState): UserState {
+  if (s.itinV5) return s;
+  const log: ChangeEntry[] = [...(s.changeLog ?? [])];
+  log.push({ id: 'chg-v5', at: Date.now(), kind: 'update', title: 'Booking documents checked (Nov 27)', detail: 'Flights, hotel, Ocean Park and Observation Wheel details were compared with your original PDFs. Fixed: the hotel phone is +852 2129 1188; the Dec 11 Cebu Pacific flight now shows Terminal 2; the four flights are marked confirmed; the PAL e-tickets are recorded as having NO included checked baggage; the Observation Wheel voucher is valid on Dec 8 only with no time slot. Your Cebu Pacific tracker amount (₱42,087.93) was left as you entered it — the payment page shows ₱40,815.93, so please check your card statement. No expense was added, removed or changed.' });
+  return { ...s, itinV5: true, changeLog: log };
+}

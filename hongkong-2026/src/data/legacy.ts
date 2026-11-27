@@ -80,7 +80,7 @@ export const LEGACY_ACTIVITIES: Activity[] = [
   // ───────── DAY 3 ─────────
   A({ id: 'a3-01', day: 3, start: '07:45', end: '08:35', title: 'Wake up · breakfast · get ready', kind: 'rest', priority: 'normal', status: 'confirmed' }),
   A({ id: 'a3-02', day: 3, start: '08:40', end: '08:55', title: 'Hotel shuttle / minibus → Tsing Yi MTR', kind: 'travel', priority: 'normal', status: 'verify', mode: 'bus', place: 'Tsing Yi MTR Station',
-    notes: 'The hotel shuttle schedule is NOT confirmed — ask the hotel (+852 2129 1888) and edit this card. Alternative: Uber or walk.' }),
+    notes: 'The hotel shuttle schedule is NOT confirmed — ask the hotel (+852 2129 1188) and edit this card. Alternative: Uber or walk.' }),
   A({ id: 'a3-03', day: 3, start: '08:55', end: '09:40', title: 'MTR Tung Chung Line → Nam Cheong → Tuen Ma Line → East Tsim Sha Tsui', kind: 'travel', priority: 'must', status: 'estimated', mode: 'mtr', place: 'East Tsim Sha Tsui Station', cat: 'Transport',
     notes: 'Estimated fares and timing — check the MTR app on the day.', stroller: 'Use lifts; allow extra time at interchange.', link: { label: 'MTR', url: LINKS.mtr } }),
   A({ id: 'a3-04', day: 3, start: '09:40', end: '10:00', title: 'Walk to the Hong Kong Science Museum', kind: 'travel', priority: 'normal', status: 'verify', mode: 'walk', place: 'Hong Kong Science Museum, Tsim Sha Tsui East', stroller: 'Check the step-free route from the station exit.' }),

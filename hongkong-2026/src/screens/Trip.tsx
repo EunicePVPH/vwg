@@ -3,6 +3,7 @@ import { Bed, Clock, Copy, ExternalLink, FileText, MapPin, Pencil, Phone, Plane,
 import { EXPENSES, FLIGHTS, HOTEL } from '../data/seed';
 import { useAppState, useCollection } from '../state/store';
 import { useVault } from '../state/vault';
+import { docFlightIds } from '../lib/vault';
 import { dateLabel, fmt12, fmtDur, toMin } from '../lib/time';
 import { fmtHKD, fmtPHP, hkdToPhp, usdToPhp } from '../lib/money';
 import { mapDir, mapNearby, mapSearch, tel } from '../lib/maps';
@@ -34,7 +35,7 @@ export function FlightsHotel() {
       <SectionTitle>Flights</SectionTitle>
       <div className="space-y-3">
         {flights.map((f, i) => {
-          const fd = docs.filter((d) => d.flightId === f.id);
+          const fd = docs.filter((d) => docFlightIds(d).includes(f.id));
           const next = flights[i + 1];
           const showConn = next && next.date === f.date || (i === 2);
           return (
@@ -111,7 +112,7 @@ export function FlightsHotel() {
         <a href={mapSearch('pharmacy near ' + hq)} target="_blank" rel="noopener noreferrer" className="tap flex items-center gap-2 rounded-2xl bg-coral-soft px-3 py-3 text-[14px] font-bold text-navy"><Pill size={18} />Pharmacy</a>
         <a href={mapDir('Tsing Yi MTR Station', 'walking')} target="_blank" rel="noopener noreferrer" className="tap flex items-center gap-2 rounded-2xl bg-sky-soft px-3 py-3 text-[14px] font-bold text-navy"><Train size={18} />Hotel → MTR</a>
       </div>
-      <p className="mt-2 flex gap-2 px-1 text-[13px] text-muted"><TriangleAlert size={15} className="mt-0.5 shrink-0" />Hotel shuttle times are not confirmed — we do not guess them. Ask the hotel at +852 2129 1888.</p>
+      <p className="mt-2 flex gap-2 px-1 text-[13px] text-muted"><TriangleAlert size={15} className="mt-0.5 shrink-0" />Hotel shuttle times are not confirmed — we do not guess them. Ask the hotel at +852 2129 1188.</p>
 
       <ImportSheet open={!!imp} onClose={() => setImp(null)} target={imp ?? undefined} />
       <EditSheet open={editH} onClose={() => setEditH(false)} title="Edit hotel details" fields={[

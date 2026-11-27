@@ -1,9 +1,10 @@
-import { useMemo, useRef, useState, useEffect } from 'react';
+import { lazy, Suspense, useMemo, useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Backpack, Baby, Copy, SkipForward, Zap, Clock, Bed, Bus, CableCar, Camera, Car, Check, ChevronDown, ExternalLink, Footprints, MapPin, Moon, Navigation, Pencil, Plane, Plus, Ship, Sparkles, Star, Ticket as TicketIcon, TrainFront, TramFront, Utensils, TriangleAlert, Info, ClipboardList } from 'lucide-react';
 import { ACTIVITIES, ARRIVAL_CHECKLIST, ALL_DAYS as DAYS, EXPENSES, FLIGHTS, LINKS, TICKETS } from '../data/seed';
 import { useAppState, useChecks, useCollection, useNote } from '../state/store';
 import { useVault } from '../state/vault';
+import { docFlightIds } from '../lib/vault';
 import { currentDayId, dateLabel, fmt12, nowMs, tripPhase } from '../lib/time';
 import { fmtBoth, toHKD } from '../lib/money';
 import { fmtDur, toMin } from '../lib/time';
@@ -15,8 +16,9 @@ import { RoutePreview } from '../ui/RoutePreview';
 import { EditSheet, type Field } from '../ui/EditSheet';
 import { go } from '../ui/router';
 import { Confetti } from '../ui/Confetti';
-import type { Activity, Expense, Kind, Mode, Priority, RouteAlt, Status } from '../types';
+import type { DocRecord, Activity, Expense, Kind, Mode, Priority, RouteAlt, Status } from '../types';
 
+const DocViewer = lazy(() => import('./DocViewer').then((m) => ({ default: m.DocViewer })));
 const MODE_ICON: Record<Mode, React.ReactNode> = { walk: <Footprints size={16} />, uber: <Car size={16} />, car: <Car size={16} />, mtr: <TrainFront size={16} />, ferry: <Ship size={16} />, bus: <Bus size={16} />, plane: <Plane size={16} />, tram: <TramFront size={16} />, cable: <CableCar size={16} /> };
 const KIND_ICON: Record<Kind, React.ReactNode> = { travel: <Navigation size={16} />, flight: <Plane size={16} />, meal: <Utensils size={16} />, sight: <Camera size={16} />, rest: <Moon size={16} />, hotel: <Bed size={16} />, task: <ClipboardList size={16} />, show: <Sparkles size={16} /> };
 
@@ -213,11 +215,14 @@ const CARSEAT_SHORT = 'choose “Car Seat (1–7yo)” in Uber and check the sea
 function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusTick, onToggleDone, onSkip, onPick, onEdit, edited, r, exp }: { exp?: Expense; a: Activity; acts: Activity[]; last: boolean; accent: string; done: boolean; skipped: boolean; shift: number; alt?: RouteAlt; focusTick: number; onToggleDone: () => void; onSkip: () => void; onPick: (id: string) => void; onEdit: () => void; edited: boolean; r: import('../lib/money').Rates }) {
   const [open, setOpen] = useState(false);
   useEffect(() => { if (focusTick) setOpen(true); }, [focusTick]);
-  const { docs } = useVault();
+  const { docs, key } = useVault();
+  const [viewer, setViewer] = useState<{ list: DocRecord[]; title: string } | null>(null);
   const st = skipped ? 'done' : actState(a, acts, done, nowMs());
   const hasDetail = a.notes || a.tips?.length || a.stroller || a.restroom || a.alt || a.link || a.route || a.travel || a.walk || a.skip || a.flex || a.booking || a.verify?.length || a.steps?.length;
-  const ticketDocs = a.ticketId ? docs.filter((d) => d.ticketId === a.ticketId).length : 0;
-  const fdocs = a.flightId ? docs.filter((d) => d.flightId === a.flightId).length : 0;
+  const tList = a.ticketId ? docs.filter((d) => d.ticketId === a.ticketId) : [];
+  const fList = a.flightId ? docs.filter((d) => docFlightIds(d).includes(a.flightId!)) : [];
+  const hList = a.bookingDoc === 'hotel' ? docs.filter((d) => d.folder === '03 - Hotel') : [];
+  const ticketDocs = tList.length; const fdocs = fList.length;
   const ticket = a.ticketId ? TICKETS.find((t) => t.id === a.ticketId) : undefined;
   const { state: appState } = useAppState();
   const chosenA = !!a.decide && appState.notes[routeKey(a.id)] === 'A';
@@ -276,8 +281,9 @@ function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusT
                   {a.skip && <p className="rounded-xl bg-lav-soft px-3 py-2 text-[13px]"><b>Skip / shorten:</b> {a.skip}</p>}
                   <div className="flex flex-wrap gap-2 pt-1">
                     {a.place && <a href={mapSearch(a.place)} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-sky-soft px-3 py-2 text-[13px] font-bold text-navy"><MapPin size={15} />Map</a>}
-                    {a.ticketId && <button onClick={() => go('tickets/' + a.ticketId)} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><TicketIcon size={15} />{ticketDocs ? `Tickets (${ticketDocs})` : ticket?.statusLabel ?? 'Ticket info'}</button>}
-                    {a.flightId && <button onClick={() => go('more/flights')} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><Plane size={15} />{fdocs ? `Boarding pass (${fdocs})` : FLIGHTS.find((f) => f.id === a.flightId)?.code}</button>}
+                    {a.ticketId && <button onClick={() => (tList.length ? setViewer({ list: tList, title: ticket?.name ?? 'Ticket' }) : go('tickets/' + a.ticketId))} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><TicketIcon size={15} />{ticketDocs ? `View ticket (${ticketDocs})` : 'Add ticket file'}</button>}
+                    {a.flightId && <button onClick={() => (fList.length ? setViewer({ list: fList, title: FLIGHTS.find((f) => f.id === a.flightId)?.code ?? 'Flight' }) : go('more/flights'))} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><Plane size={15} />{fdocs ? `View booking (${fdocs})` : `Add ${FLIGHTS.find((f) => f.id === a.flightId)?.code ?? 'flight'} file`}</button>}
+                    {a.bookingDoc === 'hotel' && <button onClick={() => (hList.length ? setViewer({ list: hList, title: 'Rambler Oasis Hotel' }) : go('more/flights'))} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><TicketIcon size={15} />{hList.length ? `View booking (${hList.length})` : 'Add hotel confirmation'}</button>}
                     {a.verify?.map((v) => <a key={v.url} href={v.url} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-sun-soft px-3 py-2 text-[13px] font-bold text-[#6d4b00]"><ExternalLink size={15} />Verify: {v.label}</a>)}
                     {a.link && <a href={a.link.url} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-[13px] font-bold text-navy ring-1 ring-navy/15"><ExternalLink size={15} />{a.link.label}</a>}
                   </div>
@@ -292,6 +298,7 @@ function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusT
           </AnimatePresence>
         </motion.div>
       </div>
+      {viewer && <Suspense fallback={null}><DocViewer docs={viewer.list} start={0} title={viewer.title} dataKey={key} onClose={() => setViewer(null)} /></Suspense>}
     </div>
   );
 }

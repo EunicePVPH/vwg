@@ -41,12 +41,12 @@ export const TICKETS: Ticket[] = [
     restrictions: ['Voucher terms govern entry time and validity.'], bookingUrl: LINKS.peakTerms, bookingLabel: 'Ticket terms (official)' },
   { id: 't-oceanpark', name: 'Ocean Park Hong Kong', photoKey: 'oceanpark', dayId: 2, date: '2026-12-08', type: 'General admission', status: 'confirmed',
     guests: [{ label: 'Keren (adult)' }, { label: 'Gilbert (adult)' }, { label: 'Aya (under 3 — free entry)' }],
-    notes: 'Two adult tickets purchased. FasTrack is optional and not purchased.', place: 'Ocean Park Hong Kong',
-    restrictions: ['Check ticket validity and entry rules on the official site.'], bookingUrl: LINKS.oceanpark, bookingLabel: 'Open Ocean Park site' },
+    notes: 'Two adult “Daytime Ticket” admissions (Klook voucher dated Dec 8; each ticket also prints a validity window of Dec 2, 2026 – Jan 2, 2027). Aya (under 3) enters free. Present the QR on your phone or on A4 paper; you may be asked for photo ID and the credit card used to buy. Non-refundable. Not valid on park rest days. FasTrack is optional and not purchased. The Klook redemption instructions are saved with the tickets.', place: 'Ocean Park Hong Kong',
+    restrictions: ['Non-refundable and not exchangeable. Entry can be limited at maximum capacity; rides may close for weather or repairs without refund.', 'Do not damage or wet the QR code — it must be scanned at the entrance.'], bookingUrl: LINKS.oceanpark, bookingLabel: 'Open Ocean Park site' },
   { id: 't-wheel', name: 'Hong Kong Observation Wheel', photoKey: 'wheel', dayId: 2, date: '2026-12-08', type: 'Klook voucher · 2 adult tickets', status: 'confirmed',
     guests: [{ label: 'Keren (adult) — original Klook QR' }, { label: 'Gilbert (adult) — original Klook QR' }, { label: 'Aya (under 3 — free)' }],
-    notes: 'Show the ORIGINAL Klook voucher QR codes. The stroller cannot go into the gondola — use stroller storage and check the posted fee on site.', place: '33 Man Kwong Street, Central',
-    restrictions: ['No stroller in the gondola.'], bookingUrl: LINKS.klook, bookingLabel: 'Open Klook' },
+    notes: 'ONE Klook PDF holds BOTH adult QR codes (Keren and Gilbert see the same original file). Valid ONLY on Dec 8, 2026; no time slot is printed (latecomers are subject to capacity). Aya (age 0–2) rides free with a paying adult — no ticket. The stroller cannot go into the gondola — use stroller storage and check the posted fee on site.', place: '33 Man Kwong Street, Central',
+    restrictions: ['No stroller in the gondola.', 'No cancellation or refund. No food or drinks inside the Wheel or boarding deck.', 'Each gondola is shared with other visitors (up to 8 people).'], bookingUrl: LINKS.klook, bookingLabel: 'Open Klook' },
   { id: 't-science', name: 'Hong Kong Science Museum', photoKey: 'science', dayId: 3, date: '2026-12-09', type: 'No ticket recorded — permanent exhibitions free on Wednesdays (verify)', status: 'verify',
     guests: [{ label: 'Keren' }, { label: 'Gilbert' }, { label: 'Aya' }], notes: 'Opens 10 AM on Wednesdays; permanent exhibitions are free on Wednesdays, special exhibitions may charge. Verify on the official pages.', place: 'Hong Kong Science Museum, Tsim Sha Tsui East',
     bookingUrl: LINKS.scienceTickets, bookingLabel: 'Admission info (official)' },
@@ -62,21 +62,21 @@ export const TICKETS: Ticket[] = [
 
 export const FLIGHTS: Flight[] = [
   { id: 'f1', airline: 'Philippine Airlines (PAL Express)', code: 'PR2922', from: 'Daraga', fromCode: 'DRP', to: 'Manila', toCode: 'MNL', date: '2026-12-07', dep: '06:45', arr: '07:45', arrTerminal: 'NAIA Terminal 2',
-    seats: [{ who: 'Keren', seat: '37H' }, { who: 'Aya', seat: '37J' }, { who: 'Gilbert', seat: '37K' }], baggage: 'PAL: no free checked baggage on the current domestic receipts. Checked-baggage allowance still to be bought (PENDING).', carryOn: 'Confirm PAL carry-on rules on your ticket.', status: 'confirmed', bookingUrl: LINKS.pal },
+    seats: [{ who: 'Keren', seat: '37H' }, { who: 'Aya', seat: '37J' }, { who: 'Gilbert', seat: '37K' }], baggage: 'PAL e-tickets: NO checked baggage included for all three passengers. Any checked bag must be bought separately (PENDING — not recorded as bought).', carryOn: 'Confirm PAL carry-on rules on your ticket.', status: 'confirmed', bookingUrl: LINKS.pal },
   { id: 'f2', airline: 'Cebu Pacific', code: '5J112', from: 'Manila', fromCode: 'MNL', to: 'Hong Kong', toCode: 'HKG', date: '2026-12-07', dep: '15:15', arr: '18:00', depTerminal: 'NAIA Terminal 3', arrTerminal: 'Hong Kong Terminal 1 (per ticket)',
-    seats: [{ who: 'Gilbert', seat: '21A' }, { who: 'Aya', seat: '21B' }, { who: 'Keren', seat: '21C' }], baggage: 'Cebu Pacific: one 20 kg checked bag for Gilbert (per booking).', carryOn: 'Carry-on and personal item: confirm from your active ticket and Cebu Pacific rules.', status: 'verify',
+    seats: [{ who: 'Gilbert', seat: '21A' }, { who: 'Aya', seat: '21B' }, { who: 'Keren', seat: '21C' }], baggage: 'Cebu Pacific confirmation: Gilbert 1 × 20 kg checked bag. Keren and Aya (GO Basic): no checked bag included.', carryOn: 'Carry-on and personal item: confirm from your active ticket and Cebu Pacific rules.', status: 'confirmed',
     notes: '7 h 30 min between the two scheduled flights on Dec 7. Separate airlines — bags are not checked through.', bookingUrl: LINKS.cebu },
   { id: 'f3', airline: 'Cebu Pacific', code: '5J111', from: 'Hong Kong', fromCode: 'HKG', to: 'Manila', toCode: 'MNL', date: '2026-12-11', dep: '11:00', arr: '13:30', arrTerminal: 'NAIA Terminal 3',
-    seats: [], baggage: 'Cebu Pacific: one 20 kg checked bag for Gilbert (per booking).', carryOn: 'Carry-on and personal item: confirm from your active ticket and Cebu Pacific rules.', status: 'verify',
+    depTerminal: 'Hong Kong Terminal 2 (per confirmation)', seats: [], baggage: 'Cebu Pacific confirmation: Gilbert 1 × 20 kg checked bag. Keren and Aya (GO Basic): no checked bag included.', carryOn: 'Carry-on and personal item: confirm from your active ticket and Cebu Pacific rules.', status: 'confirmed',
     notes: 'Return seats currently unassigned. Check-in: verify Cebu Pacific\'s current Terminal 2 check-in instructions and the link to the Terminal 1 boarding area. Check-in and boarding are in different places.', bookingUrl: LINKS.cebu },
   { id: 'f4', airline: 'Philippine Airlines (PAL Express)', code: 'PR2925', from: 'Manila', fromCode: 'MNL', to: 'Daraga', toCode: 'DRP', date: '2026-12-11', dep: '17:35', arr: '18:45', depTerminal: 'NAIA Terminal 2',
-    seats: [{ who: 'Keren', seat: '38J' }, { who: 'Gilbert', seat: '38K' }, { who: 'Aya', seat: '38H' }], baggage: 'PAL: no free checked baggage on the current domestic receipts. Checked-baggage allowance still to be bought (PENDING).', carryOn: 'Confirm PAL carry-on rules on your ticket.', status: 'verify',
+    seats: [{ who: 'Keren', seat: '38J' }, { who: 'Gilbert', seat: '38K' }, { who: 'Aya', seat: '38H' }], baggage: 'PAL e-tickets: NO checked baggage included for all three passengers. Any checked bag must be bought separately (PENDING — not recorded as bought).', carryOn: 'Confirm PAL carry-on rules on your ticket.', status: 'confirmed',
     notes: 'TIME-SENSITIVE: 4 h 5 min after Cebu Pacific lands. Separate booking: immigration, baggage, stroller rental return and the T3 → T2 transfer all happen in between.', bookingUrl: LINKS.pal },
 ];
 
 export const HOTEL: Hotel = {
   id: 'hotel', name: 'Rambler Oasis Hotel', address: '1 Tsing Yi Road, Tsing Yi, Hong Kong', addressZh: '',
-  phone: '+852 2129 1888', checkIn: 'Monday, Dec 7 · from 2:00 PM', checkOut: 'Friday, Dec 11 · by 12:00 noon', room: 'Standard Twin Room', guests: '2 adults + 1 child', nights: 4, bookedVia: 'Expedia',
+  phone: '+852 2129 1188', checkIn: 'Monday, Dec 7 · from 2:00 PM', checkOut: 'Friday, Dec 11 · by 12:00 noon', room: 'Standard Twin Room', guests: '2 adults + 1 child', nights: 4, bookedVia: 'Expedia',
   totalUSD: 271.65, paidUSD: 264.44, localTaxHKD: 56.6, depositHKD: 500, depositStatus: 'unknown', paymentMethod: '',
   upgradeNote: 'We decided NOT to upgrade to the Business Room.',
   shuttleNote: 'Hotel shuttle schedule is NOT confirmed. Ask the hotel before relying on it.',
@@ -85,7 +85,7 @@ export const HOTEL: Hotel = {
 
 export const EXPENSES: Expense[] = [
   // ── Paid before the trip (user-recorded, Nov 27 handwritten notes; PHP unless marked) ──
-  { id: 'e-5j', label: 'Airfare MNL–HKG–MNL (Cebu Pacific)', category: 'Flights', amount: 42087.93, currency: 'PHP', status: 'paid', kind: 'spend', note: 'User-recorded' },
+  { id: 'e-5j', label: 'Airfare MNL–HKG–MNL (Cebu Pacific)', category: 'Flights', amount: 42087.93, currency: 'PHP', status: 'paid', kind: 'spend', note: 'User-recorded amount kept. The Cebu Pacific payment page shows PHP 40,815.93 (fare 36,743.93 + add-ons 4,072.00 incl. seats 1,272.00); the ₱1,272.00 difference matches the seat charge — check your card statement.' },
   { id: 'e-pal', label: 'Airfare DRP–MNL–DRP (PAL)', category: 'Flights', amount: 14784, currency: 'PHP', status: 'paid', kind: 'spend', note: 'User-recorded' },
   { id: 'e-hotel', label: 'Hotel Rambler Oasis', category: 'Hotel', amount: 16828.46, currency: 'PHP', status: 'paid', kind: 'spend', note: 'Actual amount paid for the Expedia booking' },
   { id: 'e-disney', label: 'Disney 2-day tickets', category: 'Activities & Attractions', amount: 12473.73, currency: 'PHP', status: 'paid', kind: 'spend', day: 3, note: 'User-recorded · Dec 9 & 10' },
@@ -209,7 +209,7 @@ export const HEALTH: HealthItem[] = [
 
 export const EMERGENCY: EmergencyItem[] = [
   { id: 'em-999', label: 'Hong Kong emergency (police, fire, ambulance)', phone: '999', status: 'confirmed', urgent: true },
-  { id: 'em-hotel', label: 'Rambler Oasis Hotel', phone: '+852 2129 1888', status: 'confirmed' },
+  { id: 'em-hotel', label: 'Rambler Oasis Hotel', phone: '+852 2129 1188', status: 'confirmed' },
   { id: 'em-consulate', label: 'Philippine Consulate General, Hong Kong', phone: '', note: 'Add the number from the official site before you go.', status: 'verify' },
   { id: 'em-hosp', label: 'Nearest public hospital with A&E', phone: '', note: 'Look up the closest A&E to Tsing Yi and note it here.', status: 'verify' },
   { id: 'em-ins', label: 'Travel insurance 24/7 hotline', phone: '', note: 'Copy from your policy documents.', status: 'verify' },

@@ -17,6 +17,10 @@ export const FOLDERS = [
   '07 - Dashboard Backup',
 ] as const;
 
+/** A file can belong to one or several flights / guests. These helpers read both the old single fields and the new lists. */
+export const docFlightIds = (d: DocMeta): string[] => [...new Set([...(d.flightIds ?? []), ...(d.flightId ? [d.flightId] : [])])];
+export const docSlots = (d: DocMeta): string[] => [...new Set([...(d.slots ?? []), ...(d.slot ? [d.slot] : [])])];
+
 export const ACCEPTED = 'application/pdf,image/jpeg,image/png,image/webp,.pdf,.jpg,.jpeg,.png,.webp';
 
 function guessMime(f: File): string {
@@ -90,4 +94,16 @@ export async function restoreDoc(key: CryptoKey, id: string, meta: DocMeta, byte
   const body = await encryptBytes(key, bytes);
   const m = await encryptJson(key, meta);
   await dbPut('docs', id, { iv: body.iv, data: body.data, metaIv: m.iv, meta: m.data } satisfies StoredDoc);
+}
+
+/** Replace the file inside an existing record. Its booking links, guests and folder stay; only the bytes, name and fingerprint change. */
+export async function replaceFile(key: CryptoKey, id: string, file: File): Promise<DocMeta> {
+  const r = await dbGet<StoredDoc>('docs', id);
+  if (!r) throw new Error('missing');
+  const old = await decryptJson<DocMeta>(key, r.metaIv, r.meta);
+  const buf = await file.arrayBuffer();
+  const meta: DocMeta = { ...old, name: file.name, mime: guessMime(file), size: buf.byteLength, sha256: await sha256Hex(buf), addedAt: Date.now() };
+  const body = await encryptBytes(key, buf); const m = await encryptJson(key, meta);
+  await dbPut('docs', id, { iv: body.iv, data: body.data, metaIv: m.iv, meta: m.data } satisfies StoredDoc);
+  return meta;
 }
