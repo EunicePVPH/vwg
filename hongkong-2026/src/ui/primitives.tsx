@@ -16,6 +16,7 @@ const STATUS: Record<Status, { label: string; cls: string }> = {
 };
 /** Itinerary wording — status is always readable as TEXT, never only as colour. */
 export const ITIN_LABEL: Record<Status, string> = { confirmed: 'CONFIRMED BY USER', planned: 'PLANNED', optional: 'OPTIONAL', estimated: 'ESTIMATE', verify: 'VERIFY OFFICIAL SOURCE', pending: 'PENDING', paid: 'PAID' };
+export const PROV_LABEL = { user: 'PURCHASED PER USER', provider: 'PROVIDER DAY CONFIRMED', pending: 'PENDING FINAL TICKET CONDITIONS', checked: 'VERIFIED AS OF NOV 27, 2026' } as const;
 export function StatusPill({ status, label }: { status: Status; label?: string }) {
   const s = STATUS[status];
   return <span className={cx('inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[12px] font-bold leading-5 whitespace-nowrap', s.cls)}>

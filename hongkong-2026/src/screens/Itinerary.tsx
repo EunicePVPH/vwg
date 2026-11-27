@@ -9,7 +9,7 @@ import { fmtBoth, toHKD } from '../lib/money';
 import { fmtDur, toMin } from '../lib/time';
 import { actState, catOf, chosenAlt, dayEstimate, dayOf, routeKey, sortActs, unpricedCount } from '../lib/trip';
 import { mapDir, mapSearch } from '../lib/maps';
-import { Card, StatusPill, accentBg, accentSoft, cx, Btn, ITIN_LABEL } from '../ui/primitives';
+import { Card, StatusPill, accentBg, accentSoft, cx, Btn, ITIN_LABEL, PROV_LABEL } from '../ui/primitives';
 import { Photo } from '../ui/Photo';
 import { RoutePreview } from '../ui/RoutePreview';
 import { EditSheet, type Field } from '../ui/EditSheet';
@@ -147,15 +147,15 @@ async function copyText(t: string) {
 function useOnlineNow() { const [on, setOn] = useState(typeof navigator === 'undefined' ? true : navigator.onLine); useEffect(() => { const u = () => setOn(true), d = () => setOn(false); window.addEventListener('online', u); window.addEventListener('offline', d); return () => { window.removeEventListener('online', u); window.removeEventListener('offline', d); }; }, []); return on; }
 
 /** The step-by-step block that works with NO internet. Everything shown here is stored in the app. */
-function OfflineDirections({ a, alt, onPick, skipped, onSkip, done, onToggleDone }: { a: Activity; alt?: RouteAlt; onPick: (id: string) => void; skipped: boolean; onSkip: () => void; done: boolean; onToggleDone: () => void }) {
+function OfflineDirections({ a, alt, onPick, skipped, onSkip, done, onToggleDone, chosenA }: { a: Activity; alt?: RouteAlt; onPick: (id: string) => void; skipped: boolean; onSkip: () => void; done: boolean; onToggleDone: () => void; chosenA: boolean }) {
   const online = useOnlineNow();
   const [open, setOpen] = useState(true);
   const [copied, setCopied] = useState(false);
   const steps = alt ? alt.steps : a.steps;
   const cost = alt ? alt.cost : a.cost;
   const addr = a.address ?? a.place;
-  const car = alt ? (alt.mode === 'uber' || alt.mode === 'car') : (a.carSeat || a.mode === 'uber' || a.mode === 'car');
-  const mode = alt?.mode ?? a.mode;
+  const car = alt ? (alt.mode === 'uber' || alt.mode === 'car') : (!a.decide && (a.carSeat || a.mode === 'uber' || a.mode === 'car'));
+  const mode = alt?.mode ?? a.mode ?? (a.decide && !chosenA ? 'mtr' : undefined);
   const mapsHref = a.place ? mapDir(a.place, mode === 'walk' ? 'walking' : mode === 'uber' || mode === 'car' ? 'driving' : 'transit') : '';
   const has = !!(steps?.length || a.desc || cost || a.fallback || a.alts?.length);
   if (!has && !addr) return null;
@@ -168,8 +168,11 @@ function OfflineDirections({ a, alt, onPick, skipped, onSkip, done, onToggleDone
       {open && (
         <div className="space-y-2.5 border-t border-navy/5 px-3 pb-3 pt-2.5 text-[14px]">
           {car && <p className="flex gap-2 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#8f2f21]"><Baby size={16} className="mt-0.5 shrink-0" /><span>Child car seat: {CARSEAT_SHORT}</span></p>}
+          {a.decide && !alt && !chosenA && <p className="rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#8f2f21]">DECIDE ON THE DAY — nothing is chosen. Both options are shown below. Pick one when you know the fare and how Aya is doing. No cost is counted until you choose.</p>}
+          {a.decide && chosenA && <p className="rounded-xl bg-turq-soft px-3 py-2 text-[13px] font-bold text-[#0b6b61]">You chose OPTION A — MTR. <button className="underline" onClick={() => onPick('')}>Undo</button></p>}
           {alt && <p className="rounded-xl bg-sky-soft px-3 py-2 text-[13px]"><b>Using: {alt.label}</b> <span className="font-bold text-[#8a5f00]">({ITIN_LABEL[alt.status]})</span></p>}
           {!alt && a.desc && <p className="text-[13px] text-muted">{a.desc}</p>}
+          {a.decide && !alt && !chosenA && <button onClick={() => onPick('A')} className="tap w-full rounded-xl bg-navy px-3 py-2.5 text-[13px] font-bold text-white">Choose OPTION A — MTR (budget)</button>}
           {steps && steps.length > 0 && (
             <ol className="space-y-1.5">
               {steps.map((t, i) => <li key={i} className="flex gap-2.5 text-[14px] leading-snug"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-navy text-[11px] font-bold text-white">{i + 1}</span><span>{t}</span></li>)}
@@ -185,7 +188,8 @@ function OfflineDirections({ a, alt, onPick, skipped, onSkip, done, onToggleDone
                 <div key={x.id} className={cx('rounded-xl p-2.5 text-[13px]', alt?.id === x.id ? 'bg-sky-soft ring-2 ring-sky' : 'bg-paper')}>
                   <div className="font-bold text-navy">{x.label} <span className="ml-1 text-[11px] text-[#8a5f00]">{ITIN_LABEL[x.status]}</span></div>
                   {x.cost && <div className="text-muted">{x.cost}</div>}
-                  <button onClick={() => onPick(alt?.id === x.id ? '' : x.id)} className="tap mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-[12px] font-bold text-navy ring-1 ring-navy/15">{alt?.id === x.id ? 'Back to the planned route' : 'Use alternative route'}</button>
+                  {a.decide && !alt && !chosenA && <ol className="mt-1 list-decimal space-y-1 pl-5">{x.steps.map((t, i) => <li key={i}>{t}</li>)}</ol>}
+                  <button onClick={() => onPick(alt?.id === x.id ? '' : x.id)} className="tap mt-1.5 inline-flex items-center gap-1.5 rounded-lg bg-white px-2.5 py-1.5 text-[12px] font-bold text-navy ring-1 ring-navy/15">{a.decide ? (alt?.id === x.id ? 'Undo this choice' : 'Choose OPTION B — Uber (comfort)') : alt?.id === x.id ? 'Back to the planned route' : 'Use alternative route'}</button>
                 </div>
               ))}
             </div>
@@ -215,6 +219,8 @@ function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusT
   const ticketDocs = a.ticketId ? docs.filter((d) => d.ticketId === a.ticketId).length : 0;
   const fdocs = a.flightId ? docs.filter((d) => d.flightId === a.flightId).length : 0;
   const ticket = a.ticketId ? TICKETS.find((t) => t.id === a.ticketId) : undefined;
+  const { state: appState } = useAppState();
+  const chosenA = !!a.decide && appState.notes[routeKey(a.id)] === 'A';
   const shifted = shift !== 0 && !done && !skipped && !isFixed(a);
   const startShown = shifted ? addMin(a.start, shift) : a.start;
   return (
@@ -232,7 +238,7 @@ function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusT
       <div className="min-w-0 flex-1 pb-3">
         <motion.div layout className={cx('card overflow-hidden', st === 'current' && 'ring-2 ring-coral/70', (st === 'done' || skipped) && 'opacity-80')}>
           <button className="flex w-full items-start gap-2 p-3.5 text-left" onClick={() => setOpen(!open)} aria-expanded={open}>
-            <span className={cx('mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-xl text-navy', accentSoft[accent])}>{(alt?.mode ?? a.mode) ? MODE_ICON[(alt?.mode ?? a.mode)!] : KIND_ICON[a.kind]}</span>
+            <span className={cx('mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-xl text-navy', accentSoft[accent])}>{(a.decide && !alt && !chosenA) ? <Navigation size={16} /> : (alt?.mode ?? a.mode ?? (chosenA ? 'mtr' : undefined)) ? MODE_ICON[(alt?.mode ?? a.mode ?? 'mtr')!] : KIND_ICON[a.kind]}</span>
             <span className="min-w-0 flex-1">
               <span className={cx('block text-[16px] font-bold leading-snug text-navy', skipped && 'line-through')}>{a.title}</span>
               {a.sub && <span className="mt-0.5 block text-[13px] leading-snug text-muted">{a.sub}</span>}
@@ -240,6 +246,9 @@ function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusT
                 {a.priority === 'must' && <span className="inline-flex items-center gap-1 rounded-full bg-navy px-2 py-0.5 text-[11px] font-bold text-white"><Star size={10} fill="currentColor" />Must-do</span>}
                 {a.nap && <span className="inline-flex items-center gap-1 rounded-full bg-sky-soft px-2 py-0.5 text-[11px] font-bold text-[#1d5f99]"><Moon size={10} />Nap</span>}
                 <StatusPill status={a.status} label={ITIN_LABEL[a.status]} />
+                {a.prov && <span className={cx('rounded-full px-2 py-0.5 text-[11px] font-bold', a.prov === 'checked' || a.prov === 'provider' ? 'bg-turq-soft text-[#0b6b61]' : a.prov === 'pending' ? 'bg-sun-soft text-[#8a5f00]' : 'bg-sky-soft text-[#1d5f99]')}>{PROV_LABEL[a.prov]}</span>}
+                {a.decide && <span className={cx('rounded-full px-2 py-0.5 text-[11px] font-bold', alt || chosenA ? 'bg-turq-soft text-[#0b6b61]' : 'bg-coral-soft text-[#a63a2b]')}>{alt ? 'CHOSEN: OPTION B' : chosenA ? 'CHOSEN: OPTION A' : 'DECIDE ON DAY'}</span>}
+                {a.cutIfTired && <span className="rounded-full bg-lav-soft px-2 py-0.5 text-[11px] font-bold text-[#5046b4]">EASY TO CUT IF TIRED</span>}
                 {skipped && <span className="rounded-full bg-lav-soft px-2 py-0.5 text-[11px] font-bold text-[#5046b4]">SKIPPED</span>}
                 {alt && <span className="rounded-full bg-sky-soft px-2 py-0.5 text-[11px] font-bold text-[#1d5f99]">ALT ROUTE</span>}
                 {exp ? <span className="text-[12px] font-bold text-muted">{exp.amount ? `${exp.status === 'paid' || exp.status === 'actual' ? 'Paid' : exp.status === 'quoted' ? 'Quoted' : exp.status === 'to_verify' ? 'Verify' : 'Planned'} ${fmtBoth(toHKD(exp.amount, exp.currency, r), r)}` : 'Quote needed'}</span> : a.costHKD ? <span className="text-[12px] font-bold text-muted">~{fmtBoth(a.costHKD, r)}</span> : a.costHKD === null ? <span className="text-[12px] text-muted">price to add</span> : null}
@@ -253,12 +262,12 @@ function ActivityCard({ a, acts, last, accent, done, skipped, shift, alt, focusT
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22 }} className="overflow-hidden">
                 <div className="space-y-2.5 border-t border-navy/5 px-3.5 pb-3.5 pt-3 text-[14px] text-ink">
                   {a.booking && <p className="rounded-xl bg-sun-soft px-3 py-2 text-[13px] font-bold text-[#6d4b00]">{a.booking}</p>}
-                  {a.flex && <p className="rounded-xl bg-paper px-3 py-2 text-[13px]"><b className="text-navy">Time window:</b> {a.flex}</p>}
+                  {a.flex && <p className="whitespace-pre-line rounded-xl bg-paper px-3 py-2 text-[13px]"><b className="text-navy">Time window:</b> {a.flex}</p>}
                   {a.address && <p className="text-[13px]"><b className="text-navy">Address:</b> {a.address}</p>}
                   {a.route && <p className="text-[13px]"><b className="text-navy">Route:</b> {a.route}</p>}
                   {a.travel && <p className="text-[13px]"><b className="text-navy">Travel time:</b> {a.travel}</p>}
                   {a.walk && <p className="text-[13px]"><b className="text-navy">Walking:</b> {a.walk}</p>}
-                  <OfflineDirections a={a} alt={alt} onPick={onPick} skipped={skipped} onSkip={onSkip} done={done} onToggleDone={onToggleDone} />
+                  <OfflineDirections a={a} alt={alt} onPick={onPick} skipped={skipped} onSkip={onSkip} done={done} onToggleDone={onToggleDone} chosenA={chosenA} />
                   {a.notes && <p>{a.notes}</p>}
                   {a.tips?.map((t) => <p key={t} className="flex gap-2"><Info size={16} className="mt-0.5 shrink-0 text-sky" />{t}</p>)}
                   {a.stroller && <p className="flex gap-2"><Baby size={16} className="mt-0.5 shrink-0 text-lav" /><span><b>Stroller:</b> {a.stroller}</span></p>}

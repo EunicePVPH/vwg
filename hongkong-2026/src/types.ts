@@ -60,6 +60,9 @@ export interface Activity {
   zh?: string; // station / place names in Chinese (one line)
   sub?: string; // short collapsed summary line
   optionalStop?: boolean; // can be skipped with the “Skip optional stop” button
+  cutIfTired?: boolean; // stays scheduled, but is marked EASY TO CUT IF TIRED
+  decide?: boolean; // choose on the day: both options are shown, none is pre-selected
+  prov?: 'user' | 'provider' | 'pending' | 'checked'; // where the confirmation comes from (see PROV_LABEL)
 }
 export interface RouteAlt { id: string; label: string; mode: Mode; steps: string[]; cost?: string; hkd?: number; status: Status; note?: string }
 

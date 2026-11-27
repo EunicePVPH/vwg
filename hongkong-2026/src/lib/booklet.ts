@@ -97,6 +97,7 @@ class Writer {
 
 const TAGS: Record<Activity['status'], string> = { confirmed: '[CONFIRMED BY USER]', planned: '[PLANNED]', optional: '[OPTIONAL]', estimated: '[ESTIMATE]', verify: '[VERIFY OFFICIAL SOURCE]', pending: '[PENDING]', paid: '[PAID]' };
 const TAG = (s: Activity['status']) => TAGS[s] ?? '';
+const PROV: Record<NonNullable<Activity['prov']>, string> = { user: '[PURCHASED PER USER]', provider: '[PROVIDER DAY CONFIRMED]', pending: '[PENDING FINAL TICKET CONDITIONS]', checked: '[VERIFIED AS OF NOV 27, 2026]' };
 const CAR = 'CHILD CAR SEAT: choose "Car Seat (1-7yo)" in Uber and check the seat is in the car before Aya gets in. Never carry Aya on a lap.';
 const modeOf = (a: Activity) => a.mode === 'uber' || a.mode === 'car';
 const ARROW = (list: string[]) => list.join('  ->  ');
@@ -114,7 +115,7 @@ async function buildOnce(d: BookletInput, idx: Record<string, number>): Promise<
   W.page.drawText('Keren - Gilbert - Aya', { x: M_IN, y: PH - 132, size: 11, font: W.reg, color: rgb(1, 1, 1) });
   W.page.drawText('December 7-11, 2026', { x: M_IN, y: PH - 152, size: 11, font: W.reg, color: rgb(1, 1, 1) });
   W.y = PH - 225;
-  W.text('Itinerary & directions handbook - Nov 27 plan', { size: 11, font: W.bold, gap: 2 });
+  W.text('Itinerary & directions handbook - Nov 27 plan (audit corrections applied)', { size: 11, font: W.bold, gap: 2 });
   W.text('How to read the labels:', { size: 9, font: W.bold });
   W.text('[CONFIRMED BY USER] you told us it is booked or agreed.\n[PLANNED] the plan - nothing is booked unless it says so.\n[OPTIONAL] skip freely.\n[ESTIMATE] a planning number, not official.\n[VERIFY OFFICIAL SOURCE] check the official page or your own booking first (exits, fares, hours, show times).', { size: 8.3, indent: 8, gap: 4 });
   W.text('Quoted Uber prices are quotes only - not booked and not paid. Nothing in this booklet knows where you are: it never tracks your location.', { size: 8.3, gap: 6 });
@@ -189,16 +190,16 @@ async function buildOnce(d: BookletInput, idx: Record<string, number>): Promise<
       const head = `${fmt12(a.start)}${a.end ? ' - ' + fmt12(a.end) : ''}${dur(a.start, a.end)}  ${a.title}`;
       W.need(60);
       W.text(`${a.priority === 'must' ? '* ' : a.priority === 'optional' ? '(optional) ' : ''}${head}`, { size: 8.8, font: W.bold });
-      W.text(TAG(a.status) + (a.sub ? '  ' + a.sub : ''), { size: 7.3, indent: 12, color: [0.35, 0.25, 0] });
+      W.text(TAG(a.status) + (a.prov ? ' ' + PROV[a.prov] : '') + (a.decide ? ' [DECIDE ON DAY]' : '') + (a.cutIfTired ? ' [EASY TO CUT IF TIRED]' : '') + (a.sub ? '  ' + a.sub : ''), { size: 7.3, indent: 12, color: [0.35, 0.25, 0] });
       const kv: [string, string | undefined][] = [['Where', a.address || a.place], ['Window', a.flex], ['Route', a.route], ['Travel time', a.travel], ['Walk', a.walk], ['Booking', a.booking], ['Cost', a.cost]];
       for (const [k, v] of kv) if (v) W.text(`${k}: ${v}`, { size: 7.4, indent: 12, color: [0.15, 0.15, 0.15] });
       if (a.desc) W.text(a.desc, { size: 7.4, indent: 12, color: [0.25, 0.25, 0.25] });
-      if (a.carSeat || modeOf(a)) W.text(CAR, { size: 7.4, indent: 12, font: W.bold, color: [0.55, 0.1, 0.05] });
+      if ((a.carSeat || modeOf(a)) && !a.decide) W.text(CAR, { size: 7.4, indent: 12, font: W.bold, color: [0.55, 0.1, 0.05] });
       if (a.steps?.length) { W.text('Offline directions:', { size: 7.6, indent: 12, font: W.bold }); a.steps.forEach((t, i) => W.text(`${i + 1}. ${t}`, { size: 7.4, indent: 20 })); }
       if (a.zh && d.zhPng) { W.text('Show this name if you are lost:', { size: 7, indent: 12, color: [0.4, 0.4, 0.4] }); await W.zh(a.zh, d.zhPng, 10); }
       for (const alt of a.alts ?? []) {
         const chosen = d.routeChoice?.[a.id] === alt.id;
-        W.text(`ALTERNATIVE${chosen ? ' (YOU SELECTED THIS ONE)' : ''}: ${alt.label}  ${TAG(alt.status)}`, { size: 7.6, indent: 12, font: W.bold, color: [0.1, 0.25, 0.5] });
+        W.text(`${a.decide ? 'OPTION B' : 'ALTERNATIVE'}${chosen ? ' (YOU SELECTED THIS ONE)' : ''}: ${alt.label}  ${TAG(alt.status)}`, { size: 7.6, indent: 12, font: W.bold, color: [0.1, 0.25, 0.5] });
         alt.steps.forEach((t, i) => W.text(`${i + 1}. ${t}`, { size: 7.3, indent: 20 }));
         if (alt.cost) W.text(`Cost: ${alt.cost}`, { size: 7.3, indent: 20 });
       }

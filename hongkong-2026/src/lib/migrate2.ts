@@ -53,3 +53,21 @@ export function migrateSupplement(s: UserState): UserState {
   if (kept.length) log.push({ id: 'chg-v3-kept', at, kind: 'update', title: `Your edits to ${kept.length} stop${kept.length > 1 ? 's' : ''} were kept`, detail: 'Your saved times, costs and notes still sit on top of the new text for: ' + kept.map((id) => V2_TITLES[id]).join(' · ') + '. Open the stop and use “Restore original” if you want the new wording instead.' });
   return { ...s, itinV3: true, changeLog: log };
 }
+
+/** Third one-time step: the Nov 27 v17 audit (verified official facts, conditional Peak timing, labels). Your own edits are never replaced. */
+export const AUDIT_IDS: Record<string, string> = {
+  'v2-2-01': 'Uber to the Peak', 'v2-2-02': 'Peak Tram — ride up', 'v2-2-03': 'Sky Terrace 428 (provisional, voucher-dependent)', 'v2-2-04': 'Peak → Ocean Park by MTR (Exit B same-level)', 'v2-2-05': 'Ocean Park entry (hours, no park app)',
+  'v2-2-14': 'Central Winter Wonderland (7–11 PM, every 30 min)', 'v2-2-16': 'Star Ferry (HK$4 / HK$5, last ~23:30)', 'v2-2-17': 'Tsim Sha Tsui projections (7–11 PM)', 'v2-3-01': 'Minibus 88F (HK$4.30, short-working)',
+  'v2-3-03': 'East TST Exit P2 (lift verified)', 'v2-3-04': 'Science Museum (Wednesday hours, free)', 'v2-3-09': 'Disneyland → Temple Street (decide on the day)', 'v2-3-10': 'Temple Street (easy to cut if tired)',
+  'v2-4-06': 'Friendtastic! (~30 min)', 'v2-4-08': 'Momentous (~20 min, day-specific time to verify)', 'v2-5-03': 'HKIA T2 Aisle R (verified)', 'v2-5-04': 'T2 → T1 airport train (verified)',
+};
+export function migrateAudit(s: UserState): UserState {
+  if (s.itinV4) return s;
+  const at = Date.now();
+  const log: ChangeEntry[] = [...(s.changeLog ?? [])];
+  log.push({ id: 'chg-v4', at, kind: 'update', title: 'Audit corrections applied (Nov 27)', detail: 'Verified official facts were added and the Peak timing is now conditional on YOUR voucher (Branch A 8:30 / Branch B 10 AM). Fixed: 88F fare HK$4.30, Star Ferry HK$4/HK$5 and last sailing, Exit B same-level, Exit P2 lift, WinterFest dates and 7 PM shows, T2 Aisle R → T1 airport train, Momentous ~20 min, Friendtastic ~30 min, Disney → Temple Street now “decide on the day”, Temple Street marked easy to cut if tired, and new labels: Purchased per user / Provider day confirmed / Pending final ticket conditions / Verified as of Nov 27. Your expenses (₱108,585.90 paid), edits and documents were not touched.' });
+  const patch = s.col.activities?.patch ?? {};
+  const kept = Object.keys(patch).filter((id) => AUDIT_IDS[id]);
+  if (kept.length) log.push({ id: 'chg-v4-kept', at, kind: 'update', title: `Your edits on ${kept.length} corrected stop${kept.length > 1 ? 's' : ''} were kept`, detail: 'The corrected wording is hidden behind your saved edit for: ' + kept.map((id) => AUDIT_IDS[id]).join(' · ') + '. Open the stop, tap Edit, and use “Restore original” to see the corrected text.' });
+  return { ...s, itinV4: true, changeLog: log };
+}
