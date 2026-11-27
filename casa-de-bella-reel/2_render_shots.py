@@ -88,6 +88,9 @@ def render(shot):
         u = min(max(t / dur, 0), 1)
         img = zoomed(img, z0 + (z1 - z0) * (u * u * (3 - 2 * u)), shot.get("zoom_anchor", (0.5, 0.5)))
         img = img.filter(ImageFilter.UnsharpMask(radius=1.4, percent=75, threshold=2))
+        clar = edit.get("grade_global", {}).get("clarity", 0)
+        if clar:  # local contrast ('clarity'): big-radius unsharp gives the picture more pop
+            img = img.filter(ImageFilter.UnsharpMask(radius=28, percent=int(clar * 100), threshold=0))
         mm[k] = np.asarray(img)
     mm.flush()
     print(f"{sid:3s} {total} frames  gain x{grade['gain']:.2f}  wb {np.round(grade['gains'], 3)}  "

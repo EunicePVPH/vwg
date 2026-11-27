@@ -24,6 +24,11 @@ A livelier alternative track (`audio/music_lively.mp3`, upbeat pop at 90 BPM) gi
 `casa-de-bella-reel_lively_music_voiceover.mp4`: `python3 5_add_audio.py music_lively.mp3 lively 0.5 1.2 -17`.
 To change the script, regenerate `audio/voiceover.mp3` with the new wording and re-run `python3 5_add_audio.py`.
 
+## Colour
+The look is set by `grade_global` in `edit.json` (saturation, vibrance, contrast, brightness, warmth, clarity) plus a per-shot
+`grade` on each shot. Version 3 added a richer grade after feedback that the colour looked dull. After changing colour, run
+`python3 2_render_shots.py && python3 3_assemble.py`, then the `5_add_audio.py` commands to rebuild the audio versions.
+
 ## Asking for changes
 Almost everything lives in **`edit.json`**:
 - `shots` - order, length in beats (1 beat = 20 frames = 0.667 s), `src_in` (source start in seconds),

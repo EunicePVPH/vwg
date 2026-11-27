@@ -93,11 +93,25 @@ def _smooth_curve(x, knee=0.72, k=1.7):
     return y
 
 
+def _global_grade():
+    try:
+        return load_edit().get("grade_global", {})
+    except Exception:
+        return {}
+
+
 def estimate_grade(frames, shot_grade):
     """frames: list of uint8 HxWx3 sample frames. Returns dict of per-channel LUT + params."""
     g = dict(target=0.52, warm=0.02, sat=1.05, wb_strength=0.6, lift=0.010, contrast=0.16, max_gain=2.0)
     g.update(shot_grade or {})
-    g["warm"] += 0.012  # global nudge toward cream/warm
+    G = _global_grade()
+    g["warm"] += G.get("warm_add", 0.012)       # global nudge toward cream/warm
+    g["target"] += G.get("target_add", 0.0)      # brighter overall
+    g["sat"] *= G.get("sat_mult", 1.0)           # richer colour
+    g["contrast"] = G.get("contrast", g["contrast"])
+    g["lift"] = G.get("lift", g["lift"])         # black point (0 = true blacks)
+    g["wb_strength"] = G.get("wb_strength", g["wb_strength"])
+    g["vibrance"] = G.get("vibrance", 0.0)
     sub = np.concatenate([f[::8, ::8].reshape(-1, 3) for f in frames]).astype(np.float32) / 255.0
     luma = sub @ np.array([0.299, 0.587, 0.114], dtype=np.float32)
     # white balance from near-neutral mid-tones
@@ -130,11 +144,11 @@ def estimate_grade(frames, shot_grade):
         v = v + g["contrast"] * (s - v)
         v = g["lift"] + (1 - g["lift"]) * v
         luts[c] = np.clip(v * 255 + 0.5, 0, 255).astype(np.uint8)
-    return dict(luts=luts, sat=g["sat"], gains=gains, gain=gain, med=med)
+    return dict(luts=luts, sat=g["sat"], vib=g["vibrance"], gains=gains, gain=gain, med=med)
 
 
 SHADOW_TINT = np.array([0.010, 0.003, -0.006], np.float32)  # warm brown in the shadows
-HIGHLIGHT_MUL = np.array([1.0, 0.996, 0.982], np.float32)  # cream in the highlights
+HIGHLIGHT_MUL = np.array([1.0, 0.998, 0.99], np.float32)  # cream in the highlights
 
 
 def apply_grade(frame_u8, grade):
@@ -143,7 +157,17 @@ def apply_grade(frame_u8, grade):
         out[..., c] = grade["luts"][c][frame_u8[..., c]]
     f = out.astype(np.float32) / 255.0
     y = (f @ np.array([0.299, 0.587, 0.114], dtype=np.float32))[..., None]
-    f = y + (f - y) * grade["sat"]
+    # vibrance: lift muted colours (pinks, creams, beiges) more than already-vivid ones
+    mx, mn = f.max(2, keepdims=True), f.min(2, keepdims=True)
+    chroma = (mx - mn) / np.maximum(mx, 1e-3)
+    f = y + (f - y) * (grade["sat"] * (1 + grade.get("vib", 0.0) * (1 - np.clip(chroma * 2.5, 0, 1))))
+    # de-green cream/ivory tones lit by warm light (G slightly above R reads lime on screen); leaves vivid greens alone
+    mx2, mn2 = f.max(2), f.min(2)
+    low_chroma = np.clip(1 - ((mx2 - mn2) / np.maximum(mx2, 1e-3)) / 0.60, 0, 1)
+    f[..., 1] -= 1.0 * np.maximum(f[..., 1] - f[..., 0], 0) * low_chroma
+    # keep bright whites clean: pull colour out of the brightest tones so clipped highlights never turn yellow
+    w = np.clip((y - 0.74) / 0.22, 0, 1)
+    f = y + (f - y) * (1 - 0.7 * w * w * (3 - 2 * w))
     f = f + SHADOW_TINT * (1 - y) * (1 - y)
     f = f * (1 + (HIGHLIGHT_MUL - 1) * y * y)
     return np.clip(f * 255 + 0.5, 0, 255).astype(np.uint8)
