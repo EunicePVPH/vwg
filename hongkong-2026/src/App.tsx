@@ -8,6 +8,8 @@ import { useRoute } from './ui/router';
 import { PlaneLoader, cx } from './ui/primitives';
 import { Splash } from './ui/Splash';
 import { Home } from './screens/Home';
+import { useRemind, showNotification } from './state/remind';
+import { dueNow } from './lib/reminders';
 import { Itinerary } from './screens/Itinerary';
 import { More } from './screens/More';
 const Tickets = lazy(() => import('./screens/Tickets').then((m) => ({ default: m.Tickets })));
@@ -17,6 +19,11 @@ const Money = lazy(() => import('./screens/Money').then((m) => ({ default: m.Mon
 const Ready = lazy(() => import('./screens/Ready').then((m) => ({ default: m.Ready })));
 const Packing = lazy(() => import('./screens/Packing').then((m) => ({ default: m.Packing })));
 const Shopping = lazy(() => import('./screens/Shopping').then((m) => ({ default: m.Shopping })));
+const Reminders = lazy(() => import('./screens/Reminders').then((m) => ({ default: m.Reminders })));
+const Verify = lazy(() => import('./screens/Verify').then((m) => ({ default: m.Verify })));
+const Changes = lazy(() => import('./screens/Verify').then((m) => ({ default: m.Changes })));
+const OfflineInfo = lazy(() => import('./screens/Verify').then((m) => ({ default: m.OfflineInfo })));
+const Booklet = lazy(() => import('./screens/Booklet').then((m) => ({ default: m.Booklet })));
 const Docs = lazy(() => import('./screens/Docs').then((m) => ({ default: m.Docs })));
 const Food = lazy(() => import('./screens/Info').then((m) => ({ default: m.Food })));
 const Guide = lazy(() => import('./screens/Info').then((m) => ({ default: m.Guide })));
@@ -28,6 +35,26 @@ const TABS = [
   { id: 'home', label: 'Home', icon: HomeIcon }, { id: 'itinerary', label: 'Itinerary', icon: CalendarDays }, { id: 'maps', label: 'Maps', icon: MapIcon },
   { id: 'tickets', label: 'Tickets', icon: Ticket }, { id: 'more', label: 'More', icon: Ellipsis },
 ];
+
+/** Shows device notifications for due reminders — only while the app is open or recently open (it cannot wake a closed app). */
+function Notifier() {
+  const { st, all, set } = useRemind();
+  useEffect(() => {
+    if (!st.on || !st.notify || typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    const check = () => {
+      const due = dueNow(all, st, Date.now(), 20).filter((r) => !st.fired[r.id]);
+      if (!due.length) return;
+      due.slice(0, 3).forEach((r) => void showNotification(r.title, r.body, r.id));
+      set({ fired: { ...st.fired, ...Object.fromEntries(due.map((r) => [r.id, true as const])) } });
+    };
+    check();
+    const t = setInterval(check, 30000);
+    const v = () => { if (document.visibilityState === 'visible') check(); };
+    document.addEventListener('visibilitychange', v);
+    return () => { clearInterval(t); document.removeEventListener('visibilitychange', v); };
+  }, [all, st.on, st.notify, st.fired]); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+}
 
 function Shell({ onLock }: { onLock: () => void }) {
   const [route] = useRoute();
@@ -46,11 +73,12 @@ function Shell({ onLock }: { onLock: () => void }) {
   else if (tab === 'maps') page = <Maps />;
   else if (tab === 'tickets') page = <Tickets focus={sub} />;
   else page = sub === 'flights' ? <FlightsHotel /> : sub === 'expenses' ? <Money /> : sub === 'ready' ? <ConfettiBoundary><Ready /></ConfettiBoundary> : sub === 'packing' ? <Packing param={route.slice(2)} /> : sub === 'shopping' ? <Shopping />
-    : sub === 'documents' ? <Docs /> : sub === 'food' ? <Food /> : sub === 'guide' ? <Guide /> : sub === 'health' ? <Health /> : sub === 'emergency' ? <Emergency /> : sub === 'settings' ? <Settings onLock={onLock} /> : <More onLock={onLock} />;
+    : sub === 'documents' ? <Docs /> : sub === 'food' ? <Food /> : sub === 'guide' ? <Guide /> : sub === 'health' ? <Health /> : sub === 'emergency' ? <Emergency /> : sub === 'settings' ? <Settings onLock={onLock} /> : sub === 'reminders' ? <Reminders /> : sub === 'verify' ? <Verify /> : sub === 'changes' ? <Changes /> : sub === 'offline' ? <OfflineInfo /> : sub === 'booklet' ? <Booklet /> : <More onLock={onLock} />;
 
   return (
     <MotionConfig reducedMotion={settings.motion === 'off' ? 'always' : 'user'}>
       <Splash show={splash} onDone={doneSplash} />
+      <Notifier />
       <div ref={scroller} className="mx-auto min-h-dvh w-full max-w-[560px] px-4 pb-[calc(88px+var(--safe-b))]">
         <Suspense fallback={<PlaneLoader label="Loading…" />}>
           <AnimatePresence mode="wait" initial={false}>

@@ -6,6 +6,8 @@ import { setSimulatedNow } from '../lib/time';
 import { HOTEL } from '../data/seed';
 import type { PackUI } from '../lib/packTypes';
 import { migratePacking } from '../lib/pack';
+import { migrateItinerary, type ChangeEntry } from '../lib/migrate2';
+import type { RemindState } from '../lib/reminders';
 import type { Hotel } from '../types';
 
 export interface CollState { patch: Record<string, Record<string, unknown>>; added: Record<string, unknown>[]; removed: string[] }
@@ -26,6 +28,9 @@ export interface UserState {
   lastBackupAt?: number;
   packUI?: Partial<PackUI>;
   packMigrated?: boolean;
+  itinV2?: boolean;
+  changeLog?: ChangeEntry[];
+  remind?: RemindState;
 }
 const emptyCol = (): CollState => ({ patch: {}, added: [], removed: [] });
 export const initialState = (): UserState => ({
@@ -56,7 +61,7 @@ export function StateProvider({ dataKey, children }: { dataKey: CryptoKey; child
       const raw = await dbGet<{ iv: Uint8Array; data: ArrayBuffer }>('kv', 'state');
       let s = initialState();
       if (raw) { try { s = { ...initialState(), ...(await decryptJson<UserState>(dataKey, raw.iv, raw.data)) }; } catch { /* corrupted → fresh */ } }
-      const migrated = migratePacking(s);
+      const migrated = migrateItinerary(migratePacking(s));
       if (!cancel) { latest.current = migrated; setSimulatedNow(migrated.settings.simulatedNow); set(migrated); if (migrated !== s) persist(migrated); }
     })();
     return () => { cancel = true; };

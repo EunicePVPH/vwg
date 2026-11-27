@@ -13,8 +13,11 @@ export function computeBudget(acts: Activity[], exps: Expense[], shop: ShoppingI
   const est: Record<string, number> = {}; const act: Record<string, number> = {};
   for (const a of acts) if (a.costHKD && a.priority !== 'optional') est[catOf(a)] = (est[catOf(a)] ?? 0) + a.costHKD;
   for (const i of shop) if (!checks['shop:' + i.id] && i.price) est['Shopping'] = (est['Shopping'] ?? 0) + toHKD(i.price, i.currency, r);
-  for (const e of spend) if (e.amount) { if (e.status === 'estimated') est[normCat(e.category)] = (est[normCat(e.category)] ?? 0) + hk(e); if (e.status === 'actual') act[normCat(e.category)] = (act[normCat(e.category)] ?? 0) + hk(e); }
+  for (const e of spend) if (e.amount) { if (e.status === 'estimated' || e.status === 'quoted') est[normCat(e.category)] = (est[normCat(e.category)] ?? 0) + hk(e); if (e.status === 'actual') act[normCat(e.category)] = (act[normCat(e.category)] ?? 0) + hk(e); }
   const remaining = Object.keys(est).reduce((n, c) => n + Math.max(0, est[c] - (act[c] ?? 0)), 0);
   const optionalTotal = acts.filter((a) => a.priority === 'optional' && a.costHKD).reduce((n, a) => n + (a.costHKD ?? 0), 0) + spend.filter((e) => e.status === 'optional').reduce((n, e) => n + hk(e), 0);
-  return { prepaid, actual, paidTotal, remaining, optionalTotal, everything: paidTotal + remaining };
+  const quoted = spend.filter((e) => e.status === 'quoted').reduce((n, e) => n + hk(e), 0);
+  const toVerify = spend.filter((e) => e.status === 'to_verify').reduce((n, e) => n + hk(e), 0);
+  const holds = exps.filter((e) => e.status === 'refundable_hold' || e.kind === 'deposit').reduce((n, e) => n + hk(e), 0);
+  return { prepaid, actual, paidTotal, remaining, optionalTotal, everything: paidTotal + remaining, quoted, toVerify, holds };
 }

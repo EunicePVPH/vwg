@@ -1,8 +1,11 @@
-import { ShoppingBag, Backpack, BookOpen, ClipboardCheck, FolderOpen, HeartPulse, Plane, Receipt, Settings as SettingsIcon, Siren, Utensils, Lock } from 'lucide-react';
+import { BellRing, BookMarked, History, ShieldQuestion, WifiOff, ShoppingBag, Backpack, BookOpen, ClipboardCheck, FolderOpen, HeartPulse, Plane, Receipt, Settings as SettingsIcon, Siren, Utensils, Lock } from 'lucide-react';
 import { Card, PageHeader } from '../ui/primitives';
 import { go } from '../ui/router';
 
 const ITEMS = [
+  { to: 'more/reminders', icon: <BellRing />, title: 'Reminders', sub: 'Next stop, calendar', tone: 'bg-coral-soft text-[#a63a2b]' },
+  { to: 'more/verify', icon: <ShieldQuestion />, title: 'To verify', sub: 'Open checks + links', tone: 'bg-sun-soft text-[#8a5f00]' },
+  { to: 'more/booklet', icon: <BookMarked />, title: 'Print booklet', sub: 'Folded Letter booklet', tone: 'bg-turq-soft text-[#0b6b61]' },
   { to: 'more/flights', icon: <Plane />, title: 'Flights & Hotel', sub: 'Seats, baggage, check-in', tone: 'bg-sky-soft text-[#1d5f99]' },
   { to: 'more/expenses', icon: <Receipt />, title: 'Expenses', sub: 'HKD + PHP, paid vs planned', tone: 'bg-lav-soft text-[#5046b4]' },
   { to: 'more/ready', icon: <ClipboardCheck />, title: 'Travel Ready', sub: 'Tasks before we go', tone: 'bg-sun-soft text-[#8a5f00]' },
@@ -13,6 +16,8 @@ const ITEMS = [
   { to: 'more/guide', icon: <BookOpen />, title: 'Hong Kong Guide', sub: 'Weather, tips, plugs', tone: 'bg-sky-soft text-[#1d5f99]' },
   { to: 'more/health', icon: <HeartPulse />, title: 'Health & Medicines', sub: 'Aya’s info', tone: 'bg-coral-soft text-[#a63a2b]' },
   { to: 'more/emergency', icon: <Siren />, title: 'Emergency', sub: '999 and key numbers', tone: 'bg-coral-soft text-[#a63a2b]' },
+  { to: 'more/changes', icon: <History />, title: 'Changes & history', sub: 'Old plan, conflicts', tone: 'bg-lav-soft text-[#5046b4]' },
+  { to: 'more/offline', icon: <WifiOff />, title: 'Offline & online', sub: 'What works where', tone: 'bg-sky-soft text-[#1d5f99]' },
   { to: 'more/settings', icon: <SettingsIcon />, title: 'Settings & Backup', sub: 'PIN, backup, rates', tone: 'bg-lav-soft text-[#5046b4]' },
 ];
 export function More({ onLock }: { onLock: () => void }) {

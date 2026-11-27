@@ -39,6 +39,17 @@ export interface Activity {
   flightId?: string;
   link?: { label: string; url: string };
   alt?: string; // transport alternative
+  // Nov 27 master update: stop-by-stop detail
+  address?: string;
+  flex?: string; // flexible time window / scenario text
+  travel?: string; // estimated travel time (always labelled ESTIMATE / VERIFY when not official)
+  route?: string; // station, exits, platform direction
+  walk?: string; // walking estimate
+  skip?: string; // skip / shorten option
+  booking?: string; // booking status text
+  verify?: { label: string; url: string }[];
+  expenseId?: string; // linked expense (quote / payment)
+  remind?: ('leave' | 'ticket' | 'meal' | 'nap' | 'restroom' | 'last' | 'passport')[];
 }
 
 export interface Ticket {
@@ -110,7 +121,7 @@ export interface Expense {
   category: string;
   amount: number | null; // null = price not yet known
   currency: Currency;
-  status: 'paid' | 'estimated' | 'actual' | 'optional';
+  status: 'paid' | 'estimated' | 'actual' | 'optional' | 'quoted' | 'refundable_hold' | 'to_verify';
   kind: 'spend' | 'deposit' | 'cash';
   day?: number;
   note?: string;
@@ -159,3 +170,5 @@ export interface DocMeta {
 export interface DocRecord extends DocMeta { id: string }
 
 export interface ShoppingItem { id: string; label: string; when?: 'before' | 'hk'; who: string; price: number | null; currency: Currency; note?: string }
+
+export interface Funding { id: string; label: string; amount: number; currency: Currency; note?: string }

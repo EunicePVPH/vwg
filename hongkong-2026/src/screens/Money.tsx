@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Banknote, PiggyBank, Pencil, Plus, RefreshCw } from 'lucide-react';
-import { ACTIVITIES, DAYS, EXPENSES, EXPENSE_CATEGORIES, SHOPPING } from '../data/seed';
+import { ACTIVITIES, DAYS, EXPENSES, EXPENSE_CATEGORIES, FUNDING, SHOPPING, UBER_COMPARISON } from '../data/seed';
 import { useAppState, useChecks, useCollection, useSettings } from '../state/store';
 import { CATEGORIES, catOf, dayEstimate, normCat } from '../lib/trip';
 import { computeBudget } from '../lib/budget';
@@ -9,7 +9,7 @@ import { currentDayId } from '../lib/time';
 import { fetchRates, fmtBoth, fmtHKD, fmtNative, fmtPHP, fmtPHP2, hkdToPhp, toHKD, usdToPhp, DEFAULT_RATES } from '../lib/money';
 import { Btn, Card, PageHeader, SectionTitle, StatusPill, cx } from '../ui/primitives';
 import { EditSheet, type Field } from '../ui/EditSheet';
-import type { Activity, Currency, Expense } from '../types';
+import type { Activity, Currency, Expense, Funding } from '../types';
 
 const COLORS: Record<string, string> = { Flights: '#3aa8f5', Hotel: '#8f84ee', Food: '#ff6b57', Transport: '#14b8a6', 'Activities & Attractions': '#ffc83d', Shopping: '#12284c', Essentials: '#5fd3c5', OOTD: '#c084fc', Other: '#94a3b8' };
 
@@ -18,7 +18,7 @@ const FIELDS: Field[] = [
   { key: 'amount', label: 'Amount (leave empty if not known yet)', type: 'number' },
   { key: 'currency', label: 'Currency', type: 'select', options: [{ value: 'HKD', label: 'HK$ (HKD)' }, { value: 'PHP', label: '₱ (PHP)' }] },
   { key: 'category', label: 'Category', type: 'select', options: EXPENSE_CATEGORIES.map((c) => ({ value: c, label: c })) },
-  { key: 'status', label: 'Status', type: 'select', options: [{ value: 'actual', label: 'Spent during the trip (counts in “Spent”)' }, { value: 'estimated', label: 'Planned — not paid yet' }, { value: 'optional', label: 'Optional — only if we want' }, { value: 'paid', label: 'Paid before the trip' }] },
+  { key: 'status', label: 'Status', type: 'select', options: [{ value: 'paid', label: 'Paid (before the trip)' }, { value: 'actual', label: 'Spent during the trip' }, { value: 'quoted', label: 'Quoted — price known, not booked or paid' }, { value: 'estimated', label: 'Planned — not paid yet' }, { value: 'to_verify', label: 'To verify — NOT counted in totals' }, { value: 'refundable_hold', label: 'Refundable hold — not spending' }, { value: 'optional', label: 'Optional — only if we want' }] },
   { key: 'kind', label: 'Type', type: 'select', options: [{ value: 'spend', label: 'Spending' }, { value: 'deposit', label: 'Deposit (refundable, not spending)' }, { value: 'cash', label: 'Cash withdrawal (not spending)' }] },
   { key: 'day', label: 'Trip day (1–5, optional)', type: 'number' },
   { key: 'note', label: 'Note', type: 'text' },
@@ -36,7 +36,16 @@ export function Money() {
   const [fetching, setFetching] = useState(false);
 
   const hk = (e: Expense) => (e.amount ? toHKD(e.amount, e.currency, r) : 0);
-  const { prepaid, actual, paidTotal, remaining, optionalTotal, everything } = computeBudget(acts, exps, shop, checks, r);
+  const { prepaid, actual, paidTotal, remaining, optionalTotal, everything, quoted, toVerify, holds } = computeBudget(acts, exps, shop, checks, r);
+  const fund = useCollection<Funding>('funding', FUNDING);
+  const [fundEdit, setFundEdit] = useState<Funding | null>(null);
+  const phpOf = (e: Expense) => (e.currency === 'PHP' ? e.amount ?? 0 : hkdToPhp(e.amount ? toHKD(e.amount, e.currency, r) : 0, r));
+  const paidE = exps.filter((e) => e.kind === 'spend' && (e.status === 'paid' || e.status === 'actual') && e.amount);
+  const shoppingPhp = paidE.filter((e) => normCat(e.category) === 'Shopping').reduce((n, e) => n + phpOf(e), 0);
+  const travelPhp = paidE.filter((e) => normCat(e.category) !== 'Shopping').reduce((n, e) => n + phpOf(e), 0);
+  const fundPhp = fund.items.reduce((n, f) => n + (f.currency === 'PHP' ? f.amount : hkdToPhp(toHKD(f.amount, f.currency, r), r)), 0);
+  const toVerifyCount = exps.filter((e) => e.kind === 'spend' && e.status === 'to_verify').length;
+  const [showCmp, setShowCmp] = useState(false);
   const paidBreakdown = (() => {
     const m = new Map<string, { cur: Set<string>; native: number; hkd: number }>();
     for (const e of exps) if (e.kind === 'spend' && e.amount && (e.status === 'paid' || e.status === 'actual')) { const x = m.get(normCat(e.category)) ?? { cur: new Set<string>(), native: 0, hkd: 0 }; x.cur.add(e.currency === 'USD' ? 'PHP' : e.currency); x.native += e.currency === 'USD' ? usdToPhp(e.amount, r) : e.amount; x.hkd += hk(e); m.set(normCat(e.category), x); }
@@ -112,9 +121,36 @@ export function Money() {
       <SectionTitle>By day</SectionTitle>
       <Card className="divide-y divide-navy/5">
         {DAYS.map((d) => {
-          const est = dayEstimate(acts, d.id) + exps.filter((e) => e.day === d.id && e.kind === 'spend' && e.status === 'estimated').reduce((n, e) => n + hk(e), 0); const act = exps.filter((e) => e.day === d.id && e.kind === 'spend' && e.status === 'actual').reduce((n, e) => n + hk(e), 0);
+          const est = dayEstimate(acts, d.id) + exps.filter((e) => e.day === d.id && e.kind === 'spend' && (e.status === 'estimated' || e.status === 'quoted')).reduce((n, e) => n + hk(e), 0); const act = exps.filter((e) => e.day === d.id && e.kind === 'spend' && e.status === 'actual').reduce((n, e) => n + hk(e), 0);
           return <div key={d.id} className="flex items-center gap-3 px-4 py-3"><div className="w-12 text-[13px] font-bold text-navy">Day {d.id}</div><div className="min-w-0 flex-1 truncate text-[13px] text-muted">{d.title}</div><div className="text-right text-[13px]"><div className="font-bold text-navy">{fmtHKD(act)} <span className="font-normal text-muted">/ {fmtHKD(est)}</span></div></div></div>;
         })}
+      </Card>
+
+      <SectionTitle>Travel costs vs shopping</SectionTitle>
+      <Card className="space-y-2 p-4 text-[14px]">
+        <div className="flex justify-between"><span>Travel costs paid</span><b className="text-navy">{fmtPHP2(travelPhp)}</b></div>
+        <div className="flex justify-between"><span>Travel shopping paid</span><b className="text-navy">{fmtPHP2(shoppingPhp)}</b></div>
+        <div className="flex justify-between border-t border-navy/10 pt-2"><span className="font-bold text-navy">Combined</span><b className="text-navy">{fmtPHP2(travelPhp + shoppingPhp)}</b></div>
+        <p className="text-[12px] text-muted">Shopping is kept separate from travel costs and is never counted twice with your Shopping list or packing items. Shoes, outfits and jackets listed without a price are not included.</p>
+      </Card>
+
+      <SectionTitle>Trip funding (not an expense)</SectionTitle>
+      <Card className="space-y-2 p-4 text-[14px]">
+        {fund.items.map((f) => <button key={f.id} onClick={() => setFundEdit(f)} className="flex w-full items-center justify-between text-left"><span className="font-bold text-navy">{f.label}</span><b className="text-navy">{fmtNative(f.amount, f.currency, r)}</b></button>)}
+        <div className="flex justify-between border-t border-navy/10 pt-2"><span>Travel costs minus funding</span><b className="text-navy">{fmtPHP2(travelPhp - fundPhp)}</b></div>
+        <div className="flex justify-between"><span>Combined minus funding</span><b className="text-navy">{fmtPHP2(travelPhp + shoppingPhp - fundPhp)}</b></div>
+        <p className="text-[12px] text-muted">This is a tracking allocation, not a bank balance and not salary. Other income, funding and spending may exist.</p>
+        <Btn variant="soft" className="w-full text-[13px]" icon={<Plus size={15} />} onClick={() => setFundEdit({ id: 'u-' + Date.now().toString(36), label: '', amount: 0, currency: 'PHP' })}>Add funding line</Btn>
+      </Card>
+
+      <SectionTitle>Quoted · refundable · to verify</SectionTitle>
+      <Card className="space-y-2 p-4 text-[14px]">
+        <div className="flex justify-between"><span>Quoted (counted in Planned)</span><b className="text-navy">{fmtNative(Math.round(quoted * 100) / 100, 'HKD')} · {fmtPHP(hkdToPhp(quoted, r))}</b></div>
+        <div className="flex justify-between"><span>Refundable holds (not spending)</span><b className="text-navy">{fmtHKD(holds)} · {fmtPHP(hkdToPhp(holds, r))}</b></div>
+        <div className="flex justify-between"><span>To verify — NOT counted</span><b className="text-navy">{toVerifyCount} item{toVerifyCount === 1 ? '' : 's'}{toVerify ? ` · ${fmtHKD(toVerify)}` : ''}</b></div>
+        <p className="text-[12px] text-muted">Quotes are not payments. Uber quotes only count as planned until you mark them Spent. “To verify” items (for example the Dec 10 reference price, PAL baggage, hotel tax, PhotoPass, the possibly unneeded stroller rental) are shown but never added to totals.</p>
+        <button className="text-[13px] font-bold text-sky" onClick={() => setShowCmp(!showCmp)}>{showCmp ? 'Hide' : 'Show'} Uber / Klook comparison (not selected, history only)</button>
+        {showCmp && <ul className="space-y-1 rounded-2xl bg-paper p-3 text-[13px]">{UBER_COMPARISON.map((u) => <li key={u.leg}><b>{u.when}</b> · {u.leg}: {u.hkd ? fmtNative(u.hkd, 'HKD') : fmtPHP2(u.php ?? 0)} <span className="text-muted">— {u.note}</span></li>)}</ul>}
       </Card>
 
       <SectionTitle>Hotel deposit</SectionTitle>
@@ -128,10 +164,10 @@ export function Money() {
               <span className="mt-1 h-3 w-3 shrink-0 rounded-full" style={{ background: COLORS[normCat(e.category)] ?? '#3aa8f5' }} />
               <div className="min-w-0 flex-1"><div className="text-[15px] font-bold leading-snug text-navy">{e.label}</div>
                 <div className="mt-1 flex flex-wrap items-center gap-1.5 text-[12px]"><span className="text-muted">{normCat(e.category)}{e.day ? ` · Day ${e.day}` : ''}</span>
-                  {e.status === 'paid' ? <StatusPill status="paid" /> : e.status === 'actual' ? <StatusPill status="confirmed" label="Spent" /> : e.status === 'optional' ? <StatusPill status="optional" /> : <StatusPill status="estimated" label="Planned" />}
+                  {e.status === 'paid' ? <StatusPill status="paid" /> : e.status === 'actual' ? <StatusPill status="confirmed" label="Spent" /> : e.status === 'optional' ? <StatusPill status="optional" /> : e.status === 'quoted' ? <StatusPill status="estimated" label="Quoted" /> : e.status === 'to_verify' ? <StatusPill status="verify" label="To verify" /> : e.status === 'refundable_hold' ? <span className="rounded-full bg-lav-soft px-2.5 py-0.5 text-[12px] font-bold text-[#5046b4]">Refundable hold</span> : <StatusPill status="estimated" label="Planned" />}
                   {e.kind === 'deposit' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Refundable</span>}{e.kind === 'cash' && <span className="rounded-full bg-lav-soft px-2 py-0.5 font-bold text-[#5046b4]">Cash · not spending</span>}</div>
                 {e.note && <div className="mt-1 text-[12px] text-muted">{e.note}</div>}
-                {e.status === 'estimated' && e.kind === 'spend' && <button onClick={(ev) => { ev.stopPropagation(); update(e.id, { status: e.day ? 'actual' : 'paid' }); }} className="tap mt-2 rounded-xl bg-turq-soft px-3 text-[13px] font-bold text-[#0b6b61]">✓ Mark as {e.day ? 'spent' : 'paid'}</button>}</div>
+                {(e.status === 'estimated' || e.status === 'quoted') && e.kind === 'spend' && <button onClick={(ev) => { ev.stopPropagation(); update(e.id, { status: e.day ? 'actual' : 'paid' }); }} className="tap mt-2 rounded-xl bg-turq-soft px-3 text-[13px] font-bold text-[#0b6b61]">✓ Mark as {e.day ? 'spent' : 'paid'}</button>}</div>
               <div className="text-right">{e.amount !== null ? <><div className="text-[15px] font-bold text-navy">{fmtNative(e.amount, e.currency, r)}</div><div className="text-[12px] text-muted">{e.currency === 'HKD' ? fmtPHP(hkdToPhp(e.amount, r)) : fmtHKD(hk(e))}</div></> : <div className="text-[12px] font-bold text-coral">Add price</div>}</div>
             </div>
           </Card>
@@ -141,7 +177,7 @@ export function Money() {
       <SectionTitle>Exchange rates</SectionTitle>
       <Card className="space-y-2 p-4 text-[14px]">
         <div className="flex items-center gap-2"><Banknote className="text-sky" /><div>HK$1 = ₱{r.hkdToPhp.toFixed(3)}</div></div>
-        <p className="text-[13px] text-muted">{r.fetchedAt ? `Live rate fetched ${new Date(r.fetchedAt).toLocaleString()}.` : r.manual ? 'Rate set by you.' : 'This is a placeholder estimate, not your Wise rate. Tap refresh when online, or set your own.'}</p>
+        <p className="text-[13px] text-muted">{r.fetchedAt ? `Live rate fetched ${new Date(r.fetchedAt).toLocaleString()}.` : r.manual ? `Rate set by you${r.setAt ? ' on ' + new Date(r.setAt).toLocaleDateString() : ''}. Update it whenever you check your Wise rate.` : 'This is a placeholder estimate, not your Wise rate. Tap refresh when online, or set your own.'}</p>
         <div className="flex gap-2">
           <Btn variant="soft" icon={<RefreshCw size={16} className={fetching ? 'animate-spin' : ''} />} className="flex-1 text-[14px]" onClick={async () => { setFetching(true); const n = await fetchRates(); setFetching(false); if (n) setSettings({ rates: n }); else alert('Could not fetch a live rate (offline?). Your current rate is kept.'); }}>Refresh</Btn>
           <Btn variant="ghost" icon={<Pencil size={16} />} className="flex-1 text-[14px]" onClick={() => setRateEdit(true)}>Set my rate</Btn>
@@ -157,10 +193,14 @@ export function Money() {
         onSave={(v) => add({ id: 'u-' + Date.now().toString(36), label: String(v.label || 'Expense'), amount: v.amount as number | null, currency: v.currency as Currency, category: String(v.category), status: v.status as Expense['status'], kind: v.kind as Expense['kind'], day: v.day ? Number(v.day) : undefined, note: String(v.note ?? '') })} />
       <EditSheet open={capEdit} onClose={() => setCapEdit(false)} title="Budget cap (pesos)" fields={[{ key: 'cap', label: 'Most we want to spend on the whole trip (₱)', type: 'number', hint: 'Counts everything: flights, hotel, tickets, food, shopping — not optional items.' }]}
         values={{ cap: capPHP }} onRestore={() => setSettings({ capPHP: 150000 })} onSave={(v) => setSettings({ capPHP: Number(v.cap) > 0 ? Number(v.cap) : capPHP })} />
+      <EditSheet open={!!fundEdit} onClose={() => setFundEdit(null)} title="Funding line" fields={[{ key: 'label', label: 'Label', type: 'text' }, { key: 'amount', label: 'Amount (₱)', type: 'number' }, { key: 'note', label: 'Note', type: 'text' }]}
+        values={fundEdit ? { label: fundEdit.label, amount: fundEdit.amount, note: fundEdit.note ?? '' } : {}}
+        onSave={(v) => { if (!fundEdit) return; const next = { ...fundEdit, label: String(v.label || 'Funding'), amount: Number(v.amount) || 0, currency: 'PHP' as Currency, note: String(v.note ?? '') }; if (fund.items.some((f) => f.id === fundEdit.id)) fund.update(fundEdit.id, next); else fund.add(next); }}
+        onDelete={fundEdit && fund.items.some((f) => f.id === fundEdit.id) ? () => fund.remove(fundEdit.id) : undefined} />
       <EditSheet open={rateEdit} onClose={() => setRateEdit(false)} title="My exchange rate" fields={[
         { key: 'hkdToPhp', label: 'Pesos for HK$1 (₱ per HK$)', type: 'number', hint: 'Use the rate your Wise app shows.' }]}
         values={{ hkdToPhp: r.hkdToPhp }} onRestore={() => setSettings({ rates: DEFAULT_RATES })}
-        onSave={(v) => setSettings({ rates: { hkdToPhp: Number(v.hkdToPhp) || r.hkdToPhp, usdToHkd: r.usdToHkd, manual: true } })} />
+        onSave={(v) => setSettings({ rates: { hkdToPhp: Number(v.hkdToPhp) || r.hkdToPhp, usdToHkd: r.usdToHkd, manual: true, setAt: Date.now() } })} />
     </div>
   );
 }

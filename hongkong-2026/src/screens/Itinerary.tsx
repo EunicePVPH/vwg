@@ -1,11 +1,12 @@
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Backpack, Baby, Bed, Bus, CableCar, Camera, Car, Check, ChevronDown, ExternalLink, Footprints, MapPin, Moon, Navigation, Pencil, Plane, Plus, Ship, Sparkles, Star, Ticket as TicketIcon, TrainFront, TramFront, Utensils, TriangleAlert, Info, ClipboardList } from 'lucide-react';
-import { ACTIVITIES, ARRIVAL_CHECKLIST, DAYS, FLIGHTS, LINKS, TICKETS } from '../data/seed';
+import { ACTIVITIES, ARRIVAL_CHECKLIST, DAYS, EXPENSES, FLIGHTS, LINKS, TICKETS } from '../data/seed';
 import { useAppState, useChecks, useCollection, useNote } from '../state/store';
 import { useVault } from '../state/vault';
 import { currentDayId, dateLabel, fmt12, nowMs, tripPhase } from '../lib/time';
-import { fmtBoth } from '../lib/money';
+import { fmtBoth, toHKD } from '../lib/money';
+import { fmtDur, toMin } from '../lib/time';
 import { actState, catOf, dayEstimate, dayOf, sortActs, unpricedCount } from '../lib/trip';
 import { mapDir, mapSearch } from '../lib/maps';
 import { Card, StatusPill, accentBg, accentSoft, cx, Btn } from '../ui/primitives';
@@ -14,7 +15,7 @@ import { RoutePreview } from '../ui/RoutePreview';
 import { EditSheet, type Field } from '../ui/EditSheet';
 import { go } from '../ui/router';
 import { Confetti } from '../ui/Confetti';
-import type { Activity, Kind, Mode, Priority, Status } from '../types';
+import type { Activity, Expense, Kind, Mode, Priority, Status } from '../types';
 
 const MODE_ICON: Record<Mode, React.ReactNode> = { walk: <Footprints size={16} />, uber: <Car size={16} />, car: <Car size={16} />, mtr: <TrainFront size={16} />, ferry: <Ship size={16} />, bus: <Bus size={16} />, plane: <Plane size={16} />, tram: <TramFront size={16} />, cable: <CableCar size={16} /> };
 const KIND_ICON: Record<Kind, React.ReactNode> = { travel: <Navigation size={16} />, flight: <Plane size={16} />, meal: <Utensils size={16} />, sight: <Camera size={16} />, rest: <Moon size={16} />, hotel: <Bed size={16} />, task: <ClipboardList size={16} />, show: <Sparkles size={16} /> };
@@ -43,6 +44,7 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
   const [edit, setEdit] = useState<Activity | null>(null);
   const [adding, setAdding] = useState(false);
   const { checks, toggle } = useChecks();
+  const expC = useCollection<Expense>('expenses', EXPENSES);
   const [burst, setBurst] = useState(0);
   const day = dayOf(dayId);
   const list = useMemo(() => sortActs(acts.filter((a) => a.day === dayId)), [acts, dayId]);
@@ -78,6 +80,10 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
             <p className="px-4 pb-3 text-[12px] text-muted">Schematic route — not to scale. Use Navigate on each stop for live directions.</p>
           </Card>
 
+          <details className="rounded-2xl bg-white px-4 py-2.5 text-[13px] shadow-sm"><summary className="cursor-pointer font-bold text-navy">Status legend · what “verify” and “estimate” mean</summary>
+            <ul className="mt-2 space-y-1 text-muted"><li><b className="text-[#0b6b61]">Confirmed</b> — booked / official.</li><li><b className="text-[#1d5f99]">Estimated</b> — my planning number or provisional time, not an official one.</li><li><b className="text-[#8a5f00]">Needs verification</b> — check an official page or your own booking before relying on it.</li><li><b className="text-[#5046b4]">Optional</b> — skip freely.</li><li><b>Quoted</b> — an Uber price you saw; not booked and not paid.</li></ul>
+            <p className="mt-2 text-muted">Hong Kong and the Philippines are both UTC+8, so no time-zone changes are needed.</p></details>
+
           <a href={'#/more/packing/day/' + dayId} className="tap flex items-center justify-center gap-2 rounded-2xl bg-sun px-4 py-3 text-[16px] font-bold text-navy active:scale-[.98]"><Backpack size={20} />Pack Today’s Bag · Day {dayId}</a>
 
           {dayId === 5 && (
@@ -88,7 +94,7 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
             {list.map((a, i) => (
               <ActivityCard key={a.id} a={a} acts={acts} last={i === list.length - 1} accent={day.accent} done={!!checks['done:' + a.id]}
                 onToggleDone={() => { const was = !!checks['done:' + a.id]; toggle('done:' + a.id); if (!was && i === list.length - 1) setBurst((b) => b + 1); }}
-                onEdit={() => setEdit(a)} edited={isEdited(a.id)} r={r} />
+                onEdit={() => setEdit(a)} edited={isEdited(a.id)} r={r} exp={a.expenseId ? expC.items.find((e) => e.id === a.expenseId) : undefined} />
             ))}
           </div>
           <Btn variant="ghost" icon={<Plus size={18} />} className="w-full" onClick={() => setAdding(true)}>Add an activity</Btn>
@@ -101,8 +107,8 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
       </AnimatePresence>
 
       <EditSheet open={!!edit} onClose={() => setEdit(null)} title="Edit activity" fields={FIELDS}
-        values={edit ? { title: edit.title, start: edit.start, end: edit.end ?? '', costHKD: edit.costHKD, status: edit.status, priority: edit.priority, place: edit.place ?? '', notes: edit.notes ?? '' } : {}}
-        onSave={(v) => edit && update(edit.id, { title: String(v.title || edit.title), start: String(v.start || edit.start), end: v.end ? String(v.end) : undefined, costHKD: v.costHKD as number | null, status: v.status as Status, priority: v.priority as Priority, place: String(v.place ?? ''), notes: String(v.notes ?? '') })}
+        values={edit ? { title: edit.title, start: edit.start, end: edit.end ?? '', costHKD: edit.expenseId ? (expC.items.find((e) => e.id === edit.expenseId)?.amount ?? null) : edit.costHKD, status: edit.status, priority: edit.priority, place: edit.place ?? '', notes: edit.notes ?? '' } : {}}
+        onSave={(v) => { if (edit?.expenseId && v.costHKD !== undefined) expC.update(edit.expenseId, { amount: v.costHKD as number | null, currency: 'HKD' }); return edit && update(edit.id, { title: String(v.title || edit.title), start: String(v.start || edit.start), end: v.end ? String(v.end) : undefined, costHKD: v.costHKD as number | null, status: v.status as Status, priority: v.priority as Priority, place: String(v.place ?? ''), notes: String(v.notes ?? '') }); }}
         onRestore={edit && isSeed(edit.id) && isEdited(edit.id) ? () => restore(edit.id) : undefined}
         onDelete={edit ? () => remove(edit.id) : undefined} />
       <EditSheet open={adding} onClose={() => setAdding(false)} title={`New activity · Day ${dayId}`} saveLabel="Add" fields={FIELDS}
@@ -112,11 +118,11 @@ export function Itinerary({ dayArg }: { dayArg?: string }) {
   );
 }
 
-function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edited, r }: { a: Activity; acts: Activity[]; last: boolean; accent: string; done: boolean; onToggleDone: () => void; onEdit: () => void; edited: boolean; r: import('../lib/money').Rates }) {
+function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edited, r, exp }: { exp?: Expense; a: Activity; acts: Activity[]; last: boolean; accent: string; done: boolean; onToggleDone: () => void; onEdit: () => void; edited: boolean; r: import('../lib/money').Rates }) {
   const [open, setOpen] = useState(false);
   const { docs } = useVault();
   const st = actState(a, acts, done, nowMs());
-  const hasDetail = a.notes || a.tips?.length || a.stroller || a.restroom || a.alt || a.link;
+  const hasDetail = a.notes || a.tips?.length || a.stroller || a.restroom || a.alt || a.link || a.route || a.travel || a.walk || a.skip || a.flex || a.booking || a.verify?.length;
   const ticketDocs = a.ticketId ? docs.filter((d) => d.ticketId === a.ticketId).length : 0;
   const fdocs = a.flightId ? docs.filter((d) => d.flightId === a.flightId).length : 0;
   const ticket = a.ticketId ? TICKETS.find((t) => t.id === a.ticketId) : undefined;
@@ -142,9 +148,9 @@ function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edite
                 {a.priority === 'optional' && <span className="rounded-full bg-lav-soft px-2 py-0.5 text-[11px] font-bold text-[#5046b4]">Optional</span>}
                 {a.nap && <span className="inline-flex items-center gap-1 rounded-full bg-sky-soft px-2 py-0.5 text-[11px] font-bold text-[#1d5f99]"><Moon size={10} />Nap</span>}
                 <StatusPill status={a.status} />
-                {a.costHKD ? <span className="text-[12px] font-bold text-muted">~{fmtBoth(a.costHKD, r)}</span> : a.costHKD === null ? <span className="text-[12px] text-muted">price to add</span> : null}
+                {exp ? <span className="text-[12px] font-bold text-muted">{exp.amount ? `${exp.status === 'paid' || exp.status === 'actual' ? 'Paid' : exp.status === 'quoted' ? 'Quoted' : exp.status === 'to_verify' ? 'Verify' : 'Planned'} ${fmtBoth(toHKD(exp.amount, exp.currency, r), r)}` : 'Quote needed'}</span> : a.costHKD ? <span className="text-[12px] font-bold text-muted">~{fmtBoth(a.costHKD, r)}</span> : a.costHKD === null ? <span className="text-[12px] text-muted">price to add</span> : null}
               </span>
-              {a.end && <span className="mt-1 block text-[12px] text-muted">until {fmt12(a.end)}{edited && ' · edited'}</span>}
+              {a.end && <span className="mt-1 block text-[12px] text-muted">until {fmt12(a.end)} · {fmtDur(Math.max(0, toMin(a.end) - toMin(a.start)))}{edited && ' · edited'}</span>}
             </span>
             <ChevronDown size={20} className={cx('mt-1 shrink-0 text-muted transition-transform', open && 'rotate-180')} />
           </button>
@@ -152,16 +158,24 @@ function ActivityCard({ a, acts, last, accent, done, onToggleDone, onEdit, edite
             {open && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.22 }} className="overflow-hidden">
                 <div className="space-y-2.5 border-t border-navy/5 px-3.5 pb-3.5 pt-3 text-[14px] text-ink">
+                  {a.booking && <p className="rounded-xl bg-sun-soft px-3 py-2 text-[13px] font-bold text-[#6d4b00]">{a.booking}</p>}
+                  {a.flex && <p className="rounded-xl bg-paper px-3 py-2 text-[13px]"><b className="text-navy">Time window:</b> {a.flex}</p>}
+                  {a.address && <p className="text-[13px]"><b className="text-navy">Address:</b> {a.address}</p>}
+                  {a.route && <p className="text-[13px]"><b className="text-navy">Route:</b> {a.route}</p>}
+                  {a.travel && <p className="text-[13px]"><b className="text-navy">Travel:</b> {a.travel}</p>}
+                  {a.walk && <p className="text-[13px]"><b className="text-navy">Walking:</b> {a.walk}</p>}
                   {a.notes && <p>{a.notes}</p>}
                   {a.tips?.map((t) => <p key={t} className="flex gap-2"><Info size={16} className="mt-0.5 shrink-0 text-sky" />{t}</p>)}
                   {a.stroller && <p className="flex gap-2"><Baby size={16} className="mt-0.5 shrink-0 text-lav" /><span><b>Stroller:</b> {a.stroller}</span></p>}
                   {a.restroom && <p className="flex gap-2"><MapPin size={16} className="mt-0.5 shrink-0 text-turq" /><span><b>Restroom:</b> {a.restroom}</span></p>}
-                  {a.alt && <p className="rounded-xl bg-sky-soft px-3 py-2 text-[13px]">{a.alt}</p>}
+                  {a.alt && <p className="rounded-xl bg-sky-soft px-3 py-2 text-[13px]"><b>Alternative:</b> {a.alt}</p>}
+                  {a.skip && <p className="rounded-xl bg-lav-soft px-3 py-2 text-[13px]"><b>Skip / shorten:</b> {a.skip}</p>}
                   <div className="flex flex-wrap gap-2 pt-1">
                     {a.place && <a href={mapDir(a.place, a.mode === 'walk' ? 'walking' : a.mode === 'uber' || a.mode === 'car' ? 'driving' : 'transit')} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-navy px-3 py-2 text-[13px] font-bold text-white"><Navigation size={15} />Navigate</a>}
                     {a.place && <a href={mapSearch(a.place)} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-sky-soft px-3 py-2 text-[13px] font-bold text-navy"><MapPin size={15} />Map</a>}
                     {a.ticketId && <button onClick={() => go('tickets/' + a.ticketId)} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><TicketIcon size={15} />{ticketDocs ? `Tickets (${ticketDocs})` : ticket?.statusLabel ?? 'Ticket info'}</button>}
                     {a.flightId && <button onClick={() => go('more/flights')} className="tap inline-flex items-center gap-1.5 rounded-xl bg-coral-soft px-3 py-2 text-[13px] font-bold text-[#a63a2b]"><Plane size={15} />{fdocs ? `Boarding pass (${fdocs})` : FLIGHTS.find((f) => f.id === a.flightId)?.code}</button>}
+                    {a.verify?.map((v) => <a key={v.url} href={v.url} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-sun-soft px-3 py-2 text-[13px] font-bold text-[#6d4b00]"><ExternalLink size={15} />Verify: {v.label}</a>)}
                     {a.link && <a href={a.link.url} target="_blank" rel="noopener noreferrer" className="tap inline-flex items-center gap-1.5 rounded-xl bg-white px-3 py-2 text-[13px] font-bold text-navy ring-1 ring-navy/15"><ExternalLink size={15} />{a.link.label}</a>}
                   </div>
                   <div className="flex items-center justify-between border-t border-navy/5 pt-2.5">

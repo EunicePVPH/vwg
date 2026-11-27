@@ -1,6 +1,6 @@
 import type { Currency } from '../types';
 
-export interface Rates { hkdToPhp: number; usdToHkd: number; fetchedAt?: number; manual?: boolean }
+export interface Rates { hkdToPhp: number; usdToHkd: number; fetchedAt?: number; manual?: boolean; setAt?: number }
 export const DEFAULT_RATES: Rates = { hkdToPhp: 7.4, usdToHkd: 7.8 };
 
 const usdRate = (r: Rates) => (r.usdToHkd > 7 && r.usdToHkd < 8.5 ? r.usdToHkd : 7.8);

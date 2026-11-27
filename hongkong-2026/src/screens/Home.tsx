@@ -17,6 +17,11 @@ import { Photo } from '../ui/Photo';
 import { Ring } from '../ui/Ring';
 import { go } from '../ui/router';
 import type { Activity } from '../types';
+import { WhatsNext } from '../ui/WhatsNext';
+import { useRemind } from '../state/remind';
+import { dueNow } from '../lib/reminders';
+import { nextStop, minsText } from '../lib/next';
+import { BellRing, WifiOff as WifiOffIcon, Clock as ClockIcon } from 'lucide-react';
 
 function useTick(ms = 30_000) { const [, s] = useState(0); useEffect(() => { const t = setInterval(() => s((x) => x + 1), ms); return () => clearInterval(t); }, [ms]); }
 
@@ -27,8 +32,14 @@ function useWeather() {
   return { wx, offline };
 }
 
+function useOnline() { const [on, setOn] = useState(typeof navigator === 'undefined' ? true : navigator.onLine); useEffect(() => { const u = () => setOn(true), d = () => setOn(false); window.addEventListener('online', u); window.addEventListener('offline', d); return () => { window.removeEventListener('online', u); window.removeEventListener('offline', d); }; }, []); return on; }
+
 export function Home() {
   useTick();
+  const online = useOnline();
+  const [nextOpen, setNextOpen] = useState(false);
+  const { st: rem, all: remAll, snooze, dismiss } = useRemind();
+  const dueList = rem.on ? dueNow(remAll, rem, nowMs()).slice(0, 2) : [];
   const phase = tripPhase();
   const dayId = currentDayId();
   const acts = useCollection<Activity>('activities', ACTIVITIES).items;
@@ -60,6 +71,15 @@ export function Home() {
         <p className="text-[13px] font-bold uppercase tracking-wider text-coral">Hong Kong 2026</p>
         <h1 className="text-[26px] font-bold leading-tight text-navy">Our Family Adventure</h1>
       </motion.header>
+      {!online && <div role="status" className="flex gap-3 rounded-2xl bg-sun-soft px-4 py-3 text-[13px] text-[#6d4b00]"><WifiOffIcon size={18} className="mt-0.5 shrink-0" /><span><b>You are offline.</b> Your plan, checklists, expenses and saved tickets still work. Maps links, weather, exchange rates and Uber need internet.</span></div>}
+      <div className="grid grid-cols-2 gap-2">
+        <button onClick={() => setNextOpen(true)} className="tap flex items-center justify-center gap-2 rounded-2xl bg-navy px-3 py-3 text-[15px] font-bold text-white active:scale-[.98]"><ClockIcon size={18} />What is next?</button>
+        <a href="#/more/reminders" className="tap flex items-center justify-center gap-2 rounded-2xl bg-coral-soft px-3 py-3 text-[15px] font-bold text-[#a63a2b] active:scale-[.98]"><BellRing size={18} />Reminders{rem.on ? '' : ' (off)'}</a>
+      </div>
+      {dueList.map((r) => (
+        <div key={r.id} className="rounded-2xl bg-coral-soft p-3.5" role="alert"><div className="text-[12px] font-bold uppercase text-[#a63a2b]">Reminder</div><div className="text-[15px] font-bold leading-snug text-navy">{r.title}</div>{r.body && <div className="text-[13px] text-muted">{r.body}</div>}
+          <div className="mt-2 flex gap-2"><Btn variant="soft" className="!min-h-[40px] !px-3 !py-1 text-[13px]" onClick={() => snooze(r.id)}>Snooze 15 min</Btn><Btn variant="ghost" className="!min-h-[40px] !px-3 !py-1 text-[13px]" onClick={() => dismiss(r.id)}>Dismiss</Btn></div></div>
+      ))}
 
       {phase === 'before' && (
         <Card className="overflow-hidden !bg-navy text-white">
@@ -120,6 +140,7 @@ export function Home() {
         </div>
       )}
 
+      <WhatsNext open={nextOpen} onClose={() => setNextOpen(false)} />
       <div className="pt-1 text-center text-[12px] text-muted">{FAMILY.map((f) => f.name).join(' · ')}</div>
     </div>
   );
@@ -170,6 +191,7 @@ function TodayHero({ dayId, acts, wx, offline }: { dayId: number; acts: Activity
   const exps = useCollection('expenses', EXPENSES).items;
   const tickets = useCollection('tickets', TICKETS).items.filter((t) => t.dayId === dayId);
   const { next, states, list } = useNext(dayId, acts);
+  const { checks } = useChecks();
   const w = wx?.find((x) => x.date === day.date);
   const est = dayEstimate(acts, dayId); const spent = tripSpend(exps, r, dayId);
   const cur = list.find((_, i) => states[i] === 'current');
@@ -198,6 +220,7 @@ function TodayHero({ dayId, acts, wx, offline }: { dayId: number; acts: Activity
           <div className="flex items-start justify-between gap-2"><span className="text-[12px] font-bold uppercase tracking-wide text-coral">{cur && cur.id === next.id ? 'Happening now' : 'Next up'}</span><StatusPill status={next.status} /></div>
           <h3 className="mt-0.5 text-[19px] font-bold leading-snug text-navy">{next.title}</h3>
           <p className="text-[14px] text-muted">{fmt12(next.start)}{next.end ? ` – ${fmt12(next.end)}` : ''}{leave && ` · leave by ${fmt12(leave)}`}</p>
+          {(() => { const ns = nextStop(acts, checks); return ns && ns.a.id === next.id ? <p className="mt-0.5 text-[14px] font-bold text-coral">{ns.started ? `Started ${minsText(ns.minutes)} ago` : `Starts in ${minsText(ns.minutes)}`}</p> : null; })()}
           <div className="mt-3 grid grid-cols-3 gap-2">
             <a href={dest ? mapDir(dest) : mapNearby('attractions')} target="_blank" rel="noopener noreferrer" className="tap flex flex-col items-center justify-center gap-1 rounded-2xl bg-navy py-2.5 text-[13px] font-bold text-white"><Navigation size={20} />Navigate</a>
             <a href={LINKS.uber} target="_blank" rel="noopener noreferrer" className="tap flex flex-col items-center justify-center gap-1 rounded-2xl bg-sky-soft py-2.5 text-[13px] font-bold text-navy"><Car size={20} />Uber</a>
