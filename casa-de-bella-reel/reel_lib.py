@@ -84,7 +84,7 @@ class TimeMap:
 
 
 # --------------------------------------------------------------------------- grade
-def _smooth_curve(x, knee=0.72, k=1.7):
+def _smooth_curve(x, knee=0.62, k=2.3):
     """Soft highlight shoulder: identity below knee, gentle roll-off above."""
     y = x.copy()
     m = x > knee
@@ -100,20 +100,24 @@ def _global_grade():
         return {}
 
 
+LUMA_W = np.array([0.299, 0.587, 0.114], dtype=np.float32)
+
+
 def estimate_grade(frames, shot_grade):
-    """frames: list of uint8 HxWx3 sample frames. Returns dict of per-channel LUT + params."""
-    g = dict(target=0.52, warm=0.02, sat=1.05, wb_strength=0.6, lift=0.010, contrast=0.16, max_gain=2.0)
+    """frames: list of uint8 HxWx3 sample frames. Returns base grade parameters (white balance, colour, curve shape).
+    Exposure is NOT fixed here: it is solved per frame by exposure_gains() so brightness stays even inside and between shots."""
+    g = dict(target=0.52, warm=0.02, sat=1.05, wb_strength=0.6, lift=0.010, contrast=0.16, max_gain=2.0,
+             shadow_lift=0.0, hi_target=0.93, white_point=1.0)
     g.update(shot_grade or {})
     G = _global_grade()
     g["warm"] += G.get("warm_add", 0.012)       # global nudge toward cream/warm
-    g["target"] += G.get("target_add", 0.0)      # brighter overall
+    g["target"] = G["target"] if "target" in G else g["target"] + G.get("target_add", 0.0)  # same brightness for every shot
     g["sat"] *= G.get("sat_mult", 1.0)           # richer colour
-    g["contrast"] = G.get("contrast", g["contrast"])
-    g["lift"] = G.get("lift", g["lift"])         # black point (0 = true blacks)
-    g["wb_strength"] = G.get("wb_strength", g["wb_strength"])
+    for k in ("contrast", "lift", "wb_strength", "shadow_lift", "hi_target", "max_gain", "white_point"):
+        g[k] = G.get(k, g[k])
     g["vibrance"] = G.get("vibrance", 0.0)
     sub = np.concatenate([f[::8, ::8].reshape(-1, 3) for f in frames]).astype(np.float32) / 255.0
-    luma = sub @ np.array([0.299, 0.587, 0.114], dtype=np.float32)
+    luma = sub @ LUMA_W
     # white balance from near-neutral mid-tones
     mx, mn = sub.max(1), sub.min(1)
     sat = (mx - mn) / np.maximum(mx, 1e-4)
@@ -124,27 +128,49 @@ def estimate_grade(frames, shot_grade):
     else:
         gains = np.ones(3)
     gains = np.clip(gains, 0.88, 1.18)
-    # warm bias (cream, not orange)
-    gains = gains * np.array([1 + g["warm"], 1.0, 1 - g["warm"] * 1.1])
-    # exposure in (approx.) linear light so brightening keeps colours natural
-    corrected = np.clip(sub * gains, 0, 1)
-    med = float(np.median(corrected @ np.array([0.299, 0.587, 0.114], dtype=np.float32)))
-    gain = (g["target"] / max(med, 0.03)) ** 2.2
-    gain = float(np.clip(gain, 0.85, g["max_gain"]))
+    gains = gains * np.array([1 + g["warm"], 1.0, 1 - g["warm"] * 1.1])  # warm bias (cream, not orange)
+    g["wb"] = gains
+    return g
+
+
+def frame_stats(frame_u8, g):
+    """(median, 95th percentile) of white-balanced luma for one frame - used to solve exposure."""
+    sub = frame_u8[::10, ::10].reshape(-1, 3).astype(np.float32) / 255.0
+    y = np.clip(sub * g["wb"], 0, 1) @ LUMA_W
+    return float(np.median(y)), float(np.percentile(y, 95))
+
+
+def exposure_gains(stats, g, window=31):
+    """Per-frame exposure gain (linear light) that brings every frame to the same brightness, never blowing the
+    highlights, smoothed over ~1 s so it never pumps."""
+    out = []
+    for med, p95 in stats:
+        gm = (g["target"] / max(med, 0.04)) ** 2.2
+        gh = (g["hi_target"] / max(p95, 0.2)) ** 2.2
+        gain = gm if gm <= gh else max(gh, 0.72 * gm)
+        out.append(np.log(np.clip(gain, 0.7, g["max_gain"])))
+    out = np.array(out)
+    pad = window // 2
+    sm = np.convolve(np.pad(out, pad, mode="edge"), np.ones(window) / window, mode="valid")
+    return np.exp(sm)
+
+
+def build_grade(g, gain):
+    """LUTs for one frame: white balance -> exposure -> highlight shoulder -> shadow lift -> contrast."""
     x = np.linspace(0, 1, 256)
     luts = np.zeros((3, 256), np.uint8)
     for c in range(3):
-        v = np.clip(x * gains[c], 0, 4)
+        v = np.clip(x * g["wb"][c], 0, 4)
         v = np.power(v, 2.2) * gain
         v = np.power(np.clip(v, 0, 8), 1 / 2.2)
-        v = _smooth_curve(np.clip(v, 0, 4) / 1.0)
-        v = np.clip(v, 0, 1)
-        # gentle S-curve for contrast, lifted black point for a soft matte feel
+        v = np.clip(_smooth_curve(np.clip(v, 0, 4)), 0, 1)
+        v = v + g["shadow_lift"] * 4 * v * (1 - v) ** 3          # open up deep shadows, keep true black
         s = v * v * (3 - 2 * v)
-        v = v + g["contrast"] * (s - v)
+        v = v + g["contrast"] * (s - v)                           # gentle S-curve
         v = g["lift"] + (1 - g["lift"]) * v
+        v = v * g.get("white_point", 1.0)                       # soft white ceiling (no glaring pure-white areas)
         luts[c] = np.clip(v * 255 + 0.5, 0, 255).astype(np.uint8)
-    return dict(luts=luts, sat=g["sat"], vib=g["vibrance"], gains=gains, gain=gain, med=med)
+    return dict(luts=luts, sat=g["sat"], vib=g["vibrance"], gain=gain)
 
 
 SHADOW_TINT = np.array([0.010, 0.003, -0.006], np.float32)  # warm brown in the shadows

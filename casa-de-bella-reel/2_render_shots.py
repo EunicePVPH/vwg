@@ -13,7 +13,8 @@ from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 from PIL import Image, ImageFilter
 
-from reel_lib import HANDLE, WORK, TimeMap, apply_grade, estimate_grade, load_edit, shot_frames
+from reel_lib import (HANDLE, WORK, TimeMap, apply_grade, build_grade, estimate_grade, exposure_gains, frame_stats,
+                      load_edit, shot_frames)
 
 edit = load_edit()
 FPS, W, H = edit["fps"], edit["width"], edit["height"]
@@ -66,7 +67,8 @@ def render(shot):
     nclip, cs = len(clip), meta["clip_start"]
     # grade from a handful of sample frames across the shot
     idx = [int(np.clip((tm.src(dur * u) - cs) * FPS, 0, nclip - 1)) for u in (0.1, 0.3, 0.5, 0.7, 0.9)]
-    grade = estimate_grade([clip[i] for i in idx], shot.get("grade"))
+    gp = estimate_grade([clip[i] for i in idx], shot.get("grade"))
+    gains_t = exposure_gains([frame_stats(f, gp) for f in clip], gp)   # one exposure gain per source frame
     total = n + 2 * HANDLE
     mm = np.lib.format.open_memmap(OUT / f"{sid}.npy", mode="w+", dtype=np.uint8, shape=(total, H, W, 3))
     z0, z1 = shot.get("zoom", [1.0, 1.0])
@@ -80,6 +82,8 @@ def render(shot):
             fr = clip[min(i, nclip - 1)].astype(np.float32)
             acc = fr * wt if acc is None else acc + fr * wt
         frame = np.clip(acc / sum(w.values()) + 0.5, 0, 255).astype(np.uint8)
+        pf = min(max((tm.src(t) - cs) * FPS, 0), nclip - 1)
+        grade = build_grade(gp, float(np.interp(pf, np.arange(nclip), gains_t)))
         frame = apply_grade(frame, grade)
         img = Image.fromarray(frame)
         sp = float(tm.speed(t))
@@ -93,8 +97,7 @@ def render(shot):
             img = img.filter(ImageFilter.UnsharpMask(radius=28, percent=int(clar * 100), threshold=0))
         mm[k] = np.asarray(img)
     mm.flush()
-    print(f"{sid:3s} {total} frames  gain x{grade['gain']:.2f}  wb {np.round(grade['gains'], 3)}  "
-          f"median {grade['med']:.2f}", flush=True)
+    print(f"{sid:3s} {total} frames  exposure gain x{gains_t.min():.2f}-{gains_t.max():.2f}  wb {np.round(gp['wb'], 3)}", flush=True)
 
 
 if __name__ == "__main__":
